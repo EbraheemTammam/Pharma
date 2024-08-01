@@ -1,0 +1,5 @@
+bin
+obj
+appsettings*.json
+launchsettings.json
+API.http
