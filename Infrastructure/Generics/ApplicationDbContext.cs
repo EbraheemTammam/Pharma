@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Infrastructure.Modules.Users.Models;
 
-namespace Pharmacy.Infrastructure.Data;
+namespace Pharmacy.Infrastructure.Generics;
 
 
-public sealed class ApplicationDbContext: DbContext
+public sealed class ApplicationDbContext: IdentityDbContext<CustomUser, IdentityRole<int>, int>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options){}

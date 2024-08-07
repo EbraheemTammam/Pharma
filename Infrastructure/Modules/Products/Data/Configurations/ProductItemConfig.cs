@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pharmacy.Domain.Models.ProductsModule;
+using Pharmacy.Domain.Modules.Products.Models;
 
-namespace Pharmacy.Infrastructure.Data.Configurations.ProductModule;
-
+namespace Pharmacy.Infrastructure.Modules.Products.Data.Configurations;
 
 public class ProductItemConfigurations : IEntityTypeConfiguration<ProductItem>
 {
