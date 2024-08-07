@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Services.ProductsModule;
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Infrastructure.Data;
 using Pharmacy.Infrastructure.Data.Repositories;
+using Pharmacy.Infrastructure.Generics;
+using Pharmacy.Infrastructure.Generics.Repositories;
 using Pharmacy.Services;
 
 namespace Pharmacy.Presentation.Extensions;
