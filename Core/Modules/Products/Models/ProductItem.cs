@@ -1,7 +1,9 @@
-namespace Pharmacy.Domain.Models.ProductsModule;
+using Pharmacy.Domain.Generics;
+
+namespace Pharmacy.Domain.Modules.Products.Models;
 
 
-public sealed class ProductItem: BaseModel<int>
+public sealed class ProductItem : BaseModel<int>
 {
     public DateOnly ExpirationDate {get; set;}
     public int NumberOfElements {get; set;}

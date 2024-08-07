@@ -1,7 +1,9 @@
-namespace Pharmacy.Domain.Models.ProductsModule;
+using Pharmacy.Domain.Generics;
+
+namespace Pharmacy.Domain.Modules.Products.Models;
 
 
-public sealed class IncomingOrder: BaseModel<Guid>
+public sealed class IncomingOrder : BaseModel<Guid>
 {
     public decimal Price {get; set;}
     public decimal Paid {get; set;}

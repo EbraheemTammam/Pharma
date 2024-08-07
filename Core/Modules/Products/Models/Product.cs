@@ -1,7 +1,8 @@
-namespace Pharmacy.Domain.Models.ProductsModule;
+using Pharmacy.Domain.Generics;
 
+namespace Pharmacy.Domain.Modules.Products.Models;
 
-public sealed class Product: BaseModel<Guid>
+public sealed class Product : BaseModel<Guid>
 {
     public required string Name {get; set;}
     public int NumberOfElements {get; set;}
