@@ -1,17 +1,17 @@
 using System.ComponentModel.DataAnnotations;
-using Pharmacy.Shared.ProductsModule.Validations;
+using Pharmacy.Shared.Modules.Products.Validations;
 
-namespace Pharmacy.Shared.DTOs.ProductsModule;
+namespace Pharmacy.Shared.Modules.Products.DTOs;
 
 
 
 public abstract record ScarceProductBaseDTO
 {
     [Required, MaxLength(250)]
-    public required string name {get; set;}
+    public required string Name {get; set;}
 
     [Required, PositiveNumber]
-    public int amount;
+    public int Amount;
 }
 
 public record ScarceProductCreateDTO: ScarceProductBaseDTO
@@ -21,5 +21,5 @@ public record ScarceProductCreateDTO: ScarceProductBaseDTO
 
 public record ScarceProductDTO: ScarceProductBaseDTO
 {
-    public Guid id {get; set;}
+    public Guid Id {get; set;}
 }

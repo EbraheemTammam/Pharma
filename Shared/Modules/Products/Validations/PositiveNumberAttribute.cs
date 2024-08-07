@@ -1,9 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
-using System.Numerics;
 
 
-namespace Pharmacy.Shared.ProductsModule.Validations;
+namespace Pharmacy.Shared.Modules.Products.Validations;
 
 
 
