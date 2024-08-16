@@ -6,7 +6,7 @@ using Pharmacy.Infrastructure.Generics;
 using Pharmacy.Infrastructure.Generics.Repositories;
 using Pharmacy.Services;
 
-namespace Pharmacy.Presentation.Extensions;
+namespace Pharmacy.Presentation.Utilities;
 
 public static class ServiceExtensions
 {
@@ -28,9 +28,11 @@ public static class ServiceExtensions
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+        services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
         services.RegisterDbContextPool(configuration);
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductProviderService, ProductProviderService>();
     }
 
     private static void RegisterDbContextPool(this IServiceCollection services, IConfiguration configuration)
