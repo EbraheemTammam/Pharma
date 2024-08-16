@@ -6,7 +6,7 @@ namespace Pharmacy.Domain.Interfaces;
 
 public interface IRepositoryManager : IDisposable
 {
-    IRepository<Product> Products {get; }
+    IProductRepository Products {get; }
     IRepository<ProductProvider> ProductProviders {get; }
     IRepository<IncomingOrder> IncomingOrders {get; }
     IRepository<ProductItem> ProductItems {get; }

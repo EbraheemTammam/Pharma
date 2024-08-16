@@ -3,13 +3,12 @@ using Pharmacy.Domain.Generics;
 namespace Pharmacy.Domain.Interfaces;
 
 
-public interface IRepository<model_type> where model_type: BaseModel
+public interface IRepository<TModel> where TModel : BaseModel
 {
-    IEnumerable<model_type> GetAll();
-    model_type? GetById(int id);
-    model_type? GetById(Guid id);
-    model_type Add(model_type model);
-    model_type Update(model_type model);
-    void Remove(model_type model);
+    IEnumerable<TModel> GetAll();
+    TModel? GetById<TId>(TId id);
+    TModel Add(TModel model);
+    TModel Update(TModel model);
+    void Delete(TModel model);
     void Save();
 }
