@@ -18,7 +18,6 @@ public static class ProductMapper
             Minimum = schema.Minimum
         };
 
-
     public static ProductDTO ToDTO(this Product model) =>
         new()
         {
