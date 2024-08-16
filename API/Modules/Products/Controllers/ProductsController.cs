@@ -29,4 +29,26 @@ public class ProductsController : GenericController
         if(!response.Success) ProcessError(response);
         return Ok(response.GetResult<ProductDTO>());
     }
+
+    [HttpPost]
+    public IActionResult Create(ProductCreateDTO product) =>
+        Ok(
+            _productService.Create(product).GetResult<ProductDTO>()
+        );
+
+    [HttpPut]
+    public IActionResult Update(int id, ProductCreateDTO product)
+    {
+        BaseResponse response = _productService.Update(id, product);
+        if(!response.Success) ProcessError(response);
+        return Ok(response.GetResult<ProductDTO>());
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(int id)
+    {
+        BaseResponse response = _productService.Remove(id);
+        if(!response.Success) ProcessError(response);
+        return Ok(response.GetResult<ProductDTO>());
+    }
 }
