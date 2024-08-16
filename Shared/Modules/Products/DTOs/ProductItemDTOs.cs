@@ -8,28 +8,24 @@ namespace Pharmacy.Shared.Modules.Products.DTOs;
 
 public abstract record ProductItemBaseDTO
 {
-    [AllowNull, MaxLength(15)]
-    public string? Barcode {get; set;}
-
     [Required]
     public DateOnly ExpirationDate {get; set;}
 
     [Required, PositiveNumber]
-    public int NumberOfElements {get; set;}
+    public int NumberOfBoxes {get; set;}
 }
 
-public record ProductItemCreateDTO: ProductItemBaseDTO
+public record ProductItemCreateDTO : ProductItemBaseDTO
 {
+    [AllowNull, MaxLength(15)]
+    public string? Barcode {get; set;}
     [AllowNull]
-    public Guid ProductId {get; set;}
+    public Guid? ProductId {get; set;}
 }
 
-public record ProductItemDTO: ProductItemBaseDTO
+public record ProductItemDTO : ProductItemBaseDTO
 {
     public int Id {get; set;}
-    public required ProductDTO Product {get; set;}
-    public int NumberOfBoxes {get; set;}
-    public bool Sold;
-    public required string ProviderName;
-    public decimal Price;
+    public required string ProductName {get; set;}
+    public decimal Price {get; set;}
 }
