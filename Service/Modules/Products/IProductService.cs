@@ -7,8 +7,9 @@ namespace Pharmacy.Services;
 public interface IProductService
 {
     BaseResponse GetAll();
-    BaseResponse GetById(int id);
+    BaseResponse GetById(Guid id);
+    BaseResponse GetByBarcode(string barcode);
     BaseResponse Create(ProductCreateDTO schema);
-    BaseResponse Update(int id, ProductCreateDTO schema);
-    BaseResponse Remove(int id);
+    BaseResponse Update(Guid id, ProductCreateDTO schema);
+    BaseResponse Delete(Guid id);
 }

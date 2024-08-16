@@ -10,5 +10,5 @@ public interface IProductProviderService
     BaseResponse GetById(Guid id);
     BaseResponse Create(ProductProviderCreateDTO schema);
     BaseResponse Update(Guid id, ProductProviderCreateDTO schema);
-    BaseResponse Remove(Guid id);
+    BaseResponse Delete(Guid id);
 }
