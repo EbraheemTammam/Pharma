@@ -12,8 +12,4 @@ public sealed class ProductItem : BaseModel<int>
     public Guid IncomingOrderId {get; set;}
     public Product? Product {get; set;}
     public IncomingOrder? IncomingOrder {get; set;}
-    public bool Sold() => this.NumberOfElements == 0;
-    public double Price() =>
-        Product is null ? 0
-        : NumberOfBoxes * Product.NumberOfElements * Product.PricePerElement;
 }
