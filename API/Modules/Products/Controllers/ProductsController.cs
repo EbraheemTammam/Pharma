@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.Presentation.Extensions;
 using Pharmacy.Presentation.Generics;
+using Pharmacy.Application.Utilities;
 using Pharmacy.Services;
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
@@ -23,7 +23,7 @@ public class ProductsController : GenericController
         );
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(Guid id)
     {
         BaseResponse response = _productService.GetById(id);
         if(!response.Success) ProcessError(response);
@@ -37,7 +37,7 @@ public class ProductsController : GenericController
         );
 
     [HttpPut]
-    public IActionResult Update(int id, ProductCreateDTO product)
+    public IActionResult Update(Guid id, ProductCreateDTO product)
     {
         BaseResponse response = _productService.Update(id, product);
         if(!response.Success) ProcessError(response);
@@ -45,9 +45,9 @@ public class ProductsController : GenericController
     }
 
     [HttpDelete]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(Guid id)
     {
-        BaseResponse response = _productService.Remove(id);
+        BaseResponse response = _productService.Delete(id);
         if(!response.Success) ProcessError(response);
         return Ok(response.GetResult<ProductDTO>());
     }
