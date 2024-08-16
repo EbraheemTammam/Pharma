@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Application.Services.IncomingOrdersModule;
 using Pharmacy.Application.Services.ProductsModule;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Infrastructure.Data.Repositories;
@@ -33,6 +34,7 @@ public static class ServiceExtensions
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductProviderService, ProductProviderService>();
+        services.AddScoped<IIncomingOrderService, IncomingOrderService>();
     }
 
     private static void RegisterDbContextPool(this IServiceCollection services, IConfiguration configuration)

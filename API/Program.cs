@@ -1,4 +1,4 @@
-using Pharmacy.Presentation.Extensions;
+using Pharmacy.Presentation.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
