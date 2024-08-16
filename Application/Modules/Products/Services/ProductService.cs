@@ -23,10 +23,17 @@ public class ProductService : IProductService
             _repositoryManager.Products.GetAll().ConvertAll(obj => obj.ToDTO())
         );
 
-    public BaseResponse GetById(int id)
+    public BaseResponse GetById(Guid id)
     {
         Product? product = _repositoryManager.Products.GetById(id);
         return product is null ? new NotFoundResponse(id, nameof(Product))
+        : new OkResponse<ProductDTO>(product.ToDTO());
+    }
+
+    public BaseResponse GetByBarcode(string barcode)
+    {
+        Product? product = _repositoryManager.Products.GetByBarcode(barcode);
+        return product is null ? new NotFoundResponse(barcode, nameof(Product), "barcode")
         : new OkResponse<ProductDTO>(product.ToDTO());
     }
 
@@ -37,7 +44,7 @@ public class ProductService : IProductService
         return new OkResponse<ProductDTO>(product.ToDTO());
     }
 
-    public BaseResponse Update(int id, ProductCreateDTO schema)
+    public BaseResponse Update(Guid id, ProductCreateDTO schema)
     {
         Product? product = _repositoryManager.Products.GetById(id);
         if(product is null) return new NotFoundResponse(id, nameof(Product));
@@ -47,11 +54,11 @@ public class ProductService : IProductService
         return new OkResponse<ProductDTO>(product.ToDTO());
     }
 
-    public BaseResponse Remove(int id)
+    public BaseResponse Delete(Guid id)
     {
         Product? product = _repositoryManager.Products.GetById(id);
         if(product is null) return new NotFoundResponse(id, nameof(Product));
-        _repositoryManager.Products.Remove(product);
+        _repositoryManager.Products.Delete(product);
         _repositoryManager.Products.Save();
         return new OkResponse<bool>(true);
     }

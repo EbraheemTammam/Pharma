@@ -47,11 +47,11 @@ public class ProductProviderService : IProductProviderService
         return new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
-    public BaseResponse Remove(Guid id)
+    public BaseResponse Delete(Guid id)
     {
         ProductProvider? productProvider = _repositoryManager.ProductProviders.GetById(id);
         if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
-        _repositoryManager.ProductProviders.Remove(productProvider);
+        _repositoryManager.ProductProviders.Delete(productProvider);
         _repositoryManager.ProductProviders.Save();
         return new OkResponse<bool>(true);
     }
