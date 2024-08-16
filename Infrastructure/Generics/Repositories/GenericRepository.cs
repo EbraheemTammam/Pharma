@@ -5,20 +5,19 @@ using Pharmacy.Domain.Generics;
 namespace Pharmacy.Infrastructure.Generics.Repositories;
 
 
-public class GenericRepository<model_type> : IRepository<model_type> where model_type : BaseModel
+public class GenericRepository<TModel> : IRepository<TModel> where TModel : BaseModel
 {
-    private readonly ApplicationDbContext _context;
-    private readonly DbSet<model_type> _dbSet;
+    protected readonly ApplicationDbContext _context;
+    protected readonly DbSet<TModel> _dbSet;
     public GenericRepository(ApplicationDbContext context)
     {
         _context = context;
-        _dbSet = _context.Set<model_type>();
+        _dbSet = _context.Set<TModel>();
     }
-    public IEnumerable<model_type> GetAll() => _dbSet.ToList();
-    public model_type? GetById(int id) => _dbSet.Find(id);
-    public model_type? GetById(Guid id) => _dbSet.Find(id);
-    public model_type Add(model_type model) => _dbSet.Add(model).Entity;
-    public model_type Update(model_type model) => _dbSet.Update(model).Entity;
-    public void Remove(model_type model) => _dbSet.Remove(model);
+    public IEnumerable<TModel> GetAll() => _dbSet.ToList();
+    public TModel? GetById<TId>(TId id) => _dbSet.Find(id);
+    public TModel Add(TModel model) => _dbSet.Add(model).Entity;
+    public TModel Update(TModel model) => _dbSet.Update(model).Entity;
+    public void Delete(TModel model) => _dbSet.Remove(model);
     public void Save() => _context.SaveChanges();
 }
