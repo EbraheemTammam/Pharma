@@ -21,7 +21,7 @@ public static class ProductProviderMapper
             Name = model.Name
         };
 
-    public static ProductProvider Update(this ProductProvider productProvider, ProductCreateDTO schema)
+    public static ProductProvider Update(this ProductProvider productProvider, ProductProviderCreateDTO schema)
     {
         productProvider.Name = schema.Name;
         return productProvider;
