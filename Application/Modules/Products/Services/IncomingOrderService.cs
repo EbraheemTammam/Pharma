@@ -40,8 +40,8 @@ public class IncomingOrderService : IIncomingOrderService
             product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
             _repositoryManager.Products.Update(product);
         }
-        _repositoryManager.Products.Save();
-        _repositoryManager.ProductItems.Save();
+        _repositoryManager.Save();
+        _repositoryManager.Save();
         return new OkResponse<bool>(true);
     }
 
@@ -66,12 +66,12 @@ public class IncomingOrderService : IIncomingOrderService
     public BaseResponse Create(IncomingOrderCreateDTO schema)
     {
         IncomingOrder incomingOrder = _repositoryManager.IncomingOrders.Add(schema.ToModel());
-        _repositoryManager.IncomingOrders.Save();
+        _repositoryManager.Save();
         BaseResponse response = _addItems(schema.ProductItems, incomingOrder.Id);
         if(!response.Success)
         {
             _repositoryManager.IncomingOrders.Delete(incomingOrder);
-            _repositoryManager.IncomingOrders.Save();
+            _repositoryManager.Save();
             return response;
         }
         return new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO());
@@ -83,7 +83,7 @@ public class IncomingOrderService : IIncomingOrderService
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
         incomingOrder.Update(schema);
         incomingOrder = _repositoryManager.IncomingOrders.Update(incomingOrder);
-        _repositoryManager.IncomingOrders.Save();
+        _repositoryManager.Save();
         return new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO());
     }
 
@@ -92,7 +92,7 @@ public class IncomingOrderService : IIncomingOrderService
         IncomingOrder? incomingOrder = _repositoryManager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
         _repositoryManager.IncomingOrders.Delete(incomingOrder);
-        _repositoryManager.IncomingOrders.Save();
+        _repositoryManager.Save();
         return new OkResponse<bool>(true);
     }
 }

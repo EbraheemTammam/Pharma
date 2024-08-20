@@ -42,7 +42,7 @@ public class ProductService : IProductService
         Product product = schema.ToModel();
         product.OwnedElements = 0;
         _repositoryManager.Products.Add(product);
-        _repositoryManager.Products.Save();
+        _repositoryManager.Save();
         return new OkResponse<ProductDTO>(product.ToDTO());
     }
 
@@ -52,7 +52,7 @@ public class ProductService : IProductService
         if(product is null) return new NotFoundResponse(id, nameof(Product));
         product.Update(schema);
         _repositoryManager.Products.Update(product);
-        _repositoryManager.Products.Save();
+        _repositoryManager.Save();
         return new OkResponse<ProductDTO>(product.ToDTO());
     }
 
@@ -61,7 +61,7 @@ public class ProductService : IProductService
         Product? product = _repositoryManager.Products.GetById(id);
         if(product is null) return new NotFoundResponse(id, nameof(Product));
         _repositoryManager.Products.Delete(product);
-        _repositoryManager.Products.Save();
+        _repositoryManager.Save();
         return new OkResponse<bool>(true);
     }
 }

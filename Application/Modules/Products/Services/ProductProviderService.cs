@@ -33,7 +33,7 @@ public class ProductProviderService : IProductProviderService
     public BaseResponse Create(ProductProviderCreateDTO schema)
     {
         ProductProvider productProvider = _repositoryManager.ProductProviders.Add(schema.ToModel());
-        _repositoryManager.Products.Save();
+        _repositoryManager.Save();
         return new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
@@ -43,7 +43,7 @@ public class ProductProviderService : IProductProviderService
         if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
         productProvider.Update(schema);
         productProvider = _repositoryManager.ProductProviders.Update(productProvider);
-        _repositoryManager.Products.Save();
+        _repositoryManager.Save();
         return new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
@@ -52,7 +52,7 @@ public class ProductProviderService : IProductProviderService
         ProductProvider? productProvider = _repositoryManager.ProductProviders.GetById(id);
         if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
         _repositoryManager.ProductProviders.Delete(productProvider);
-        _repositoryManager.ProductProviders.Save();
+        _repositoryManager.Save();
         return new OkResponse<bool>(true);
     }
 }
