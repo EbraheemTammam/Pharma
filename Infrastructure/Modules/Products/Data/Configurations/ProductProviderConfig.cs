@@ -9,13 +9,6 @@ public class ProductProviderConfigurations : IEntityTypeConfiguration<ProductPro
 {
     public void Configure(EntityTypeBuilder<ProductProvider> builder)
     {
-        builder.ToTable("finance_company")
-        .HasKey(customer => customer.Id);
-
-        builder.Property(customer => customer.Id)
-        .HasColumnName("id");
-
-        builder.Property(customer => customer.Name)
-        .HasColumnName("name");
+        builder.HasKey(customer => customer.Id);
     }
 }

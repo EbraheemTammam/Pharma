@@ -9,23 +9,7 @@ public class OrderItemConfigs : IEntityTypeConfiguration<IncomingOrder>
 {
     public void Configure(EntityTypeBuilder<IncomingOrder> builder)
     {
-        builder.ToTable("finance_incomingorder")
-        .HasKey(order => order.Id);
-
-        builder.Property(product => product.Id)
-        .HasColumnName("id");
-
-        builder.Property(product => product.Price)
-        .HasColumnName("price");
-
-        builder.Property(product => product.Paid)
-        .HasColumnName("paid");
-
-        builder.Property(product => product.CreatedAt)
-        .HasColumnName("time");
-
-        builder.Property(product => product.ProviderId)
-        .HasColumnName("company_id");
+        builder.HasKey(order => order.Id);
 
         builder.HasOne(order => order.Provider)
         .WithMany()
