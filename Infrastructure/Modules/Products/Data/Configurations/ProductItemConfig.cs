@@ -12,29 +12,22 @@ public class ProductItemConfigurations : IEntityTypeConfiguration<ProductItem>
         .HasKey(customer => customer.Id);
 
         builder.Property(customer => customer.Id)
-        .HasColumnName("id")
-        .IsRequired()
-        .ValueGeneratedOnAdd();
+        .HasColumnName("id");
 
         builder.Property(customer => customer.ExpirationDate)
-        .HasColumnName("expiration")
-        .IsRequired();
+        .HasColumnName("expiration");
 
         builder.Property(customer => customer.NumberOfElements)
-        .HasColumnName("number_of_elements")
-        .IsRequired();
+        .HasColumnName("number_of_elements");
 
         builder.Property(customer => customer.NumberOfBoxes)
-        .HasColumnName("number_of_boxes")
-        .IsRequired();
+        .HasColumnName("number_of_boxes");
 
         builder.Property(customer => customer.ProductId)
-        .HasColumnName("type_id")
-        .IsRequired();
+        .HasColumnName("type_id");
 
         builder.Property(customer => customer.IncomingOrderId)
-        .HasColumnName("incoming_order_id")
-        .IsRequired();
+        .HasColumnName("incoming_order_id");
 
         builder.HasOne(item => item.Product)
         .WithMany()

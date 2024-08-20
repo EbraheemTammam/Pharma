@@ -13,17 +13,12 @@ public class ScarceProductConfigurations : IEntityTypeConfiguration<ScarceProduc
         .HasKey(scarce => scarce.Id);
 
         builder.Property(scarce => scarce.Id)
-        .HasColumnName("id")
-        .IsRequired()
-        .ValueGeneratedOnAdd();
+        .HasColumnName("id");
 
         builder.Property(scarce => scarce.Name)
-        .HasColumnName("name")
-        .HasMaxLength(250)
-        .IsRequired();
+        .HasColumnName("name");
 
         builder.Property(scarce => scarce.Amount)
-        .HasColumnName("amount")
-        .IsRequired();
+        .HasColumnName("amount");
     }
 }

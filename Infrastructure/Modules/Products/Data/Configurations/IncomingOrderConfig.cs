@@ -13,28 +13,19 @@ public class OrderItemConfigs : IEntityTypeConfiguration<IncomingOrder>
         .HasKey(order => order.Id);
 
         builder.Property(product => product.Id)
-        .HasColumnName("id")
-        .IsRequired()
-        .ValueGeneratedOnAdd();
+        .HasColumnName("id");
 
         builder.Property(product => product.Price)
-        .HasColumnName("price")
-        .IsRequired()
-        .HasPrecision(2);
+        .HasColumnName("price");
 
         builder.Property(product => product.Paid)
-        .HasColumnName("paid")
-        .IsRequired()
-        .HasDefaultValue(0);
+        .HasColumnName("paid");
 
         builder.Property(product => product.CreatedAt)
-        .HasColumnName("time")
-        .IsRequired()
-        .HasDefaultValue(DateTime.UtcNow);
+        .HasColumnName("time");
 
         builder.Property(product => product.ProviderId)
-        .HasColumnName("company_id")
-        .IsRequired();
+        .HasColumnName("company_id");
 
         builder.HasOne(order => order.Provider)
         .WithMany()

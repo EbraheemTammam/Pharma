@@ -13,38 +13,27 @@ public class ProductConfigurations : IEntityTypeConfiguration<Product>
         .HasKey(product => product.Id);
 
         builder.Property(product => product.Id)
-        .HasColumnName("id")
-        .IsRequired()
-        .ValueGeneratedOnAdd();
+        .HasColumnName("id");
 
         builder.Property(product => product.Name)
-        .HasColumnName("name")
-        .IsRequired()
-        .HasMaxLength(100);
+        .HasColumnName("name");
 
         builder.Property(product => product.NumberOfElements)
-        .HasColumnName("number_of_elements")
-        .IsRequired();
+        .HasColumnName("number_of_elements");
 
         builder.Property(product => product.PricePerElement)
-        .HasColumnName("price_per_element")
-        .IsRequired()
-        .HasPrecision(2);
+        .HasColumnName("price_per_element");
 
         builder.Property(product => product.Barcode)
-        .HasColumnName("barcode")
-        .HasMaxLength(15);
+        .HasColumnName("barcode");
 
         builder.Property(product => product.OwnedElements)
-        .HasColumnName("owned_elements")
-        .HasDefaultValue(0);
+        .HasColumnName("owned_elements");
 
         builder.Property(product => product.IsLack)
-        .HasColumnName("lack")
-        .HasDefaultValue(false);
+        .HasColumnName("lack");
 
         builder.Property(product => product.Minimum)
-        .HasColumnName("minimum")
-        .HasDefaultValue(0);
+        .HasColumnName("minimum");
     }
 }

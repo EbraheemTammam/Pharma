@@ -13,13 +13,9 @@ public class ProductProviderConfigurations : IEntityTypeConfiguration<ProductPro
         .HasKey(customer => customer.Id);
 
         builder.Property(customer => customer.Id)
-        .HasColumnName("id")
-        .IsRequired()
-        .ValueGeneratedOnAdd();
+        .HasColumnName("id");
 
         builder.Property(customer => customer.Name)
-        .HasColumnName("name")
-        .IsRequired()
-        .HasMaxLength(100);
+        .HasColumnName("name");
     }
 }
