@@ -49,6 +49,6 @@ public class ProductsController : GenericController
     {
         BaseResponse response = _productService.Delete(id);
         if(!response.Success) ProcessError(response);
-        return Ok(response.GetResult<ProductDTO>());
+        return NoContent();
     }
 }

@@ -49,6 +49,6 @@ public class ProductProvidersController : GenericController
     {
         BaseResponse response = _productProviderService.Delete(id);
         if(!response.Success) ProcessError(response);
-        return Ok(response.GetResult<ProductProviderDTO>());
+        return NoContent();
     }
 }
