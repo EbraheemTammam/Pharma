@@ -19,5 +19,4 @@ public class GenericRepository<TModel> : IRepository<TModel> where TModel : Base
     public TModel Add(TModel model) => _dbSet.Add(model).Entity;
     public TModel Update(TModel model) => _dbSet.Update(model).Entity;
     public void Delete(TModel model) => _dbSet.Remove(model);
-    public void Save() => _context.SaveChanges();
 }

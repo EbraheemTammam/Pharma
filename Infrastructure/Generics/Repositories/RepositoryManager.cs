@@ -24,4 +24,5 @@ public class RepositoryManager : IRepositoryManager
     public IRepository<Customer> Customers => _serviceProvider.GetRequiredService<IRepository<Customer>>();
     public IRepository<Order> Orders => _serviceProvider.GetRequiredService<IRepository<Order>>();
     public void Dispose() => _context.Dispose();
+    public void Save() => _context.SaveChanges();
 }
