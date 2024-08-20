@@ -10,5 +10,4 @@ public interface IRepository<TModel> where TModel : BaseModel
     TModel Add(TModel model);
     TModel Update(TModel model);
     void Delete(TModel model);
-    void Save();
 }
