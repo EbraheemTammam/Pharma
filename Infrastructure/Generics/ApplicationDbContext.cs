@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Infrastructure.Modules.Users.Models;
+using Pharmacy.Domain.Modules.Users.Models;
 
 namespace Pharmacy.Infrastructure.Generics;
 
