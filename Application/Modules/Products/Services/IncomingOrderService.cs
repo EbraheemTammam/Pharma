@@ -41,7 +41,6 @@ public class IncomingOrderService : IIncomingOrderService
             _repositoryManager.Products.Update(product);
         }
         _repositoryManager.Save();
-        _repositoryManager.Save();
         return new OkResponse<bool>(true);
     }
 
