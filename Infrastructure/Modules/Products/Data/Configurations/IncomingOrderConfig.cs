@@ -9,8 +9,6 @@ public class OrderItemConfigs : IEntityTypeConfiguration<IncomingOrder>
 {
     public void Configure(EntityTypeBuilder<IncomingOrder> builder)
     {
-        builder.HasKey(order => order.Id);
-
         builder.HasOne(order => order.Provider)
         .WithMany()
         .HasForeignKey(order => order.ProviderId);

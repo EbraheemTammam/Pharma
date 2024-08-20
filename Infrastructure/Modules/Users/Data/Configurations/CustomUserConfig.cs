@@ -5,10 +5,10 @@ using Pharmacy.Domain.Modules.Products.Models;
 namespace Pharmacy.Infrastructure.Modules.Products.Data.Configurations;
 
 
-public class ProductProviderConfigurations : IEntityTypeConfiguration<ProductProvider>
+public class CustomUserConfigs : IEntityTypeConfiguration<IncomingOrder>
 {
-    public void Configure(EntityTypeBuilder<ProductProvider> builder)
+    public void Configure(EntityTypeBuilder<IncomingOrder> builder)
     {
-        builder.HasKey(customer => customer.Id);
+        builder.HasKey(user => user.Id);
     }
 }
