@@ -15,14 +15,14 @@ public abstract record ProductBaseDTO
     [Required, MaxLength(100)]
     public required string Name {get; set;}
 
-    [Required, PositiveNumber]
-    public int NumberOfElements {get; set;}
+    [PositiveNumber, DefaultValue(1)]
+    public int? NumberOfElements {get; set;} = 1;
 
     [Required, PositiveNumber]
     public double PricePerElement {get; set;}
 
-    [Required, DefaultValue(false)]
-    public bool IsLack {get; set;} = false;
+    [DefaultValue(false)]
+    public bool? IsLack {get; set;} = false;
 
     [Required, PositiveNumber, DefaultValue(0)]
     public int Minimum {get; set;} = 0;

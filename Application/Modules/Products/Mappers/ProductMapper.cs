@@ -11,10 +11,10 @@ public static class ProductMapper
         new()
         {
             Name = schema.Name,
-            NumberOfElements = schema.NumberOfElements,
+            NumberOfElements = schema.NumberOfElements ?? 1,
             Barcode = schema.Barcode,
             PricePerElement = schema.PricePerElement,
-            IsLack = schema.IsLack,
+            IsLack = schema.IsLack ?? false,
             Minimum = schema.Minimum
         };
 
@@ -38,9 +38,9 @@ public static class ProductMapper
     {
         product.Barcode = schema.Barcode;
         product.Name = schema.Name;
-        product.NumberOfElements = schema.NumberOfElements;
+        product.NumberOfElements = schema.NumberOfElements ?? product.NumberOfElements;
         product.PricePerElement = schema.PricePerElement;
-        product.IsLack = schema.IsLack;
+        product.IsLack = schema.IsLack ?? product.IsLack;
         product.Minimum = schema.Minimum;
         return product;
     }
