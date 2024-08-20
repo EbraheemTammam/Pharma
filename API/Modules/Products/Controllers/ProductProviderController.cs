@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.Presentation.Extensions;
 using Pharmacy.Presentation.Generics;
+using Pharmacy.Application.Utilities;
 using Pharmacy.Services;
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
@@ -47,7 +47,7 @@ public class ProductProvidersController : GenericController
     [HttpDelete]
     public IActionResult Delete(Guid id)
     {
-        BaseResponse response = _productProviderService.Remove(id);
+        BaseResponse response = _productProviderService.Delete(id);
         if(!response.Success) ProcessError(response);
         return Ok(response.GetResult<ProductProviderDTO>());
     }
