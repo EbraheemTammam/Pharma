@@ -15,6 +15,7 @@ public class GenericRepository<TModel> : IRepository<TModel> where TModel : Base
         _dbSet = _context.Set<TModel>();
     }
     public virtual IEnumerable<TModel> GetAll() => _dbSet.ToList();
+    public virtual IEnumerable<TModel> Filter(Func<TModel, bool> filter) => _dbSet.Where(filter).ToList();
     public virtual TModel? GetById<TId>(TId id) => _dbSet.Find(id);
     public virtual TModel Add(TModel model) => _dbSet.Add(model).Entity;
     public virtual TModel Update(TModel model) => _dbSet.Update(model).Entity;
