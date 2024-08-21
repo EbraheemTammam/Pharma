@@ -8,7 +8,8 @@ public interface IProductService
 {
     BaseResponse GetAll();
     BaseResponse GetById(Guid id);
-    BaseResponse GetByBarcode(string barcode);
+    BaseResponse GetObjectById(Guid id);
+    BaseResponse GetObjectByBarcode(string barcode);
     BaseResponse Create(ProductCreateDTO schema);
     BaseResponse Update(Guid id, ProductCreateDTO schema);
     BaseResponse Delete(Guid id);
