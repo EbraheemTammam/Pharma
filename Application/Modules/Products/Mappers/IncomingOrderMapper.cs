@@ -10,24 +10,25 @@ public static class IncomingOrderMapper
     public static IncomingOrder ToModel(this IncomingOrderCreateDTO schema) =>
         new()
         {
-            Price = schema.Price,
-            Paid = schema.Paid,
+            Price = (double)schema.Price,
+            Paid = (double)schema.Paid,
             ProviderId = schema.ProviderId
         };
 
     public static IncomingOrderDTO ToDTO(this IncomingOrder model) =>
         new()
         {
-            Price = model.Price,
-            Paid = model.Paid,
+            Id = model.Id,
+            Price = (decimal)model.Price,
+            Paid = (decimal)model.Paid,
             CreatedAt = model.CreatedAt,
-            Provider = model.Provider!.ToDTO(),
+            ProviderName = model.Provider!.Name,
         };
 
     public static IncomingOrder Update(this IncomingOrder incomingOrder, IncomingOrderUpdateDTO schema)
     {
-        incomingOrder.Price = schema.Price;
-        incomingOrder.Paid = schema.Paid;
+        incomingOrder.Price = (double)schema.Price;
+        incomingOrder.Paid = (double)schema.Paid;
         return incomingOrder;
     }
 }
