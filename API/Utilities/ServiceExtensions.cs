@@ -31,6 +31,7 @@ public static class ServiceExtensions
     {
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped(typeof(IRepository<IncomingOrder>), typeof(IncomingOrderRepository));
+        services.AddScoped(typeof(IRepository<ProductItem>), typeof(ProductItemRepository));
         services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
         services.RegisterDbContextPool(configuration);
         services.AddScoped<IRepositoryManager, RepositoryManager>();
