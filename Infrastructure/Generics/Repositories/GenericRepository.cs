@@ -14,9 +14,9 @@ public class GenericRepository<TModel> : IRepository<TModel> where TModel : Base
         _context = context;
         _dbSet = _context.Set<TModel>();
     }
-    public IEnumerable<TModel> GetAll() => _dbSet.ToList();
-    public TModel? GetById<TId>(TId id) => _dbSet.Find(id);
-    public TModel Add(TModel model) => _dbSet.Add(model).Entity;
-    public TModel Update(TModel model) => _dbSet.Update(model).Entity;
-    public void Delete(TModel model) => _dbSet.Remove(model);
+    public virtual IEnumerable<TModel> GetAll() => _dbSet.ToList();
+    public virtual TModel? GetById<TId>(TId id) => _dbSet.Find(id);
+    public virtual TModel Add(TModel model) => _dbSet.Add(model).Entity;
+    public virtual TModel Update(TModel model) => _dbSet.Update(model).Entity;
+    public virtual void Delete(TModel model) => _dbSet.Remove(model);
 }
