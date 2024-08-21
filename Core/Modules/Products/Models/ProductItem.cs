@@ -11,5 +11,4 @@ public sealed class ProductItem : BaseModel<int>
     public Guid ProductId {get; set;}
     public Guid IncomingOrderId {get; set;}
     public Product? Product {get; set;}
-    public IncomingOrder? IncomingOrder {get; set;}
 }
