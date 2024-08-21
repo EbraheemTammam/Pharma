@@ -30,11 +30,18 @@ public class ProductService : IProductService
         : new OkResponse<ProductDTO>(product.ToDTO());
     }
 
-    public BaseResponse GetByBarcode(string barcode)
+    public BaseResponse GetObjectById(Guid id)
+    {
+        Product? product = _repositoryManager.Products.GetById(id);
+        return product is null ? new NotFoundResponse(id, nameof(Product))
+        : new OkResponse<Product>(product);
+    }
+
+    public BaseResponse GetObjectByBarcode(string barcode)
     {
         Product? product = _repositoryManager.Products.GetByBarcode(barcode);
         return product is null ? new NotFoundResponse(barcode, nameof(Product), "barcode")
-        : new OkResponse<ProductDTO>(product.ToDTO());
+        : new OkResponse<Product>(product);
     }
 
     public BaseResponse Create(ProductCreateDTO schema)
