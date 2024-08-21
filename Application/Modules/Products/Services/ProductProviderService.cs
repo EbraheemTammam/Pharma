@@ -23,11 +23,15 @@ public class ProductProviderService : IProductProviderService
             _repositoryManager.ProductProviders.GetAll().ConvertAll(obj => obj.ToDTO())
         );
 
-    public BaseResponse GetById(Guid id)
+    public BaseResponse GetById(Guid id, bool AsDTO = true)
     {
         ProductProvider? productProvider = _repositoryManager.ProductProviders.GetById(id);
         return productProvider is null ? new NotFoundResponse(id, nameof(ProductProvider))
-        : new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
+        : (
+            AsDTO ?
+            new OkResponse<ProductProviderDTO>(productProvider.ToDTO())
+            : new OkResponse<ProductProvider>(productProvider)
+        );
     }
 
     public BaseResponse Create(ProductProviderCreateDTO schema)

@@ -23,25 +23,26 @@ public class ProductService : IProductService
             _repositoryManager.Products.GetAll().ConvertAll(obj => obj.ToDTO())
         );
 
-    public BaseResponse GetById(Guid id)
+    public BaseResponse GetById(Guid id, bool AsDTO = true)
     {
         Product? product = _repositoryManager.Products.GetById(id);
         return product is null ? new NotFoundResponse(id, nameof(Product))
-        : new OkResponse<ProductDTO>(product.ToDTO());
+        : (
+            AsDTO ?
+            new OkResponse<ProductDTO>(product.ToDTO())
+            : new OkResponse<Product>(product)
+        );
     }
 
-    public BaseResponse GetObjectById(Guid id)
-    {
-        Product? product = _repositoryManager.Products.GetById(id);
-        return product is null ? new NotFoundResponse(id, nameof(Product))
-        : new OkResponse<Product>(product);
-    }
-
-    public BaseResponse GetObjectByBarcode(string barcode)
+    public BaseResponse GetByBarcode(string barcode, bool AsDTO = true)
     {
         Product? product = _repositoryManager.Products.GetByBarcode(barcode);
         return product is null ? new NotFoundResponse(barcode, nameof(Product), "barcode")
-        : new OkResponse<Product>(product);
+        : (
+            AsDTO ?
+            new OkResponse<ProductDTO>(product.ToDTO())
+            : new OkResponse<Product>(product)
+        );
     }
 
     public BaseResponse Create(ProductCreateDTO schema)
