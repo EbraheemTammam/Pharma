@@ -19,9 +19,9 @@ public class IncomingOrderService : IIncomingOrderService
     {
         BaseResponse response;
         if(productId != null)
-            response = _productService.GetObjectById((Guid)productId);
+            response = _productService.GetById((Guid)productId, false);
         else if (barcode != null)
-            response = _productService.GetObjectByBarcode(barcode);
+            response = _productService.GetByBarcode(barcode, false);
         else
             return new BadRequestResponse("Product Id or Barcode must be provided");
         return response;
@@ -45,6 +45,18 @@ public class IncomingOrderService : IIncomingOrderService
         return new OkResponse<bool>(true);
     }
 
+    private void _preDelete(Guid id)
+    {
+        IEnumerable<ProductItem> items = GetItems(id, false).GetResult<IEnumerable<ProductItem>>();
+        foreach (ProductItem item in items)
+        {
+            item.Product!.OwnedElements -= item.NumberOfBoxes * item.Product.NumberOfElements;
+            _repositoryManager.Products.Update(item.Product);
+            _repositoryManager.ProductItems.Delete(item);
+        }
+        _repositoryManager.Save();
+    }
+
     public IncomingOrderService(
         IRepositoryManager repoManager,
         IProductService productService,
@@ -64,8 +76,23 @@ public class IncomingOrderService : IIncomingOrderService
     public BaseResponse GetById(Guid id)
     {
         IncomingOrder? incomingOrder = _repositoryManager.IncomingOrders.GetById(id);
-        return incomingOrder is null ? new NotFoundResponse(id, nameof(IncomingOrder))
-        : new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO());
+        if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
+        BaseResponse response = _productProviderService.GetById(incomingOrder.ProviderId);
+        return new OkResponse<IncomingOrderDTO>(
+            incomingOrder.ToDTO(response.GetResult<ProductProviderDTO>().Name)
+        );
+    }
+
+    public BaseResponse GetItems(Guid id, bool AsDTO = true)
+    {
+        BaseResponse response = GetById(id);
+        if(!response.Success) return response;
+        IEnumerable<ProductItem> items = _repositoryManager.ProductItems.Filter(obj => obj.IncomingOrderId == id);
+        return (
+            AsDTO ?
+            new OkResponse<IEnumerable<ProductItemDTO>>(items.ConvertAll(obj => obj.ToDTO()))
+            : new OkResponse<IEnumerable<ProductItem>>(items)
+        );
     }
 
     public BaseResponse Create(IncomingOrderCreateDTO schema)
@@ -73,15 +100,13 @@ public class IncomingOrderService : IIncomingOrderService
         BaseResponse provider_response = _productProviderService.GetById(schema.ProviderId);
         if(!provider_response.Success) return provider_response;
         IncomingOrder incomingOrder = _repositoryManager.IncomingOrders.Add(schema.ToModel());
-        _repositoryManager.Save();
         BaseResponse response = _addItems(schema.ProductItems, incomingOrder.Id);
         if(!response.Success)
-        {
-            _repositoryManager.IncomingOrders.Delete(incomingOrder);
-            _repositoryManager.Save();
             return response;
-        }
-        return new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO());
+        _repositoryManager.Save();
+        return new OkResponse<IncomingOrderDTO>(
+            incomingOrder.ToDTO(provider_response.GetResult<ProductProviderDTO>().Name)
+        );
     }
 
     public BaseResponse Update(Guid id, IncomingOrderUpdateDTO schema)
@@ -91,13 +116,17 @@ public class IncomingOrderService : IIncomingOrderService
         incomingOrder.Update(schema);
         incomingOrder = _repositoryManager.IncomingOrders.Update(incomingOrder);
         _repositoryManager.Save();
-        return new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO());
+        BaseResponse provider_response = _productProviderService.GetById(incomingOrder.ProviderId);
+        return new OkResponse<IncomingOrderDTO>(
+            incomingOrder.ToDTO(provider_response.GetResult<ProductProviderDTO>().Name)
+        );
     }
 
     public BaseResponse Delete(Guid id)
     {
         IncomingOrder? incomingOrder = _repositoryManager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
+        _preDelete(id);
         _repositoryManager.IncomingOrders.Delete(incomingOrder);
         _repositoryManager.Save();
         return new OkResponse<bool>(true);
