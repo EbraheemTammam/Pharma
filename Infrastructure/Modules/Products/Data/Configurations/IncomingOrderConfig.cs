@@ -15,8 +15,8 @@ public class IncomingOrderConfigurations : IEntityTypeConfiguration<IncomingOrde
         .WithMany()
         .HasForeignKey(order => order.ProviderId);
 
-        builder.HasMany(order => order.Products)
-        .WithOne(product => product.IncomingOrder)
-        .HasForeignKey(product => product.IncomingOrderId);
+        builder.HasMany(order => order.Items)
+        .WithOne()
+        .HasForeignKey(item => item.IncomingOrderId);
     }
 }
