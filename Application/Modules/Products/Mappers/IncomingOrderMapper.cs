@@ -25,6 +25,16 @@ public static class IncomingOrderMapper
             ProviderName = model.Provider!.Name,
         };
 
+    public static IncomingOrderDTO ToDTO(this IncomingOrder model, string provider) =>
+        new()
+        {
+            Id = model.Id,
+            Price = (decimal)model.Price,
+            Paid = (decimal)model.Paid,
+            CreatedAt = model.CreatedAt,
+            ProviderName = provider,
+        };
+
     public static IncomingOrder Update(this IncomingOrder incomingOrder, IncomingOrderUpdateDTO schema)
     {
         incomingOrder.Price = (double)schema.Price;
