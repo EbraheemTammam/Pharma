@@ -1,5 +1,4 @@
 using Pharmacy.Domain.Modules.Products.Models;
-using Pharmacy.Services;
 using Pharmacy.Shared.Modules.Products.DTOs;
 
 namespace Pharmacy.Application.Modules.Products.Mappers;
