@@ -13,14 +13,15 @@ public class IncomingOrderService : IIncomingOrderService
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly IProductService _productService;
+    private readonly IProductProviderService _productProviderService;
 
     private BaseResponse _getProduct(Guid? productId, string? barcode)
     {
         BaseResponse response;
         if(productId != null)
-            response = _productService.GetById((Guid)productId);
+            response = _productService.GetObjectById((Guid)productId);
         else if (barcode != null)
-            response = _productService.GetByBarcode(barcode);
+            response = _productService.GetObjectByBarcode(barcode);
         else
             return new BadRequestResponse("Product Id or Barcode must be provided");
         return response;
@@ -44,10 +45,15 @@ public class IncomingOrderService : IIncomingOrderService
         return new OkResponse<bool>(true);
     }
 
-    public IncomingOrderService(IRepositoryManager repoManager, IProductService productService)
+    public IncomingOrderService(
+        IRepositoryManager repoManager,
+        IProductService productService,
+        IProductProviderService productProviderService
+    )
     {
         _repositoryManager = repoManager;
         _productService = productService;
+        _productProviderService = productProviderService;
     }
 
     public BaseResponse GetAll() =>
@@ -64,6 +70,8 @@ public class IncomingOrderService : IIncomingOrderService
 
     public BaseResponse Create(IncomingOrderCreateDTO schema)
     {
+        BaseResponse provider_response = _productProviderService.GetById(schema.ProviderId);
+        if(!provider_response.Success) return provider_response;
         IncomingOrder incomingOrder = _repositoryManager.IncomingOrders.Add(schema.ToModel());
         _repositoryManager.Save();
         BaseResponse response = _addItems(schema.ProductItems, incomingOrder.Id);
