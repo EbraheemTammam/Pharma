@@ -13,7 +13,7 @@ public static class ProductItemMapper
            ExpirationDate = schema.ExpirationDate,
            NumberOfBoxes = schema.NumberOfBoxes,
            ProductId = product.Id,
-           NumberOfElements = product.NumberOfElements,
+           NumberOfElements = product.NumberOfElements * schema.NumberOfBoxes,
            IncomingOrderId = incomingOrderId
         };
 
