@@ -8,7 +8,7 @@ public interface IIncomingOrderService
 {
     BaseResponse GetAll();
     BaseResponse GetById(Guid id);
-    BaseResponse GetItems(Guid id, bool AsDTO = true);
+    BaseResponse GetItems(Guid id);
     BaseResponse Create(IncomingOrderCreateDTO schema);
     BaseResponse Update(Guid id, IncomingOrderUpdateDTO schema);
     BaseResponse Delete(Guid id);

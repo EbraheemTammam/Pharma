@@ -7,7 +7,7 @@ namespace Pharmacy.Services;
 public interface IProductProviderService
 {
     BaseResponse GetAll();
-    BaseResponse GetById(Guid id, bool AsDTO = true);
+    BaseResponse GetById(Guid id);
     BaseResponse Create(ProductProviderCreateDTO schema);
     BaseResponse Update(Guid id, ProductProviderCreateDTO schema);
     BaseResponse Delete(Guid id);
