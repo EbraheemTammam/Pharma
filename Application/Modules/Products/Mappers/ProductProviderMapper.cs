@@ -10,7 +10,8 @@ public static class ProductProviderMapper
     public static ProductProvider ToModel(this ProductProviderCreateDTO schema) =>
         new()
         {
-            Name = schema.Name
+            Name = schema.Name,
+            Indepted = 0
         };
 
 
@@ -18,7 +19,8 @@ public static class ProductProviderMapper
         new()
         {
             Id = model.Id,
-            Name = model.Name
+            Name = model.Name,
+            Indepted = (decimal)model.Indepted
         };
 
     public static ProductProvider Update(this ProductProvider productProvider, ProductProviderCreateDTO schema)
