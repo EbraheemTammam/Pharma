@@ -26,7 +26,7 @@ public class IncomingOrdersController : GenericController
     public IActionResult Get(Guid id)
     {
         BaseResponse response = _incomingOrderService.GetById(id);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 200) ProcessError(response);
         return Ok(response.GetResult<IncomingOrderDTO>());
     }
 
@@ -36,19 +36,19 @@ public class IncomingOrdersController : GenericController
             _incomingOrderService.Create(incomingOrder).GetResult<IncomingOrderDTO>()
         );
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public IActionResult Update(Guid id, IncomingOrderUpdateDTO incomingOrder)
     {
         BaseResponse response = _incomingOrderService.Update(id, incomingOrder);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 200) ProcessError(response);
         return Ok(response.GetResult<IncomingOrderDTO>());
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
         BaseResponse response = _incomingOrderService.Delete(id);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 204) ProcessError(response);
         return NoContent();
     }
 }

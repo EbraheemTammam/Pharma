@@ -26,7 +26,7 @@ public class ProductProvidersController : GenericController
     public IActionResult Get(Guid id)
     {
         BaseResponse response = _productProviderService.GetById(id);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 200) ProcessError(response);
         return Ok(response.GetResult<ProductProviderDTO>());
     }
 
@@ -36,19 +36,19 @@ public class ProductProvidersController : GenericController
             _productProviderService.Create(productProvider).GetResult<ProductProviderDTO>()
         );
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public IActionResult Update(Guid id, ProductProviderCreateDTO productProvider)
     {
         BaseResponse response = _productProviderService.Update(id, productProvider);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 200) ProcessError(response);
         return Ok(response.GetResult<ProductProviderDTO>());
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public IActionResult Delete(Guid id)
     {
         BaseResponse response = _productProviderService.Delete(id);
-        if(!response.Success) ProcessError(response);
+        if(response.StatusCode != 204) ProcessError(response);
         return NoContent();
     }
 }
