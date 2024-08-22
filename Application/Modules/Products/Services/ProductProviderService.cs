@@ -5,7 +5,7 @@ using Pharmacy.Application.Utilities;
 using Pharmacy.Application.Modules.Products.Mappers;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Shared.Generics;
-namespace Pharmacy.Application.Services.ProductsModule;
+namespace Pharmacy.Application.Modules.Products.Services;
 
 
 
@@ -23,15 +23,11 @@ public class ProductProviderService : IProductProviderService
             _repositoryManager.ProductProviders.GetAll().ConvertAll(obj => obj.ToDTO())
         );
 
-    public BaseResponse GetById(Guid id, bool AsDTO = true)
+    public BaseResponse GetById(Guid id)
     {
         ProductProvider? productProvider = _repositoryManager.ProductProviders.GetById(id);
         return productProvider is null ? new NotFoundResponse(id, nameof(ProductProvider))
-        : (
-            AsDTO ?
-            new OkResponse<ProductProviderDTO>(productProvider.ToDTO())
-            : new OkResponse<ProductProvider>(productProvider)
-        );
+        : new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
     public BaseResponse Create(ProductProviderCreateDTO schema)
@@ -57,6 +53,6 @@ public class ProductProviderService : IProductProviderService
         if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
         _repositoryManager.ProductProviders.Delete(productProvider);
         _repositoryManager.Save();
-        return new OkResponse<bool>(true);
+        return new NoContentResponse();
     }
 }
