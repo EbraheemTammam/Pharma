@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Application.Services.IncomingOrdersModule;
-using Pharmacy.Application.Services.ProductsModule;
+using Pharmacy.Application.Modules.Products.Services;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Modules.Products.Models;
 using Pharmacy.Infrastructure.Data.Repositories;
