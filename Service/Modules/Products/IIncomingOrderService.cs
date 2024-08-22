@@ -1,7 +1,7 @@
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
 
-namespace Pharmacy.Services;
+namespace Pharmacy.Services.Modules.Products;
 
 
 public interface IIncomingOrderService
