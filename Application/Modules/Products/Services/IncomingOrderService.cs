@@ -128,6 +128,6 @@ public class IncomingOrderService : IIncomingOrderService
         //  Delete
         _repositoryManager.IncomingOrders.Delete(incomingOrder);
         _repositoryManager.Save();
-        return new OkResponse<bool>(true);
+        return new NoContentResponse();
     }
 }
