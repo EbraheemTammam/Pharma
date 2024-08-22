@@ -1,4 +1,4 @@
-using Pharmacy.Services;
+using Pharmacy.Services.Modules.Products;
 using Pharmacy.Domain.Modules.Products.Models;
 using Pharmacy.Shared.Modules.Products.DTOs;
 using Pharmacy.Application.Utilities;
