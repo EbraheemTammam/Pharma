@@ -5,6 +5,6 @@ namespace Pharmacy.Shared.Generics;
 public class OkResponse<ResultType> : BaseResponse
 {
     public ResultType Result;
-    public OkResponse(ResultType result) : base(true, 200) =>
+    public OkResponse(ResultType result) : base(200) =>
         Result = result;
 }
