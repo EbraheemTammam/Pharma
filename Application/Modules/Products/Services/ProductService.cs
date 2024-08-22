@@ -5,7 +5,7 @@ using Pharmacy.Application.Utilities;
 using Pharmacy.Application.Modules.Products.Mappers;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Shared.Generics;
-namespace Pharmacy.Application.Services.ProductsModule;
+namespace Pharmacy.Application.Modules.Products.Services;
 
 
 
@@ -13,36 +13,26 @@ public class ProductService : IProductService
 {
     private readonly IRepositoryManager _repositoryManager;
 
-    public ProductService(IRepositoryManager repoManager)
-    {
+    public ProductService(IRepositoryManager repoManager) =>
         _repositoryManager = repoManager;
-    }
 
     public BaseResponse GetAll() =>
         new OkResponse<IEnumerable<ProductDTO>>(
             _repositoryManager.Products.GetAll().ConvertAll(obj => obj.ToDTO())
         );
 
-    public BaseResponse GetById(Guid id, bool AsDTO = true)
+    public BaseResponse GetById(Guid id)
     {
         Product? product = _repositoryManager.Products.GetById(id);
         return product is null ? new NotFoundResponse(id, nameof(Product))
-        : (
-            AsDTO ?
-            new OkResponse<ProductDTO>(product.ToDTO())
-            : new OkResponse<Product>(product)
-        );
+        : new OkResponse<ProductDTO>(product.ToDTO());
     }
 
-    public BaseResponse GetByBarcode(string barcode, bool AsDTO = true)
+    public BaseResponse GetByBarcode(string barcode)
     {
         Product? product = _repositoryManager.Products.GetByBarcode(barcode);
         return product is null ? new NotFoundResponse(barcode, nameof(Product), "barcode")
-        : (
-            AsDTO ?
-            new OkResponse<ProductDTO>(product.ToDTO())
-            : new OkResponse<Product>(product)
-        );
+        : new OkResponse<ProductDTO>(product.ToDTO());
     }
 
     public BaseResponse Create(ProductCreateDTO schema)
@@ -70,6 +60,6 @@ public class ProductService : IProductService
         if(product is null) return new NotFoundResponse(id, nameof(Product));
         _repositoryManager.Products.Delete(product);
         _repositoryManager.Save();
-        return new OkResponse<bool>(true);
+        return new NoContentResponse();
     }
 }
