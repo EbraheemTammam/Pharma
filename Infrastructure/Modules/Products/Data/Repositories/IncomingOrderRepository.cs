@@ -10,5 +10,6 @@ public class IncomingOrderRepository : GenericRepository<IncomingOrder>
 {
     public IncomingOrderRepository(ApplicationDbContext context) : base(context) {}
 
-    public override IEnumerable<IncomingOrder> GetAll() => _dbSet.Include(order => order.Provider).ToList();
+    public override async Task<IEnumerable<IncomingOrder>> GetAll() =>
+        await _dbSet.Include(order => order.Provider).ToListAsync();
 }
