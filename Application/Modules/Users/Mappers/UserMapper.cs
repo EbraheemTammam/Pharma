@@ -12,7 +12,8 @@ public static class UserMapper
         {
             FirstName = schema.FirstName,
             LastName = schema.LastName,
-            Email = schema.Email
+            Email = schema.Email,
+            UserName = schema.Email
         };
 
     public static UserDTO ToDTO(this CustomUser model) =>

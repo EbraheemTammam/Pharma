@@ -47,6 +47,7 @@ public class AuthService : IAuthService
     {
         CustomUser? user = await _manager.FindByIdAsync(id.ToString());
         if(user is null) return new NotFoundResponse(id, nameof(CustomUser));
+        user.Update(schema);
         user.PasswordHash = _passwordHasher.HashPassword(user, schema.Password);
         var result = await _manager.UpdateAsync(user);
         if(result.Succeeded) return new OkResponse<UserDTO>(user.ToDTO());
