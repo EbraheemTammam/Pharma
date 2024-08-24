@@ -42,6 +42,8 @@ public static class ServiceExtensions
         services.AddScoped<IRepository<ProductItem>, ProductItemRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         // Inject Services
+        services.AddScoped<UserManager<CustomUser>, UserManager<CustomUser>>();
+        services.AddScoped<PasswordHasher<CustomUser>, PasswordHasher<CustomUser>>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductProviderService, ProductProviderService>();
