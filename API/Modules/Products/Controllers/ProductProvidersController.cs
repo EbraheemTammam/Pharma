@@ -1,54 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Presentation.Generics;
 using Pharmacy.Application.Utilities;
-using Pharmacy.Services;
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
+using Pharmacy.Services.Modules.Products;
 
 namespace Pharmacy.Presentation.Controllers;
 
 
 [ApiController]
-public class ProductProvidersController : GenericController
+public class ProductProvidersController : GenericController<Guid, ProductProviderDTO>
 {
-    private readonly IProductProviderService _productProviderService;
-    public ProductProvidersController(IProductProviderService productProviderService) =>
-        _productProviderService = productProviderService;
-
-    [HttpGet]
-    public IActionResult Get() =>
-        Ok(
-            _productProviderService.GetAll()
-            .GetResult<IEnumerable<ProductProviderDTO>>()
-        );
-
-    [HttpGet("{id}")]
-    public IActionResult Get(Guid id)
-    {
-        BaseResponse response = _productProviderService.GetById(id);
-        if(response.StatusCode != 200) ProcessError(response);
-        return Ok(response.GetResult<ProductProviderDTO>());
-    }
+    public ProductProvidersController(IProductProviderService productProviderService) : base(productProviderService) {}
 
     [HttpPost]
-    public IActionResult Create(ProductProviderCreateDTO productProvider) =>
+    public async Task<IActionResult> Create(ProductProviderCreateDTO productProvider) =>
         Ok(
-            _productProviderService.Create(productProvider).GetResult<ProductProviderDTO>()
+            (await ((IProductProviderService)_service).Create(productProvider)).GetResult<ProductProviderDTO>()
         );
 
     [HttpPut("{id}")]
-    public IActionResult Update(Guid id, ProductProviderCreateDTO productProvider)
+    public async Task<IActionResult> Update(Guid id, ProductProviderCreateDTO productProvider)
     {
-        BaseResponse response = _productProviderService.Update(id, productProvider);
+        BaseResponse response = await ((IProductProviderService)_service).Update(id, productProvider);
         if(response.StatusCode != 200) ProcessError(response);
         return Ok(response.GetResult<ProductProviderDTO>());
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
-    {
-        BaseResponse response = _productProviderService.Delete(id);
-        if(response.StatusCode != 204) ProcessError(response);
-        return NoContent();
     }
 }

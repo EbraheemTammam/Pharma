@@ -1,18 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
+using Pharmacy.Application.Utilities;
+using Pharmacy.Services.Interfaces;
 using Pharmacy.Shared.Generics;
 
 namespace Pharmacy.Presentation.Generics;
 
 
 [Route("api/[controller]")]
-public class GenericController: ControllerBase
+public abstract class GenericController<TId, TResponseDTO>: ControllerBase
 {
+    protected IService<TId> _service;
+
+    public GenericController(IService<TId> service) =>
+        _service = service;
+
+    [HttpGet]
+    public async virtual Task<IActionResult> Get() =>
+        Ok(
+            (await _service.GetAll())
+            .GetResult<IEnumerable<TResponseDTO>>()
+        );
+
+    [HttpGet("{id}")]
+    public async virtual Task<IActionResult> Get(TId id)
+    {
+        BaseResponse response = await _service.GetById(id);
+        if(response.StatusCode != 200) return ProcessError(response);
+        return Ok(response.GetResult<TResponseDTO>());
+    }
+
+    [HttpDelete("{id}")]
+    public async virtual Task<IActionResult> Delete(TId id)
+    {
+        BaseResponse response = await _service.Delete(id);
+        if(response.StatusCode != 204) return ProcessError(response);
+        return NoContent();
+    }
+
     protected IActionResult ProcessError(BaseResponse response)
     {
         return response.StatusCode switch
         {
-            404 => NotFound(response),
-            400 => BadRequest(response),
+            404 => NotFound((NotFoundResponse)response),
+            400 => BadRequest((BadRequestResponse)response),
+            500 => StatusCode(response.StatusCode, ((InternalServerErrorResponse)response).Message),
             _ => throw new NotImplementedException()
         };
     }
