@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Modules.Products.Services;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Modules.Products.Models;
+using Pharmacy.Domain.Modules.Users.Models;
 using Pharmacy.Infrastructure.Data.Repositories;
 using Pharmacy.Infrastructure.Generics;
 using Pharmacy.Infrastructure.Generics.Repositories;
-using Pharmacy.Services;
+using Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
+using Pharmacy.Services.Modules.Products;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -28,10 +31,15 @@ public static class ServiceExtensions
 
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
+        //  Inject Services
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped(typeof(IRepository<IncomingOrder>), typeof(IncomingOrderRepository));
         services.AddScoped(typeof(IRepository<ProductItem>), typeof(ProductItemRepository));
         services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+        //  Inject Identoty User
+        services.AddIdentity<CustomUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
+        //  Get Default User Data from appsettings.json
+        services.Configure<CustomUser>(configuration.GetSection("defaultUserModel"));
         services.RegisterDbContextPool(configuration);
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped<IProductService, ProductService>();

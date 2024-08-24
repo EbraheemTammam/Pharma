@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Modules.Products.Models;
+using Pharmacy.Infrastructure.Generics;
+using Pharmacy.Infrastructure.Generics.Repositories;
 
-namespace Pharmacy.Infrastructure.Generics.Repositories;
+namespace Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
 
 
 public class ProductItemRepository : GenericRepository<ProductItem>
