@@ -7,6 +7,6 @@ namespace Pharmacy.Services.Modules.Users;
 
 public interface IAuthService : IService<int>
 {
-    Task<BaseResponse> Add(UserCreateDTO user);
+    Task<BaseResponse> Create(UserCreateDTO user);
     Task<BaseResponse> Update(int id, UserCreateDTO user);
 }

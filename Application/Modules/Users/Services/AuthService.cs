@@ -34,7 +34,7 @@ public class AuthService : IAuthService
         );
     }
 
-    public async Task<BaseResponse> Add(UserCreateDTO user)
+    public async Task<BaseResponse> Create(UserCreateDTO user)
     {
         CustomUser newUser = user.ToModel();
         newUser.PasswordHash = _passwordHasher.HashPassword(newUser, user.Password);
