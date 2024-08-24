@@ -11,7 +11,7 @@ public abstract record ScarceProductBaseDTO
     public required string Name {get; set;}
 
     [Required, PositiveNumber]
-    public int Amount;
+    public int Amount {get; set;}
 }
 
 public record ScarceProductCreateDTO: ScarceProductBaseDTO
