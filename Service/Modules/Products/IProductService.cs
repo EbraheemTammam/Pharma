@@ -1,15 +1,13 @@
+using Pharmacy.Services.Interfaces;
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
 
 namespace Pharmacy.Services.Modules.Products;
 
 
-public interface IProductService
+public interface IProductService : IService<Guid>
 {
-    BaseResponse GetAll();
-    BaseResponse GetById(Guid id);
-    BaseResponse GetByBarcode(string barcode);
-    BaseResponse Create(ProductCreateDTO schema);
-    BaseResponse Update(Guid id, ProductCreateDTO schema);
-    BaseResponse Delete(Guid id);
+    Task<BaseResponse> GetByBarcode(string barcode);
+    Task<BaseResponse> Create(ProductCreateDTO schema);
+    Task<BaseResponse> Update(Guid id, ProductCreateDTO schema);
 }
