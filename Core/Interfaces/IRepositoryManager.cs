@@ -13,5 +13,5 @@ public interface IRepositoryManager : IDisposable
     IRepository<Customer> Customers {get; }
     IRepository<Order> Orders {get; }
     IRepository<ScarceProduct> ScarceProducts {get; }
-    void Save();
+    Task Save();
 }

@@ -6,5 +6,5 @@ namespace Pharmacy.Domain.Interfaces;
 
 public interface IProductRepository : IRepository<Product>
 {
-    public Product? GetByBarcode(string barcode);
+    Task<Product?> GetByBarcode(string barcode);
 }
