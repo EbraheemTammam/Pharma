@@ -18,6 +18,7 @@ public static class UserMapper
     public static UserDTO ToDTO(this CustomUser model) =>
         new()
         {
+            Id = model.Id,
             FirstName = model.FirstName,
             LastName = model.LastName,
             Email = model.Email
