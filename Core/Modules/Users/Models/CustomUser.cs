@@ -7,5 +7,5 @@ public class CustomUser : IdentityUser<int>
 {
     public required string FirstName {get; set;}
     public required string LastName {get; set;}
-    public bool IsAdmin {get; set;}
+    public new required string Email {get; set;}
 }
