@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Generics;
+using System.Linq.Expressions;
 
 namespace Pharmacy.Infrastructure.Generics.Repositories;
 
@@ -14,10 +15,16 @@ public class GenericRepository<TModel> : IRepository<TModel> where TModel : Base
         _context = context;
         _dbSet = _context.Set<TModel>();
     }
-    public virtual IEnumerable<TModel> GetAll() => _dbSet.ToList();
-    public virtual IEnumerable<TModel> Filter(Func<TModel, bool> filter) => _dbSet.Where(filter).ToList();
-    public virtual TModel? GetById<TId>(TId id) => _dbSet.Find(id);
-    public virtual TModel Add(TModel model) => _dbSet.Add(model).Entity;
-    public virtual TModel Update(TModel model) => _dbSet.Update(model).Entity;
-    public virtual void Delete(TModel model) => _dbSet.Remove(model);
+    public async virtual Task<IEnumerable<TModel>> GetAll() =>
+        await _dbSet.ToListAsync();
+    public async virtual Task<IEnumerable<TModel>> Filter(Expression<Func<TModel, bool>> filter) =>
+        await _dbSet.Where(filter).ToListAsync();
+    public async virtual Task<TModel?> GetById<TId>(TId id) =>
+        await _dbSet.FindAsync(id);
+    public async virtual Task<TModel> Add(TModel model) =>
+        (await _dbSet.AddAsync(model)).Entity;
+    public virtual TModel Update(TModel model) =>
+        _dbSet.Update(model).Entity;
+    public virtual void Delete(TModel model) =>
+        _dbSet.Remove(model);
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Modules.Products.Models;
 using Pharmacy.Infrastructure.Generics;
@@ -10,6 +11,6 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
 {
     public ProductRepository(ApplicationDbContext context) : base(context) {}
 
-    public Product? GetByBarcode(string barcode) =>
-        _dbSet.SingleOrDefault(obj => obj.Barcode == barcode);
+    public async Task<Product?> GetByBarcode(string barcode) =>
+        await _dbSet.SingleOrDefaultAsync(obj => obj.Barcode == barcode);
 }
