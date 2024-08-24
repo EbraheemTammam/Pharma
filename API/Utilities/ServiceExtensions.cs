@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Modules.Products.Services;
+using Pharmacy.Application.Modules.Users.Services;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Modules.Products.Models;
 using Pharmacy.Domain.Modules.Users.Models;
@@ -9,6 +10,7 @@ using Pharmacy.Infrastructure.Generics;
 using Pharmacy.Infrastructure.Generics.Repositories;
 using Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
 using Pharmacy.Services.Modules.Products;
+using Pharmacy.Services.Modules.Users;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -31,20 +33,21 @@ public static class ServiceExtensions
 
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //  Inject Services
-        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-        services.AddScoped(typeof(IRepository<IncomingOrder>), typeof(IncomingOrderRepository));
-        services.AddScoped(typeof(IRepository<ProductItem>), typeof(ProductItemRepository));
-        services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
-        //  Inject Identoty User
-        services.AddIdentity<CustomUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
-        //  Get Default User Data from appsettings.json
-        services.Configure<CustomUser>(configuration.GetSection("defaultUserModel"));
         services.RegisterDbContextPool(configuration);
+        services.AddIdentity<CustomUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
+        //  Inject Repos
         services.AddScoped<IRepositoryManager, RepositoryManager>();
+        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>();
+        services.AddScoped<IRepository<ProductItem>, ProductItemRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+        // Inject Services
+        services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductProviderService, ProductProviderService>();
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
+        //  Get Default User Data from appsettings.json
+        services.Configure<CustomUser>(configuration.GetSection("defaultUserModel"));
     }
 
     private static void RegisterDbContextPool(this IServiceCollection services, IConfiguration configuration)
