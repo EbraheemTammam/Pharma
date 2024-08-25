@@ -6,6 +6,6 @@ namespace Pharmacy.Domain.Modules.Orders.Models;
 public sealed class Customer : BaseModel<Guid>
 {
     public required string Name {get; set;}
-    public decimal Dept {get; set;} = 0;
+    public double Dept {get; set;} = 0;
     public IEnumerable<Payment>? Payments {get; set;}
 }
