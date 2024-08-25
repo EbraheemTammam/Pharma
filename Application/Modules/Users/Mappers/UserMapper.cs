@@ -12,7 +12,6 @@ public static class UserMapper
         {
             FirstName = schema.FirstName,
             LastName = schema.LastName,
-            Email = schema.Email,
             UserName = schema.Email
         };
 
@@ -22,14 +21,14 @@ public static class UserMapper
             Id = model.Id,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Email = model.Email
+            Email = model.UserName!
         };
 
-    public static CustomUser Update(this CustomUser user, UserCreateDTO schema)
+    public static void Update(this CustomUser user, UserCreateDTO schema)
     {
         user.FirstName = schema.FirstName;
         user.LastName = schema.LastName;
         user.Email = schema.Email;
-        return user;
+        user.UserName = schema.Email;
     }
 }
