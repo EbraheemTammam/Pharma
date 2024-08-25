@@ -22,10 +22,9 @@ public static class ScarceProductMapper
             Amount = model.Amount
         };
 
-    public static ScarceProduct Update(this ScarceProduct product, ScarceProductCreateDTO schema)
+    public static void Update(this ScarceProduct product, ScarceProductCreateDTO schema)
     {
         product.Name = schema.Name;
         product.Amount = schema.Amount;
-        return product;
     }
 }

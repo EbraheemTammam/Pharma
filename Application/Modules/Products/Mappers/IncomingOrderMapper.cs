@@ -28,10 +28,9 @@ public static class IncomingOrderMapper
             ProviderName = provider,
         };
 
-    public static IncomingOrder Update(this IncomingOrder incomingOrder, IncomingOrderUpdateDTO schema)
+    public static void Update(this IncomingOrder incomingOrder, IncomingOrderUpdateDTO schema)
     {
         incomingOrder.Price = (double)schema.Price;
         incomingOrder.Paid = (double)schema.Paid;
-        return incomingOrder;
     }
 }

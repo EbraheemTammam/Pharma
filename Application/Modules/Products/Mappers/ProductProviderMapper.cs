@@ -23,9 +23,8 @@ public static class ProductProviderMapper
             Indepted = (decimal)model.Indepted
         };
 
-    public static ProductProvider Update(this ProductProvider productProvider, ProductProviderCreateDTO schema)
+    public static void Update(this ProductProvider productProvider, ProductProviderCreateDTO schema)
     {
         productProvider.Name = schema.Name;
-        return productProvider;
     }
 }
