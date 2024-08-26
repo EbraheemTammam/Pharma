@@ -9,7 +9,7 @@ namespace Pharmacy.Presentation.Generics;
 [Route("api/[controller]")]
 public abstract class GenericController<TId, TResponseDTO>: ControllerBase
 {
-    protected IService<TId> _service;
+    protected readonly IService<TId> _service;
 
     public GenericController(IService<TId> service) =>
         _service = service;
