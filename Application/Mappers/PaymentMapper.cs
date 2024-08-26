@@ -1,7 +1,7 @@
-using Pharmacy.Domain.Modules.Orders.Models;
-using Pharmacy.Shared.Modules.Orders.DTOs;
+using Pharmacy.Domain.Models;
+using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Application.Modules.Orders.Mappers;
+namespace Pharmacy.Application.Mappers;
 
 
 
@@ -11,8 +11,7 @@ public static class PaymentMapper
         new()
         {
             Paid = (double)paymentDTO.AmountPaid,
-            CustomerId = customerId,
-            CreatedAt = DateTime.UtcNow
+            CustomerId = customerId
         };
 
     public static PaymentDTO ToDTO(this Payment payment) =>

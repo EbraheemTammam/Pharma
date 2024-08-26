@@ -1,7 +1,7 @@
-using Pharmacy.Domain.Modules.Products.Models;
-using Pharmacy.Shared.Modules.Products.DTOs;
+using Pharmacy.Domain.Models;
+using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Application.Modules.Products.Mappers;
+namespace Pharmacy.Application.Mappers;
 
 
 

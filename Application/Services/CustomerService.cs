@@ -1,12 +1,12 @@
-using Pharmacy.Application.Modules.Orders.Mappers;
-using Pharmacy.Application.Utilities;
+using Pharmacy.Application.Mappers;
+using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Domain.Modules.Orders.Models;
-using Pharmacy.Services.Modules.Orders;
-using Pharmacy.Shared.Generics;
-using Pharmacy.Shared.Modules.Orders.DTOs;
+using Pharmacy.Service.Interfaces;
+using Pharmacy.Shared.Responses;
+using Pharmacy.Shared.DTOs;
+using Pharmacy.Application.Utilities;
 
-namespace Pharmacy.Application.Modules.Orders.Services;
+namespace Pharmacy.Application.Services;
 
 
 

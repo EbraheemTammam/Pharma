@@ -1,13 +1,13 @@
-using Pharmacy.Domain.Modules.Users.Models;
-using Pharmacy.Shared.Modules.Users.DTOs;
+using Pharmacy.Domain.Models;
+using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Application.Modules.Users.Mappers;
+namespace Pharmacy.Application.Mappers;
 
 
 
 public static class UserMapper
 {
-    public static CustomUser ToModel(this UserCreateDTO schema) =>
+    public static User ToModel(this UserCreateDTO schema) =>
         new()
         {
             FirstName = schema.FirstName,
@@ -15,7 +15,7 @@ public static class UserMapper
             UserName = schema.Email
         };
 
-    public static UserDTO ToDTO(this CustomUser model) =>
+    public static UserDTO ToDTO(this User model) =>
         new()
         {
             Id = model.Id,
@@ -24,7 +24,7 @@ public static class UserMapper
             Email = model.UserName!
         };
 
-    public static void Update(this CustomUser user, UserCreateDTO schema)
+    public static void Update(this User user, UserCreateDTO schema)
     {
         user.FirstName = schema.FirstName;
         user.LastName = schema.LastName;
