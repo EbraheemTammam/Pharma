@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
-using Pharmacy.Application.Utilities;
+using Pharmacy.Presentation.Utilities;
 
 namespace Pharmacy.Presentation.Controllers;
 
