@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Pharmacy.Shared.Modules.Users.DTOs;
+namespace Pharmacy.Shared.DTOs;
 
 
 public abstract record UserBaseDTO

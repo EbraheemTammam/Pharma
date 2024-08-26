@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Pharmacy.Shared.Modules.Orders.DTOs;
+namespace Pharmacy.Shared.DTOs;
 
 
 public abstract record CustomerBaseDTO

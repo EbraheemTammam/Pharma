@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Pharmacy.Shared.Modules.Products.Validations;
+namespace Pharmacy.Shared.Validations;
 
 
 
-class PositiveNumberAttribute: ValidationAttribute
+class NonNegativeAttribute : ValidationAttribute
 {
-    public PositiveNumberAttribute(): base("Value must be greater than 0"){}
+    public NonNegativeAttribute(): base("Value must be greater than 0"){}
     public override bool IsValid(object? obj)
     {
         if(obj is int IntVal && IntVal < 0) return false;

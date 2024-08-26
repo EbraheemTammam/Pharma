@@ -1,17 +1,17 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Pharmacy.Shared.Modules.Products.Validations;
+using Pharmacy.Shared.Validations;
 
-namespace Pharmacy.Shared.Modules.Products.DTOs;
+namespace Pharmacy.Shared.DTOs;
 
 
 
 public abstract record IncomingOrderBaseDTO
 {
-    [Required, PositiveNumber]
+    [Required, NonNegative]
     public decimal Price {get; set;}
 
-    [Required, PositiveNumber, DefaultValue(0)]
+    [Required, NonNegative, DefaultValue(0)]
     public decimal Paid {get; set;} = 0;
 }
 
@@ -26,6 +26,7 @@ public record IncomingOrderCreateDTO : IncomingOrderBaseDTO
 
 public record IncomingOrderUpdateDTO : IncomingOrderBaseDTO
 {
+
 }
 
 public record IncomingOrderDTO : IncomingOrderBaseDTO

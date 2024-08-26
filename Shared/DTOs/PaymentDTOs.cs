@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Pharmacy.Shared.Modules.Orders.DTOs;
+namespace Pharmacy.Shared.DTOs;
 
 
 public class PaymentBaseDTO

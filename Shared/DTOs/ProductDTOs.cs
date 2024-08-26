@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using Pharmacy.Shared.Modules.Products.Validations;
+using Pharmacy.Shared.Validations;
 
-namespace Pharmacy.Shared.Modules.Products.DTOs;
+namespace Pharmacy.Shared.DTOs;
 
 
 
@@ -15,25 +15,25 @@ public abstract record ProductBaseDTO
     [Required, MaxLength(100)]
     public required string Name {get; set;}
 
-    [PositiveNumber, DefaultValue(1)]
+    [NonNegative, DefaultValue(1)]
     public int? NumberOfElements {get; set;} = 1;
 
-    [Required, PositiveNumber]
+    [Required, NonNegative]
     public double PricePerElement {get; set;}
 
     [DefaultValue(false)]
     public bool? IsLack {get; set;} = false;
 
-    [Required, PositiveNumber, DefaultValue(0)]
+    [Required, NonNegative, DefaultValue(0)]
     public int Minimum {get; set;} = 0;
 }
 
-public record ProductCreateDTO: ProductBaseDTO
+public record ProductCreateDTO : ProductBaseDTO
 {
 
 }
 
-public record ProductDTO: ProductBaseDTO
+public record ProductDTO : ProductBaseDTO
 {
     public Guid Id {get; set;}
     public int OwnedElements {get; set;}
