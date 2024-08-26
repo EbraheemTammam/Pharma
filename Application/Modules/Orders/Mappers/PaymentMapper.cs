@@ -11,7 +11,8 @@ public static class PaymentMapper
         new()
         {
             Paid = (double)paymentDTO.AmountPaid,
-            CustomerId = customerId
+            CustomerId = customerId,
+            CreatedAt = DateTime.UtcNow
         };
 
     public static PaymentDTO ToDTO(this Payment payment) =>
