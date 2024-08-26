@@ -10,6 +10,7 @@ using Pharmacy.Domain.Modules.Users.Models;
 using Pharmacy.Infrastructure.Data.Repositories;
 using Pharmacy.Infrastructure.Generics;
 using Pharmacy.Infrastructure.Generics.Repositories;
+using Pharmacy.Infrastructure.Modules.Orders.Data.Repositories;
 using Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
 using Pharmacy.Services.Modules.Orders;
 using Pharmacy.Services.Modules.Products;
@@ -44,6 +45,7 @@ public static class ServiceExtensions
         services.AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>();
         services.AddScoped<IRepository<ProductItem>, ProductItemRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepositry>();
         // Inject Services
         services.AddScoped<UserManager<CustomUser>, UserManager<CustomUser>>();
         services.AddScoped<PasswordHasher<CustomUser>, PasswordHasher<CustomUser>>();
