@@ -5,7 +5,7 @@ using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.Modules.Products.DTOs;
 using Pharmacy.Services.Modules.Products;
 
-namespace Pharmacy.Presentation.Controllers;
+namespace Pharmacy.Presentation.Modules.Products.Controllers;
 
 
 [ApiController]
