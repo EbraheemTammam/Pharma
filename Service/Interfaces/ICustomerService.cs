@@ -1,4 +1,4 @@
-using Pharmacy.Shared.Generics;
+using Pharmacy.Shared.Responses;
 using Pharmacy.Shared.DTOs;
 
 namespace Pharmacy.Service.Interfaces;
