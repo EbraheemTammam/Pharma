@@ -1,6 +1,6 @@
 using Pharmacy.Domain.Generics;
 
-namespace Pharmacy.Domain.Modules.Products.Models;
+namespace Pharmacy.Domain.Models;
 
 public sealed class Product : BaseModel<Guid>
 {

@@ -1,12 +1,11 @@
 using Pharmacy.Domain.Generics;
-using Pharmacy.Domain.Modules.Users.Models;
 
-namespace Pharmacy.Domain.Modules.Orders.Models;
+namespace Pharmacy.Domain.Models;
 
 
 public sealed class Order : BaseModel<Guid>
 {
-    public DateTime CreatedAt {get; set;}
+    public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
     public decimal Paid {get; set;}
     public decimal TotalPrice {get; set;}
     public int UserId {get; set;}

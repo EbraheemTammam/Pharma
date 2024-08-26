@@ -1,6 +1,6 @@
 using Pharmacy.Domain.Generics;
 
-namespace Pharmacy.Domain.Modules.Orders.Models;
+namespace Pharmacy.Domain.Models;
 
 
 public sealed class Customer : BaseModel<Guid>

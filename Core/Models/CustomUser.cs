@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Pharmacy.Domain.Modules.Users.Models;
+namespace Pharmacy.Domain.Models;
 
 
 public sealed class CustomUser : IdentityUser<int>
