@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Application.Modules.Orders.Services;
 using Pharmacy.Application.Modules.Products.Services;
 using Pharmacy.Application.Modules.ScarceProducts.Services;
 using Pharmacy.Application.Modules.Users.Services;
@@ -10,6 +11,7 @@ using Pharmacy.Infrastructure.Data.Repositories;
 using Pharmacy.Infrastructure.Generics;
 using Pharmacy.Infrastructure.Generics.Repositories;
 using Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
+using Pharmacy.Services.Modules.Orders;
 using Pharmacy.Services.Modules.Products;
 using Pharmacy.Services.Modules.Users;
 
@@ -50,6 +52,7 @@ public static class ServiceExtensions
         services.AddScoped<IScarceProductService, ScarceProductService>();
         services.AddScoped<IProductProviderService, ProductProviderService>();
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
+        services.AddScoped<ICustomerService, CustomerService>();
         //  Get Default User Data from appsettings.json
         services.Configure<CustomUser>(configuration.GetSection("defaultUserModel"));
     }
