@@ -1,8 +1,7 @@
-using Pharmacy.Services.Interfaces;
 using Pharmacy.Shared.Generics;
 using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Service.Services;
+namespace Pharmacy.Service.Interfaces;
 
 
 

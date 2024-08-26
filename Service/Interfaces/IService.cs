@@ -1,7 +1,6 @@
 using Pharmacy.Shared.Generics;
-using Pharmacy.Shared.Modules.Products.DTOs;
 
-namespace Pharmacy.Services.Interfaces;
+namespace Pharmacy.Service.Interfaces;
 
 
 public interface IService<TId>
