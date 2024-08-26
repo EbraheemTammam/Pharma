@@ -13,6 +13,7 @@ namespace Pharmacy.Application.Modules.Orders.Services;
 public class CustomerService : ICustomerService
 {
     private readonly IRepositoryManager _manager;
+
     public CustomerService(IRepositoryManager manager) =>
         _manager = manager;
 
@@ -36,6 +37,7 @@ public class CustomerService : ICustomerService
     {
         Customer customer = customerDTO.ToModel();
         await _manager.Customers.Add(customer);
+        Console.WriteLine($"\n\n\n{customer.Name}\n\n\n");
         await _manager.Save();
         return new OkResponse<CustomerDTO>(customer.ToDTO());
     }
@@ -75,6 +77,8 @@ public class CustomerService : ICustomerService
         if(customer is null) return new NotFoundResponse(customerId, nameof(Customer));
         Payment operation = paymentDTO.ToModel(customer.Id);
         await _manager.Payments.Add(operation);
+        customer.Dept -= operation.Paid;
+        _manager.Customers.Update(customer);
         await _manager.Save();
         return new OkResponse<PaymentDTO>(operation.ToDTO());
     }
@@ -86,6 +90,10 @@ public class CustomerService : ICustomerService
         Payment? operation = await _manager.Payments.GetByIdAndCustomer(paymentId, customerId);
         if(operation is null)
             return new BadRequestResponse($"Customer has no payment operation with Id: {paymentId}");
-        return new OkResponse<PaymentDTO>(operation.ToDTO());
+        customer.Dept += operation.Paid;
+        _manager.Customers.Update(customer);
+        _manager.Payments.Delete(operation);
+        await _manager.Save();
+        return new NoContentResponse();
     }
 }
