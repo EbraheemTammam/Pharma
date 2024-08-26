@@ -22,7 +22,9 @@ public class RepositoryManager : IRepositoryManager
     public IRepository<ProductItem> ProductItems => _serviceProvider.GetRequiredService<IRepository<ProductItem>>();
     public IRepository<ScarceProduct> ScarceProducts => _serviceProvider.GetRequiredService<IRepository<ScarceProduct>>();
     public IRepository<Customer> Customers => _serviceProvider.GetRequiredService<IRepository<Customer>>();
+    public IPaymentRepository Payments => _serviceProvider.GetRequiredService<IPaymentRepository>();
     public IRepository<Order> Orders => _serviceProvider.GetRequiredService<IRepository<Order>>();
+    public IRepository<OrderItem> OrderItems => _serviceProvider.GetRequiredService<IRepository<OrderItem>>();
     public void Dispose() => _context.Dispose();
     public async Task Save() => await _context.SaveChangesAsync();
 }
