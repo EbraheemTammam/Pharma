@@ -1,8 +1,8 @@
 using Pharmacy.Services.Interfaces;
 using Pharmacy.Shared.Generics;
-using Pharmacy.Shared.Modules.Products.DTOs;
+using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Services.Modules.Products;
+namespace Pharmacy.Service.Services;
 
 
 public interface IProductService : IService<Guid>
