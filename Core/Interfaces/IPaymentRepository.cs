@@ -1,6 +1,4 @@
-using Pharmacy.Domain.Generics;
-using Pharmacy.Domain.Modules.Orders.Models;
-using Pharmacy.Domain.Modules.Products.Models;
+using Pharmacy.Domain.Models;
 
 namespace Pharmacy.Domain.Interfaces;
 
