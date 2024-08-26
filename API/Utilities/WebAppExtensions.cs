@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Pharmacy.Domain.Models;
 
-namespace Pharmacy.Application.Utilities;
+namespace Pharmacy.Presentation.Utilities;
 
 
 public static class WebAppExtensions

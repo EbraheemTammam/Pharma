@@ -49,7 +49,7 @@ public static class ServiceExtensions
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
         //  Get Default User Data from appsettings.json
-        services.Configure<User>(configuration.GetSection("defaultUserModel"));
+        services.Configure<User>(configuration.GetSection("DefaultUserModel"));
     }
 
     private static void RegisterDbContextPool(this IServiceCollection services, IConfiguration configuration)

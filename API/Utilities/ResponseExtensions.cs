@@ -1,6 +1,6 @@
 using Pharmacy.Shared.Responses;
 
-namespace Pharmacy.Application.Utilities;
+namespace Pharmacy.Presentation.Utilities;
 
 
 public static class ResponseExtensions
