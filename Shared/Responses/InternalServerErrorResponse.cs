@@ -1,4 +1,4 @@
-namespace Pharmacy.Shared.Generics;
+namespace Pharmacy.Shared.Responses;
 
 
 public class InternalServerErrorResponse : BaseResponse
