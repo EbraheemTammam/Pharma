@@ -10,7 +10,7 @@ public sealed class Order : BaseModel<Guid>
     public decimal TotalPrice {get; set;}
     public int UserId {get; set;}
     public Guid CustomerId {get; set;}
-    public required CustomUser CreatedBy {get; set;}
+    public required User CreatedBy {get; set;}
     public required Customer Customer {get; set;}
     public IEnumerable<OrderItem>? Items {get; set;}
 }
