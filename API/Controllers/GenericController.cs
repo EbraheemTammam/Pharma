@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Pharmacy.Shared.Responses;
+using Pharmacy.Service.Interfaces;
 using Pharmacy.Application.Utilities;
-using Pharmacy.Services.Interfaces;
-using Pharmacy.Shared.Generics;
 
-namespace Pharmacy.Presentation.Generics;
+namespace Pharmacy.Presentation.Controllers;
 
 
 [Route("api/[controller]")]

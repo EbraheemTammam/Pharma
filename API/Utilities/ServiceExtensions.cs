@@ -1,22 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Application.Modules.Orders.Services;
-using Pharmacy.Application.Modules.Products.Services;
-using Pharmacy.Application.Modules.ScarceProducts.Services;
-using Pharmacy.Application.Modules.Users.Services;
+using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Domain.Modules.Products.Models;
-using Pharmacy.Domain.Modules.Users.Models;
+using Pharmacy.Service.Interfaces;
+using Pharmacy.Infrastructure.Data;
 using Pharmacy.Infrastructure.Data.Repositories;
-using Pharmacy.Infrastructure.Generics;
-using Pharmacy.Infrastructure.Generics.Repositories;
-using Pharmacy.Infrastructure.Modules.Orders.Data.Repositories;
-using Pharmacy.Infrastructure.Modules.Products.Data.Repositories;
-using Pharmacy.Services.Modules.Orders;
-using Pharmacy.Services.Modules.Products;
-using Pharmacy.Services.Modules.Users;
+using Pharmacy.Application.Services;
 
 namespace Pharmacy.Presentation.Utilities;
+
+
 
 public static class ServiceExtensions
 {
@@ -38,7 +31,7 @@ public static class ServiceExtensions
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.RegisterDbContextPool(configuration);
-        services.AddIdentity<CustomUser, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
+        services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
         //  Inject Repos
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
@@ -47,8 +40,8 @@ public static class ServiceExtensions
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepositry>();
         // Inject Services
-        services.AddScoped<UserManager<CustomUser>, UserManager<CustomUser>>();
-        services.AddScoped<PasswordHasher<CustomUser>, PasswordHasher<CustomUser>>();
+        services.AddScoped<UserManager<User>, UserManager<User>>();
+        services.AddScoped<PasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IScarceProductService, ScarceProductService>();
@@ -56,7 +49,7 @@ public static class ServiceExtensions
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
         //  Get Default User Data from appsettings.json
-        services.Configure<CustomUser>(configuration.GetSection("defaultUserModel"));
+        services.Configure<User>(configuration.GetSection("defaultUserModel"));
     }
 
     private static void RegisterDbContextPool(this IServiceCollection services, IConfiguration configuration)

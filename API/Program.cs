@@ -1,3 +1,4 @@
+using Pharmacy.Application.Utilities;
 using Pharmacy.Presentation.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,8 @@ builder.Services.RegisterServices(builder.Configuration);
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.Lifetime.ApplicationStarted.Register(async () => await app.PreLoadDefaultUser());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

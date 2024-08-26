@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Pharmacy.Shared.DTOs;
+using Pharmacy.Shared.Responses;
+using Pharmacy.Service.Interfaces;
 using Pharmacy.Application.Utilities;
-using Pharmacy.Domain.Modules.Orders.Models;
-using Pharmacy.Presentation.Generics;
-using Pharmacy.Services.Modules.Orders;
-using Pharmacy.Shared.Generics;
-using Pharmacy.Shared.Modules.Orders.DTOs;
 
-namespace Pharmacy.Presentation.Modules.Orders.Controllers;
+namespace Pharmacy.Presentation.Controllers;
 
 
 [ApiController]
