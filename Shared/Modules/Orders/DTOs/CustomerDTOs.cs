@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Pharmacy.Shared.Modules.Orders.DTOs;
 
 
-public class CustomerBaseDTO
+public abstract record CustomerBaseDTO
 {
     [Required, MaxLength(100)]
     public required string Name {get; set;}
@@ -14,12 +14,12 @@ public class CustomerBaseDTO
     public decimal Dept {get; set;}
 }
 
-public class CustomerCreateDTO : CustomerBaseDTO
+public record CustomerCreateDTO : CustomerBaseDTO
 {
 
 }
 
-public class CustomerDTO : CustomerBaseDTO
+public record CustomerDTO : CustomerBaseDTO
 {
     public Guid Id {get; set;}
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Pharmacy.Shared.Modules.Users.DTOs;
 
 
-public class UserBaseDTO
+public abstract record UserBaseDTO
 {
     [Required, MaxLength(150)]
     public required string FirstName {get; set;}
@@ -15,13 +15,13 @@ public class UserBaseDTO
     public required string Email {get; set;}
 }
 
-public class UserCreateDTO : UserBaseDTO
+public record UserCreateDTO : UserBaseDTO
 {
     [Required]
     public required string Password {get; set;}
 }
 
-public class UserDTO : UserBaseDTO
+public record UserDTO : UserBaseDTO
 {
     public int Id {get; set;}
 }
