@@ -3,7 +3,7 @@ using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Generics;
 using System.Linq.Expressions;
 
-namespace Pharmacy.Infrastructure.Generics.Repositories;
+namespace Pharmacy.Infrastructure.Data.Repositories;
 
 
 public class GenericRepository<TModel> : IRepository<TModel> where TModel : BaseModel

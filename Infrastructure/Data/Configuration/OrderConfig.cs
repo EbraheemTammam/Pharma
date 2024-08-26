@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pharmacy.Domain.Modules.Orders.Models;
+using Pharmacy.Domain.Models;
 
-namespace Pharmacy.Infrastructure.Modules.Products.Data.Configurations;
+namespace Pharmacy.Infrastructure.Data.Configuration;
 
 
 public class OrderConfigurations : IEntityTypeConfiguration<Order>

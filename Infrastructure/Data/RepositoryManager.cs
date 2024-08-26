@@ -1,10 +1,8 @@
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Domain.Modules.Products.Models;
-using Pharmacy.Domain.Modules.Orders.Models;
-using Pharmacy.Infrastructure.Generics;
+using Pharmacy.Domain.Models;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Pharmacy.Infrastructure.Data.Repositories;
+namespace Pharmacy.Infrastructure.Data;
 
 
 public class RepositoryManager : IRepositoryManager
