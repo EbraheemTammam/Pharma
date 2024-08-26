@@ -6,8 +6,8 @@ namespace Pharmacy.Domain.Models;
 public sealed class Order : BaseModel<Guid>
 {
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
-    public decimal Paid {get; set;}
-    public decimal TotalPrice {get; set;}
+    public double Paid {get; set;}
+    public double TotalPrice {get; set;}
     public int UserId {get; set;}
     public Guid CustomerId {get; set;}
     public required User CreatedBy {get; set;}
