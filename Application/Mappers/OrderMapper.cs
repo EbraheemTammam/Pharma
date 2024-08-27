@@ -1,3 +1,4 @@
+using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Models;
 using Pharmacy.Shared.DTOs;
 
@@ -17,7 +18,7 @@ public static class OrderMapper
         };
 
     public static OrderDTO ToDTO(this Order order) =>
-        order.ToDTO(order.Customer!.Name, $"{order.CreatedBy!.FirstName} {order.CreatedBy.LastName}");
+        order.ToDTO(order.Customer!.Name, order.CreatedBy!.GetFullName());
 
     public static OrderDTO ToDTO(this Order order, string CustomerName, string userFullName) =>
         new()
