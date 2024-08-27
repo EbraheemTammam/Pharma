@@ -13,10 +13,10 @@ public abstract record OrderItemBaseDTO
 
 public record OrderItemCreateDTO : OrderItemBaseDTO
 {
-    [AllowNull]
+    [OneRequired(nameof(ProductBarcode))]
     public Guid? ProductId {get; set;}
 
-    [AllowNull]
+    [OneRequired(nameof(ProductId))]
     public string? ProductBarcode {get; set;}
 }
 
