@@ -23,18 +23,26 @@ internal static class RepositoryExtensions
         {
             item.Product!.OwnedElements -= item.NumberOfBoxes * item.Product.NumberOfElements;
             manager.Products.Update(item.Product);
-            manager.ProductItems.Delete(item);
         }
-        await manager.Save();
+    }
+
+    public static async Task PreDeleteOrder(this IRepositoryManager manager, Guid id)
+    {
+        IEnumerable<OrderItem> items = await manager.OrderItems.Filter(obj => obj.OrderId == id);
+        foreach (OrderItem item in items)
+        {
+            item.Product!.OwnedElements += item.Amount;
+            manager.Products.Update(item.Product);
+            ProductItem pItem = (await manager.ProductItems.GetLastByProduct(item.ProductId))!;
+            pItem.NumberOfElements += item.Amount;
+            manager.ProductItems.Update(pItem);
+        }
     }
 
     public static async Task<BaseResponse> AddAllProductItems(this IRepositoryManager manager, IEnumerable<ProductItemCreateDTO> items, Guid incomingOrderId)
     {
         foreach(ProductItemCreateDTO itemDTO in items)
         {
-            //  Check if both Id and Barcode are null
-            if(itemDTO.ProductId is null && itemDTO.Barcode is null)
-                return new BadRequestResponse("product Id or Barcode must be provided");
             //  Get Product
             var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.Barcode);
             //  Check if null
@@ -46,7 +54,26 @@ internal static class RepositoryExtensions
             product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
             manager.Products.Update(product);
         }
-        await manager.Save();
+        return new OkResponse<bool>(true);
+    }
+
+    public static async Task<BaseResponse> AddAllOrderItems(this IRepositoryManager manager, IEnumerable<OrderItemCreateDTO> items, Order order)
+    {
+        foreach(OrderItemCreateDTO itemDTO in items)
+        {
+            //  Get Product
+            var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.ProductBarcode);
+            //  Check if null
+            Product? product = result.product;
+            if(product is null)
+                return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
+            //  Add Item and  Update Product
+            await manager.OrderItems.Add(itemDTO.ToModel(order.Id, product));
+            product.OwnedElements -= itemDTO.Amount;
+            manager.Products.Update(product);
+            order.TotalPrice += itemDTO.Amount * product.PricePerElement;
+            manager.Orders.Update(order);
+        }
         return new OkResponse<bool>(true);
     }
 }
