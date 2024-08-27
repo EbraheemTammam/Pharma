@@ -14,47 +14,6 @@ public class IncomingOrderService : IIncomingOrderService
 {
     private readonly IRepositoryManager _manager;
 
-    private async Task<(Product? product, string fieldVal, string fieldType)> _getProduct(Guid? productId, string? barcode)
-    {
-        if(productId != null)
-            return (await _manager.Products.GetById(productId), productId.ToString(), "id")!;
-        return (await _manager.Products.GetByBarcode(barcode!), barcode, "barcode")!;
-    }
-
-    private async Task<BaseResponse> _addItems(IEnumerable<ProductItemCreateDTO> items, Guid incomingOrderId)
-    {
-        foreach(ProductItemCreateDTO itemDTO in items)
-        {
-            //  Check if both Id and Barcode are null
-            if(itemDTO.ProductId is null && itemDTO.Barcode is null)
-                return new BadRequestResponse("product Id or Barcode must be provided");
-            //  Get Product
-            var result = await _getProduct(itemDTO.ProductId, itemDTO.Barcode);
-            //  Check if null
-            Product? product = result.product;
-            if(product is null)
-                return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
-            //  Add Item and  Update Product
-            await _manager.ProductItems.Add(itemDTO.ToModel(product, incomingOrderId));
-            product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
-            _manager.Products.Update(product);
-        }
-        await _manager.Save();
-        return new OkResponse<bool>(true);
-    }
-
-    private async Task _preDelete(Guid id)
-    {
-        IEnumerable<ProductItem> items = await _manager.ProductItems.Filter(obj => obj.IncomingOrderId == id);
-        foreach (ProductItem item in items)
-        {
-            item.Product!.OwnedElements -= item.NumberOfBoxes * item.Product.NumberOfElements;
-            _manager.Products.Update(item.Product);
-            _manager.ProductItems.Delete(item);
-        }
-        await _manager.Save();
-    }
-
     public IncomingOrderService(IRepositoryManager repoManager) =>
         _manager = repoManager;
 
@@ -91,7 +50,7 @@ public class IncomingOrderService : IIncomingOrderService
         //  Create Object
         IncomingOrder incomingOrder = await _manager.IncomingOrders.Add(schema.ToModel());
         //  Add Items
-        BaseResponse response = await _addItems(schema.ProductItems, incomingOrder.Id);
+        BaseResponse response = await _manager.AddAllProductItems(schema.ProductItems, incomingOrder.Id);
         //  Check Successful Addition
         if(response.StatusCode != 200)
             return response;
@@ -125,7 +84,7 @@ public class IncomingOrderService : IIncomingOrderService
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
         //  Remove Items from Owned Elements
-        await _preDelete(id);
+        await _manager.PreDeleteIncomingOrder(id);
         //  Delete
         _manager.IncomingOrders.Delete(incomingOrder);
         await _manager.Save();
