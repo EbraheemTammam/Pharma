@@ -7,7 +7,7 @@ public interface IRepositoryManager : IDisposable
 {
     IProductRepository Products {get; }
     IRepository<ProductProvider> ProductProviders {get; }
-    IRepository<ProductItem> ProductItems {get; }
+    IProductItemRepository ProductItems {get; }
     IRepository<IncomingOrder> IncomingOrders {get; }
     IRepository<ScarceProduct> ScarceProducts {get; }
     IRepository<Customer> Customers {get; }

@@ -1,11 +1,12 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Models;
 
 namespace Pharmacy.Infrastructure.Data.Repositories;
 
 
-public class ProductItemRepository : GenericRepository<ProductItem>
+public class ProductItemRepository : GenericRepository<ProductItem>, IProductItemRepository
 {
     public ProductItemRepository(ApplicationDbContext context) : base(context) {}
 
@@ -13,4 +14,7 @@ public class ProductItemRepository : GenericRepository<ProductItem>
         await _dbSet.Include(item => item.Product).ToListAsync();
     public override async Task<IEnumerable<ProductItem>> Filter(Expression<Func<ProductItem, bool>> filter) =>
         await _dbSet.Include(item => item.Product).Where(filter).ToListAsync();
+
+    public async Task<ProductItem?> GetLastByProduct(Guid productId) =>
+        await _dbSet.Where(item => item.ProductId == productId).LastAsync();
 }
