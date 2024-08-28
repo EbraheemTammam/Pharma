@@ -7,16 +7,19 @@ namespace Pharmacy.Shared.DTOs;
 public abstract record OrderBaseDTO
 {
     [AllowNull]
-    public decimal Paid {get; set;}
+    public decimal? Paid {get; set;}
 }
 
-public record OrderCreateDTO : OrderBaseDTO
+public record OrderUpdateDTO : OrderBaseDTO
+{
+    [Required]
+    public required IEnumerable<OrderItemCreateDTO> Items {get; set;}
+}
+
+public record OrderCreateDTO : OrderUpdateDTO
 {
     [Required]
     public required Guid CustomerId {get; set;}
-
-    [Required]
-    public required IEnumerable<OrderItemCreateDTO> Items {get; set;}
 }
 
 public record OrderDTO : OrderBaseDTO
