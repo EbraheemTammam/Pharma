@@ -76,4 +76,18 @@ internal static class RepositoryExtensions
         }
         return new OkResponse<bool>(true);
     }
+
+    public static async Task DeleteAllOrderItems(this IRepositoryManager manager, Guid id)
+    {
+        IEnumerable<OrderItem> items = await manager.OrderItems.Filter(obj => obj.OrderId == id);
+        foreach (OrderItem item in items)
+        {
+            item.Product!.OwnedElements += item.Amount;
+            manager.Products.Update(item.Product);
+            ProductItem pItem = (await manager.ProductItems.GetLastByProduct(item.ProductId))!;
+            pItem.NumberOfElements += item.Amount;
+            manager.ProductItems.Update(pItem);
+            manager.OrderItems.Delete(item);
+        }
+    }
 }
