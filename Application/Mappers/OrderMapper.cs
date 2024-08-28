@@ -11,7 +11,6 @@ public static class OrderMapper
     public static Order ToModel(this OrderCreateDTO orderDTO, int userId) =>
         new()
         {
-            Paid = (double)orderDTO.Paid,
             TotalPrice = 0,
             UserId = userId,
             CustomerId = orderDTO.CustomerId
