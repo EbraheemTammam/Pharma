@@ -7,6 +7,6 @@ namespace Pharmacy.Service.Interfaces;
 public interface IOrderService : IService<Guid>
 {
     Task<BaseResponse> GetItems(Guid id);
-    Task<BaseResponse> Create(OrderCreateDTO schema);
-    Task<BaseResponse> Update(Guid id, OrderCreateDTO schema);
+    Task<BaseResponse> Create(OrderCreateDTO schema, int userId);
+    Task<BaseResponse> Update(Guid id, OrderUpdateDTO schema, int userId);
 }
