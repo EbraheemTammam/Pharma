@@ -29,7 +29,7 @@ public class OrderService : IOrderService
 
     public async Task<BaseResponse> GetById(Guid id)
     {
-        // Check if  Order Exist
+        /* ------- Check if Order Exist ------- */
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return new NotFoundResponse(id, nameof(Order));
         return new OkResponse<OrderDTO>(order.ToDTO());
@@ -37,35 +37,35 @@ public class OrderService : IOrderService
 
     public async Task<BaseResponse> GetItems(Guid id)
     {
-        // Check if  Order Exist
+        /* ------- Check if Order Exist ------- */
         Order? Order = await _manager.Orders.GetById(id);
         if(Order is null) return new NotFoundResponse(id, nameof(Order));
-        // Get Items
+        /* ------- Get Items ------- */
         IEnumerable<OrderItem> items = await _manager.OrderItems.Filter(obj => obj.OrderId == id);
         return new OkResponse<IEnumerable<OrderItemDTO>>(items.ConvertAll(obj => obj.ToDTO()));
     }
 
     public async Task<BaseResponse> Create(OrderCreateDTO orderDTO, int userId)
     {
-        /*  Check if Customer Exists */
+        /* ------- Check if Customer Exists ------- */
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
         if(customer is null) return new NotFoundResponse(orderDTO.CustomerId, nameof(Customer));
         Order order = await _manager.Orders.Add(orderDTO.ToModel(userId));
-        /*  Add Order Items */
+        /* ------- Add Order Items ------- */
         BaseResponse response = await _manager.AddAllOrderItems(orderDTO.Items, order);
         if(response.StatusCode != 200)
             return response;
-        /*  Update Order Paid */
+        /* ------- Update Order Paid ------- */
         order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
         _manager.Orders.Update(order);
-        /*  Update Customer Dept */
+        /* ------- Update Customer Dept ------- */
         customer.Dept += order.TotalPrice - order.Paid;
         _manager.Customers.Update(customer);
-        /*  Save Changes */
+        /* ------- Save Changes ------- */
         await _manager.Save();
-        /*  Get User */
+        /* ------- Get User ------- */
         User user = (await _userManager.FindByIdAsync(userId.ToString()))!;
-        /*  Return Response */
+        /* ------- Return Response ------- */
         return new OkResponse<OrderDTO>(
             order.ToDTO(customer.Name, user.GetFullName())
         );
@@ -73,22 +73,22 @@ public class OrderService : IOrderService
 
     public async Task<BaseResponse> Update(Guid id, OrderUpdateDTO orderDTO, int userId)
     {
-        /*  Check if  Order Exists */
+        /* ------- Check if Order Exists ------- */
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return new NotFoundResponse(id, nameof(Order));
-        /*  Update Customer */
+        /* ------- Update Customer ------- */
         Customer customer = (await _manager.Customers.GetById(order.CustomerId))!;
         customer.Dept -= order.TotalPrice - order.Paid;
         _manager.Customers.Update(customer);
-        /*  Update Order Items */
+        /* ------- Update Order Items ------- */
         await _manager.DeleteAllOrderItems(id);
         order.TotalPrice = 0;
         await _manager.AddAllOrderItems(orderDTO.Items, order);
-        /*  Save Changes */
+        /* ------- Save Changes ------- */
         await _manager.Save();
-        /*  Get User */
+        /* ------- Get User ------- */
         User user = (await _userManager.FindByIdAsync(userId.ToString()))!;
-        /*  Return Response */
+        /* ------- Return Response ------- */
         return new OkResponse<OrderDTO>(
             order.ToDTO(customer.Name, user.GetFullName())
         );
@@ -96,14 +96,16 @@ public class OrderService : IOrderService
 
     public async Task<BaseResponse> Delete(Guid id)
     {
-        //  Check if  Order Exist
+        /* ------- Check if Order Exist ------- */
         Order? Order = await _manager.Orders.GetById(id);
         if(Order is null) return new NotFoundResponse(id, nameof(Order));
-        //  Remove Items from Owned Elements
+        /* ------- Remove Items from Owned Elements ------- */
         await _manager.PreDeleteOrder(id);
-        //  Delete
+        /* ------- Delete ------- */
         _manager.Orders.Delete(Order);
+        /* ------- Save Changes ------- */
         await _manager.Save();
+        /* ------- Return Response ------- */
         return new NoContentResponse();
     }
 }

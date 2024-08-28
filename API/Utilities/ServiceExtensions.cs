@@ -30,9 +30,11 @@ public static class ServiceExtensions
 
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
+        /* ------- Register DbContext Pool ------- */
         services.RegisterDbContextPool(configuration);
+        /* ------- Register Identity ------- */
         services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<ApplicationDbContext>();
-        //  Inject Repos
+        /* ------- Inject Repos ------- */
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>();
@@ -41,7 +43,7 @@ public static class ServiceExtensions
         services.AddScoped<IRepository<OrderItem>, OrderItemRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepositry>();
-        // Inject Services
+        /* ------- Inject Services ------- */
         services.AddScoped<UserManager<User>, UserManager<User>>();
         services.AddScoped<PasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IAuthService, AuthService>();
@@ -50,7 +52,7 @@ public static class ServiceExtensions
         services.AddScoped<IProductProviderService, ProductProviderService>();
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
-        //  Get Default User Data from appsettings.json
+        /* ------- Get Default User Data from appsettings.json ------- */
         services.Configure<User>(configuration.GetSection("DefaultUserModel"));
     }
 

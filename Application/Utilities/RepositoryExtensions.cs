@@ -43,13 +43,13 @@ internal static class RepositoryExtensions
     {
         foreach(ProductItemCreateDTO itemDTO in items)
         {
-            //  Get Product
+            /* ------- Get Product ------- */
             var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.Barcode);
-            //  Check if null
+            /* ------- Check if product null ------- */
             Product? product = result.product;
             if(product is null)
                 return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
-            //  Add Item and  Update Product
+            /* ------- Add Item and Update Product ------- */
             await manager.ProductItems.Add(itemDTO.ToModel(product, incomingOrderId));
             product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
             manager.Products.Update(product);
@@ -61,16 +61,17 @@ internal static class RepositoryExtensions
     {
         foreach(OrderItemCreateDTO itemDTO in items)
         {
-            //  Get Product
+            /* ------- Get Product ------- */
             var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.ProductBarcode);
-            //  Check if null
+            /* ------- Check if product null ------- */
             Product? product = result.product;
             if(product is null)
                 return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
-            //  Add Item and  Update Product
+            /* ------- Add Item and Update Product ------- */
             await manager.OrderItems.Add(itemDTO.ToModel(order.Id, product));
             product.OwnedElements -= itemDTO.Amount;
             manager.Products.Update(product);
+            /* ------- Update Order ------- */
             order.TotalPrice += itemDTO.Amount * product.PricePerElement;
             manager.Orders.Update(order);
         }

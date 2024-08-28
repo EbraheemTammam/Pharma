@@ -24,37 +24,37 @@ public class IncomingOrderService : IIncomingOrderService
 
     public async Task<BaseResponse> GetById(Guid id)
     {
-        // Check if Incoming Order Exist
+        /* ------- Check if Incoming Order Exist ------- */
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
-        //  Get Product Provider
+        /* ------- Get Product Provider ------- */
         ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
         return new OkResponse<IncomingOrderDTO>(incomingOrder.ToDTO(provider.Name));
     }
 
     public async Task<BaseResponse> GetItems(Guid id)
     {
-        // Check if Incoming Order Exist
+        /* ------- Check if Incoming Order Exist ------- */
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
-        // Get Items
+        /* ------- Get Items ------- */
         IEnumerable<ProductItem> items = await _manager.ProductItems.Filter(obj => obj.IncomingOrderId == id);
         return new OkResponse<IEnumerable<ProductItemDTO>>(items.ConvertAll(obj => obj.ToDTO()));
     }
 
     public async Task<BaseResponse> Create(IncomingOrderCreateDTO schema)
     {
-        //  Check if Provider Exists
+        /* ------- Check if Provider Exists ------- */
         ProductProvider? provider = await _manager.ProductProviders.GetById(schema.ProviderId);
         if(provider is null) return new NotFoundResponse(schema.ProviderId, nameof(ProductProvider));
-        //  Create Object
+        /* ------- Create Object ------- */
         IncomingOrder incomingOrder = await _manager.IncomingOrders.Add(schema.ToModel());
-        //  Add Items
+        /* ------- Add Items ------- */
         BaseResponse response = await _manager.AddAllProductItems(schema.ProductItems, incomingOrder.Id);
-        //  Check Successful Addition
+        /* ------- Check Successful Addition ------- */
         if(response.StatusCode != 200)
             return response;
-        //  Save
+        /* ------- Save Changes ------- */
         await _manager.Save();
         return new OkResponse<IncomingOrderDTO>(
             incomingOrder.ToDTO(provider.Name)
@@ -63,15 +63,15 @@ public class IncomingOrderService : IIncomingOrderService
 
     public async Task<BaseResponse> Update(Guid id, IncomingOrderUpdateDTO schema)
     {
-        //  Check if Incoming Order Exists
+        /* ------- Check if Incoming Order Exists ------- */
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
-        //  Update Object
+        /* ------- Update Object ------- */
         incomingOrder.Update(schema);
         _manager.IncomingOrders.Update(incomingOrder);
-        // Save
+        /* ------- Save Changes ------- */
         await _manager.Save();
-        // Get Provider
+        /* ------- Get Provider ------- */
         ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
         return new OkResponse<IncomingOrderDTO>(
             incomingOrder.ToDTO(provider.Name)
@@ -80,14 +80,16 @@ public class IncomingOrderService : IIncomingOrderService
 
     public async Task<BaseResponse> Delete(Guid id)
     {
-        //  Check if Incoming Order Exist
+        /* ------- Check if Incoming Order Exist ------- */
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return new NotFoundResponse(id, nameof(IncomingOrder));
-        //  Remove Items from Owned Elements
+        /* ------- Remove Items from Owned Elements ------- */
         await _manager.PreDeleteIncomingOrder(id);
-        //  Delete
+        /* ------- Delete ------- */
         _manager.IncomingOrders.Delete(incomingOrder);
+        /* ------- Save Changes ------- */
         await _manager.Save();
+        /* ------- Return Response ------- */
         return new NoContentResponse();
     }
 }
