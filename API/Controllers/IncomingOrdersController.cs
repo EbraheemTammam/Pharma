@@ -11,7 +11,6 @@ namespace Pharmacy.Presentation.Controllers;
 public class IncomingOrdersController : GenericController<Guid, IncomingOrderDTO>
 {
     public IncomingOrdersController(IIncomingOrderService incomingOrderService) : base(incomingOrderService) {}
-    [HttpGet]
 
     [HttpPost]
     public async Task<IActionResult> Create(IncomingOrderCreateDTO incomingOrder) =>
