@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController]
+[ApiController, Authorize]
 public class ProductsController : GenericController<Guid, ProductDTO>
 {
     public ProductsController(IProductService productService) : base(productService) {}
 
-    [HttpGet("Lacked"), Authorize]
+    [HttpGet("Lacked")]
     public async Task<IActionResult> GetLacked() =>
         Ok((await ((IProductService)_service).GetLacked()).GetResult<IEnumerable<ProductDTO>>());
 
-    [HttpPost, Authorize]
+    [HttpPost]
     public async Task<IActionResult> Create(ProductCreateDTO product)
     {
         BaseResponse response = await ((IProductService)_service).Create(product);
@@ -26,7 +26,7 @@ public class ProductsController : GenericController<Guid, ProductDTO>
         return Created($"/api/Products/{result.Id}", result);
     }
 
-    [HttpPut("{id}"), Authorize]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, ProductCreateDTO product)
     {
         BaseResponse response = await ((IProductService)_service).Update(id, product);

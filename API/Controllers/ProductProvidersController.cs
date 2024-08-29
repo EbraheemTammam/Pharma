@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController]
+[ApiController, Authorize]
 public class ProductProvidersController : GenericController<Guid, ProductProviderDTO>
 {
     public ProductProvidersController(IProductProviderService productProviderService) : base(productProviderService) {}
 
-    [HttpPost, Authorize]
+    [HttpPost]
     public async Task<IActionResult> Create(ProductProviderCreateDTO productProvider)
     {
         BaseResponse response = await ((IProductProviderService)_service).Create(productProvider);
@@ -22,7 +22,7 @@ public class ProductProvidersController : GenericController<Guid, ProductProvide
         return Created($"/api/ProductProviders/{result.Id}", result);
     }
 
-    [HttpPut("{id}"), Authorize]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, ProductProviderCreateDTO productProvider)
     {
         BaseResponse response = await ((IProductProviderService)_service).Update(id, productProvider);

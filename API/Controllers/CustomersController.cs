@@ -3,12 +3,12 @@ using Pharmacy.Shared.DTOs;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController]
+[ApiController, Authorize]
 public class CustomersController : GenericController<Guid, CustomerDTO>
 {
     public CustomersController(ICustomerService service) : base(service){}
