@@ -13,13 +13,13 @@ public class AuthController : GenericController<int, UserDTO>
 {
     public AuthController(IAuthService authService) : base(authService) {}
 
-    [HttpGet("Users"), Authorize]
+    [HttpGet("Users"), Authorize(Roles = "Admin, Manager")]
     public async override Task<IActionResult> Get() => await base.Get();
 
-    [HttpGet("Users/{id}"), Authorize]
+    [HttpGet("Users/{id}"), Authorize(Roles = "Admin, Manager")]
     public async override Task<IActionResult> Get(int id) => await base.Get(id);
 
-    [HttpPost("Register"), Authorize]
+    [HttpPost("Register"), Authorize(Roles = "Admin, Manager")]
     public async Task<IActionResult> Create(UserCreateDTO user)
     {
         BaseResponse result = await ((IAuthService)_service).Create(user);
@@ -28,7 +28,7 @@ public class AuthController : GenericController<int, UserDTO>
         return Created($"/api/Users/{resultDTO.Id}", resultDTO);
     }
 
-    [HttpPut("Users/{id}"), Authorize]
+    [HttpPut("Users/{id}"), Authorize(Roles = "Admin, Manager")]
     public async Task<IActionResult> Update(int id, UserCreateDTO product)
     {
         BaseResponse result = await ((IAuthService)_service).Update(id, product);
@@ -36,7 +36,7 @@ public class AuthController : GenericController<int, UserDTO>
         return Created($"/api/Users/{id}", result.GetData<UserDTO>());
     }
 
-    [HttpDelete("Users/{id}"), Authorize]
+    [HttpDelete("Users/{id}"), Authorize(Roles = "Admin, Manager")]
     public async override Task<IActionResult> Delete(int id) => await base.Delete(id);
 
     [HttpPost("Login")]
@@ -46,7 +46,7 @@ public class AuthController : GenericController<int, UserDTO>
         return result.StatusCode == 200 ? Ok() : ProcessError(result);
     }
 
-    [HttpPost("Logout"), Authorize]
+    [HttpPost("Logout"), Authorize(Roles = "Admin, Manager")]
     public async Task<IActionResult> Logout()
     {
         BaseResponse result = await ((IAuthService)_service).Logout();
