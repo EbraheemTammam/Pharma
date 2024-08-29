@@ -43,7 +43,7 @@ public class ProductService : IProductService
         product.OwnedElements = 0;
         await _manager.Products.Add(product);
         await _manager.Save();
-        return new OkResponse<ProductDTO>(product.ToDTO());
+        return new CreatedResponse<ProductDTO>(product.ToDTO());
     }
 
     public async Task<BaseResponse> Update(Guid id, ProductCreateDTO schema)
@@ -53,7 +53,7 @@ public class ProductService : IProductService
         product.Update(schema);
         _manager.Products.Update(product);
         await _manager.Save();
-        return new OkResponse<ProductDTO>(product.ToDTO());
+        return new CreatedResponse<ProductDTO>(product.ToDTO());
     }
 
     public async Task<BaseResponse> Delete(Guid id)

@@ -56,7 +56,7 @@ public class IncomingOrderService : IIncomingOrderService
             return response;
         /* ------- Save Changes ------- */
         await _manager.Save();
-        return new OkResponse<IncomingOrderDTO>(
+        return new CreatedResponse<IncomingOrderDTO>(
             incomingOrder.ToDTO(provider.Name)
         );
     }
@@ -73,7 +73,7 @@ public class IncomingOrderService : IIncomingOrderService
         await _manager.Save();
         /* ------- Get Provider ------- */
         ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
-        return new OkResponse<IncomingOrderDTO>(
+        return new CreatedResponse<IncomingOrderDTO>(
             incomingOrder.ToDTO(provider.Name)
         );
     }

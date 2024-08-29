@@ -66,7 +66,7 @@ public class OrderService : IOrderService
         /* ------- Get User ------- */
         User user = (await _userManager.FindByIdAsync(userId.ToString()))!;
         /* ------- Return Response ------- */
-        return new OkResponse<OrderDTO>(
+        return new CreatedResponse<OrderDTO>(
             order.ToDTO(customer.Name, user.GetFullName())
         );
     }

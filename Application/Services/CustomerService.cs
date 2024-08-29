@@ -39,7 +39,7 @@ public class CustomerService : ICustomerService
         await _manager.Customers.Add(customer);
         Console.WriteLine($"\n\n\n{customer.Name}\n\n\n");
         await _manager.Save();
-        return new OkResponse<CustomerDTO>(customer.ToDTO());
+        return new CreatedResponse<CustomerDTO>(customer.ToDTO());
     }
 
     public async Task<BaseResponse> Update(Guid id, CustomerCreateDTO customerDTO)
@@ -48,7 +48,7 @@ public class CustomerService : ICustomerService
         if(customer is null) return new NotFoundResponse(id, nameof(Customer));
         customer.Update(customerDTO);
         await _manager.Save();
-        return new OkResponse<CustomerDTO>(customer.ToDTO());
+        return new CreatedResponse<CustomerDTO>(customer.ToDTO());
     }
 
     public async Task<BaseResponse> Delete(Guid id)

@@ -35,7 +35,7 @@ public class ProductProviderService : IProductProviderService
     {
         ProductProvider productProvider = await _manager.ProductProviders.Add(schema.ToModel());
         await _manager.Save();
-        return new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
+        return new CreatedResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
     public async Task<BaseResponse> Update(Guid id, ProductProviderCreateDTO schema)
@@ -45,7 +45,7 @@ public class ProductProviderService : IProductProviderService
         productProvider.Update(schema);
         productProvider = _manager.ProductProviders.Update(productProvider);
         await _manager.Save();
-        return new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
+        return new CreatedResponse<ProductProviderDTO>(productProvider.ToDTO());
     }
 
     public async Task<BaseResponse> Delete(Guid id)

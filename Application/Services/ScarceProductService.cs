@@ -34,7 +34,7 @@ public class ScarceProductService : IScarceProductService
         ScarceProduct product = schema.ToModel();
         await _manager.ScarceProducts.Add(product);
         await _manager.Save();
-        return new OkResponse<ScarceProductDTO>(product.ToDTO());
+        return new CreatedResponse<ScarceProductDTO>(product.ToDTO());
     }
 
     public async Task<BaseResponse> Update(Guid id, ScarceProductCreateDTO schema)
@@ -44,7 +44,7 @@ public class ScarceProductService : IScarceProductService
         product.Update(schema);
         _manager.ScarceProducts.Update(product);
         await _manager.Save();
-        return new OkResponse<ScarceProductDTO>(product.ToDTO());
+        return new CreatedResponse<ScarceProductDTO>(product.ToDTO());
     }
 
     public async Task<BaseResponse> Delete(Guid id)
