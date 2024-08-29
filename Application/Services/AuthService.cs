@@ -41,8 +41,10 @@ public class AuthService : IAuthService
         User newUser = user.ToModel();
         newUser.PasswordHash = _passwordHasher.HashPassword(newUser, user.Password);
         var result = await _manager.CreateAsync(newUser);
-        if(result.Succeeded) return new CreatedResponse<UserDTO>(newUser.ToDTO());
-        else return new InternalServerErrorResponse("User could not be created");
+        if(!result.Succeeded)
+            return new InternalServerErrorResponse("User could not be created");
+        await _manager.AddToRoleAsync(newUser, user.IsManager ? "Manager" : "Employee");
+        return new CreatedResponse<UserDTO>(newUser.ToDTO());
     }
 
     public async Task<BaseResponse> Update(int id, UserCreateDTO schema)
