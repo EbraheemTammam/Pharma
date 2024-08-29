@@ -25,3 +25,12 @@ public record UserDTO : UserBaseDTO
 {
     public int Id {get; set;}
 }
+
+public record LoginDTO
+{
+    [Required, MaxLength(100), EmailAddress]
+    public required string Email {get; set;}
+
+    [Required]
+    public required string Password {get; set;}
+}
