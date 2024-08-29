@@ -14,34 +14,24 @@ namespace Pharmacy.Presentation.Utilities;
 
 public static class ServiceExtensions
 {
-    public static void Configure(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.ConfigureDbContextPool(configuration);
-        services.ConfigureAuth(configuration);
-        services.ConfigureCors();
-        services.ConfigureIISIntegration();
-        services.ConfigureRepositories();
-        services.ConfigureServices();
-        services.AddControllers();
-    }
+    public static void Configure(this IServiceCollection services, IConfiguration configuration) =>
+        services.AddEndpointsApiExplorer()
+                .AddSwaggerGen()
+                .ConfigureDbContextPool(configuration)
+                .ConfigureAuth(configuration)
+                .ConfigureCors()
+                .ConfigureIISIntegration()
+                .ConfigureRepositories()
+                .ConfigureServices()
+                .AddControllers();
 
-    private static void ConfigureDbContextPool(this IServiceCollection services, IConfiguration configuration)
-    {
+    private static IServiceCollection ConfigureDbContextPool(this IServiceCollection services, IConfiguration configuration) =>
         services.AddDbContextPool<ApplicationDbContext>(
-            options => options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection")
-            )
+            options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
-    }
 
-    private static void ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        /* ------- Register Identity ------- */
-        services.AddIdentity<User, IdentityRole<int>>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
         /* ------- Configure Cookies ------- */
         services.ConfigureApplicationCookie(
                     options =>
@@ -52,53 +42,62 @@ public static class ServiceExtensions
                         options.SlidingExpiration = true;
                         options.AccessDeniedPath = "/api/auth/AccessDenied";
                     }
-                );
-        /* ------- Add Authentication ------- */
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                )
+        /* ------- Register Identity ------- */
+                .AddIdentity<User, IdentityRole<int>>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+        /* ------- Add Authentication And Authorization ------- */
+        services.AddAuthorization()
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
-        /* ------- Add Authorization ------- */
-        services.AddAuthorization();
         /* ------- Get Default User Data from appsettings.json ------- */
         services.Configure<User>(configuration.GetSection("DefaultUserModel"));
+        return services;
     }
 
-    private static void ConfigureCors(this IServiceCollection services) =>
+    private static IServiceCollection ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options =>
-        {
-            options.AddPolicy(
-                "CorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                                  .AllowAnyMethod()
-                                  .AllowAnyHeader()
-            );
-        }
-    );
+            {
+                options.AddPolicy(
+                    "CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader()
+                );
+            }
+        );
 
-    private static void ConfigureIISIntegration(this IServiceCollection services) =>
-        services.Configure<IISOptions>(options => {}
-    );
+    private static IServiceCollection ConfigureIISIntegration(this IServiceCollection services) =>
+        services.Configure<IISOptions>(options => {});
 
-    private static void ConfigureRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IRepositoryManager, RepositoryManager>();
-        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>();
-        services.AddScoped<IProductItemRepository, ProductItemRepository>();
-        services.AddScoped<IRepository<Order>, OrderRepository>();
-        services.AddScoped<IRepository<OrderItem>, OrderItemRepository>();
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IPaymentRepository, PaymentRepositry>();
-    }
+    /// <summary>
+    ///     Inject all the repositories
+    /// </summary>
+    /// <param name="services">IServiceCollection</param>
+    /// <returns>A reference to this instance after injecting services</returns>
+    private static IServiceCollection ConfigureRepositories(this IServiceCollection services) =>
+        services.AddScoped<IRepositoryManager, RepositoryManager>()
+                .AddScoped(typeof(IRepository<>), typeof(GenericRepository<>))
+                .AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>()
+                .AddScoped<IProductItemRepository, ProductItemRepository>()
+                .AddScoped<IRepository<Order>, OrderRepository>()
+                .AddScoped<IRepository<OrderItem>, OrderItemRepository>()
+                .AddScoped<IProductRepository, ProductRepository>()
+                .AddScoped<IPaymentRepository, PaymentRepositry>();
 
-    private static void ConfigureServices(this IServiceCollection services)
-    {
-        services.AddScoped<UserManager<User>, UserManager<User>>();
-        services.AddScoped<PasswordHasher<User>, PasswordHasher<User>>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<IScarceProductService, ScarceProductService>();
-        services.AddScoped<IProductProviderService, ProductProviderService>();
-        services.AddScoped<IIncomingOrderService, IncomingOrderService>();
-        services.AddScoped<ICustomerService, CustomerService>();
-    }
+    /// <summary>
+    ///     Inject all the services
+    /// </summary>
+    /// <param name="services">IServiceCollection</param>
+    /// <returns>A reference to this instance after injecting services</returns>
+    private static IServiceCollection ConfigureServices(this IServiceCollection services) =>
+        services.AddScoped<UserManager<User>, UserManager<User>>()
+                .AddScoped<PasswordHasher<User>, PasswordHasher<User>>()
+                .AddScoped<IAuthService, AuthService>()
+                .AddScoped<IProductService, ProductService>()
+                .AddScoped<IScarceProductService, ScarceProductService>()
+                .AddScoped<IProductProviderService, ProductProviderService>()
+                .AddScoped<IIncomingOrderService, IncomingOrderService>()
+                .AddScoped<ICustomerService, CustomerService>();
 }
