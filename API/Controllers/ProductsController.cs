@@ -3,6 +3,7 @@ using Pharmacy.Shared.DTOs;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Presentation.Controllers;
 
@@ -12,7 +13,7 @@ public class ProductsController : GenericController<Guid, ProductDTO>
 {
     public ProductsController(IProductService productService) : base(productService) {}
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> Create(ProductCreateDTO product)
     {
         BaseResponse response = await ((IProductService)_service).Create(product);
@@ -21,7 +22,7 @@ public class ProductsController : GenericController<Guid, ProductDTO>
         return Created($"/api/Products/{result.Id}", result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize]
     public async Task<IActionResult> Update(Guid id, ProductCreateDTO product)
     {
         BaseResponse response = await ((IProductService)_service).Update(id, product);

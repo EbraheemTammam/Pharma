@@ -3,6 +3,7 @@ using Pharmacy.Shared.DTOs;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Presentation.Controllers;
 
@@ -12,7 +13,7 @@ public class IncomingOrdersController : GenericController<Guid, IncomingOrderDTO
 {
     public IncomingOrdersController(IIncomingOrderService incomingOrderService) : base(incomingOrderService) {}
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> Create(IncomingOrderCreateDTO incomingOrder)
     {
         BaseResponse response = await ((IIncomingOrderService)_service).Create(incomingOrder);
@@ -21,7 +22,7 @@ public class IncomingOrdersController : GenericController<Guid, IncomingOrderDTO
         return Created($"/api/IncomingOrders/{result.Id}", result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize]
     public async Task<IActionResult> Update(Guid id, IncomingOrderUpdateDTO incomingOrder)
     {
         BaseResponse response = await ((IIncomingOrderService)_service).Update(id, incomingOrder);

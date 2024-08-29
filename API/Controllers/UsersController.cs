@@ -3,6 +3,7 @@ using Pharmacy.Shared.DTOs;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Presentation.Controllers;
 
@@ -12,13 +13,13 @@ public class AuthController : GenericController<int, UserDTO>
 {
     public AuthController(IAuthService authService) : base(authService) {}
 
-    [HttpGet("Users")]
+    [HttpGet("Users"), Authorize]
     public async override Task<IActionResult> Get() => await base.Get();
 
-    [HttpGet("Users/{id}")]
+    [HttpGet("Users/{id}"), Authorize]
     public async override Task<IActionResult> Get(int id) => await base.Get(id);
 
-    [HttpPost("Users")]
+    [HttpPost("Register"), Authorize]
     public async Task<IActionResult> Create(UserCreateDTO user)
     {
         BaseResponse result = await ((IAuthService)_service).Create(user);
@@ -27,7 +28,7 @@ public class AuthController : GenericController<int, UserDTO>
         return Created($"/api/Users/{resultDTO.Id}", resultDTO);
     }
 
-    [HttpPut("Users/{id}")]
+    [HttpPut("Users/{id}"), Authorize]
     public async Task<IActionResult> Update(int id, UserCreateDTO product)
     {
         BaseResponse result = await ((IAuthService)_service).Update(id, product);
@@ -35,7 +36,7 @@ public class AuthController : GenericController<int, UserDTO>
         return Created($"/api/Users/{id}", result.GetData<UserDTO>());
     }
 
-    [HttpDelete("Users/{id}")]
+    [HttpDelete("Users/{id}"), Authorize]
     public async override Task<IActionResult> Delete(int id) => await base.Delete(id);
 
     [HttpPost("Login")]
@@ -45,7 +46,7 @@ public class AuthController : GenericController<int, UserDTO>
         return result.StatusCode == 200 ? Ok() : ProcessError(result);
     }
 
-    [HttpPost("Logout")]
+    [HttpPost("Logout"), Authorize]
     public async Task<IActionResult> Logout()
     {
         BaseResponse result = await ((IAuthService)_service).Logout();
