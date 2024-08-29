@@ -23,6 +23,12 @@ public class ProductService : IProductService
             (await _manager.Products.GetAll()).ConvertAll(obj => obj.ToDTO())
         );
 
+    public async Task<BaseResponse> GetLacked() =>
+        new OkResponse<IEnumerable<ProductDTO>>
+        (
+            (await _manager.Products.Filter(obj => obj.IsLack)).ConvertAll(obj => obj.ToDTO())
+        );
+
     public async Task<BaseResponse> GetById(Guid id)
     {
         Product? product = await _manager.Products.GetById(id);

@@ -13,6 +13,10 @@ public class ProductsController : GenericController<Guid, ProductDTO>
 {
     public ProductsController(IProductService productService) : base(productService) {}
 
+    [HttpGet("Lacked"), Authorize]
+    public async Task<IActionResult> GetLacked() =>
+        Ok((await ((IProductService)_service).GetLacked()).GetResult<IEnumerable<ProductDTO>>());
+
     [HttpPost, Authorize]
     public async Task<IActionResult> Create(ProductCreateDTO product)
     {
