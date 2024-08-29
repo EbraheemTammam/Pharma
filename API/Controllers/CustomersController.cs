@@ -3,6 +3,7 @@ using Pharmacy.Shared.DTOs;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Pharmacy.Presentation.Controllers;
 
@@ -13,18 +14,20 @@ public class CustomersController : GenericController<Guid, CustomerDTO>
     public CustomersController(ICustomerService service) : base(service){}
 
     [HttpPost]
-    public async Task<IActionResult> Create(CustomerCreateDTO customerDTO) =>
-        Ok(
-            (await ((ICustomerService)_service).Create(customerDTO))
-            .GetResult<CustomerDTO>()
-        );
+    public async Task<IActionResult> Create(CustomerCreateDTO customerDTO)
+    {
+        BaseResponse response = await ((ICustomerService)_service).Create(customerDTO);
+        if(response.StatusCode != 201) return ProcessError(response);
+        var result = response.GetData<CustomerDTO>();
+        return Created($"/api/Customers/{result.Id}", result);
+    }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, CustomerCreateDTO customerDTO)
     {
         BaseResponse result = await ((ICustomerService)_service).Update(id, customerDTO);
-        if(result.StatusCode != 200) return ProcessError(result);
-        return Ok(result.GetResult<CustomerDTO>());
+        if(result.StatusCode != 201) return ProcessError(result);
+        return Created($"/api/Customers/{id}", result.GetData<CustomerDTO>());
     }
 
     [HttpGet("{customerId}/Payments")]

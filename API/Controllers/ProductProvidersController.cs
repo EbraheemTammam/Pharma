@@ -13,16 +13,19 @@ public class ProductProvidersController : GenericController<Guid, ProductProvide
     public ProductProvidersController(IProductProviderService productProviderService) : base(productProviderService) {}
 
     [HttpPost]
-    public async Task<IActionResult> Create(ProductProviderCreateDTO productProvider) =>
-        Ok(
-            (await ((IProductProviderService)_service).Create(productProvider)).GetResult<ProductProviderDTO>()
-        );
+    public async Task<IActionResult> Create(ProductProviderCreateDTO productProvider)
+    {
+        BaseResponse response = await ((IProductProviderService)_service).Create(productProvider);
+        if(response.StatusCode != 201) return ProcessError(response);
+        var result = response.GetData<ProductProviderDTO>();
+        return Created($"/api/ProductProviders/{result.Id}", result);
+    }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, ProductProviderCreateDTO productProvider)
     {
         BaseResponse response = await ((IProductProviderService)_service).Update(id, productProvider);
-        if(response.StatusCode != 200) ProcessError(response);
-        return Ok(response.GetResult<ProductProviderDTO>());
+        if(response.StatusCode != 201) return ProcessError(response);
+        return Created($"/api/ProductProviders/{id}", response.GetData<ProductProviderDTO>());
     }
 }
