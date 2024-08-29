@@ -7,20 +7,33 @@ namespace Pharmacy.Presentation.Utilities;
 
 public static class WebAppExtensions
 {
-    public async static Task PreLoadDefaultUser(this WebApplication app)
+    public static void Configure(this WebApplication app)
+    {
+        app.Lifetime.ApplicationStarted.Register(async () => await app.PreLoadDefaultUser());
+        app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
+    }
+    private static async Task PreLoadDefaultUser(this WebApplication app)
     {
         using(var scope = app.Services.CreateAsyncScope())
         {
-            var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            User _user = scope.ServiceProvider.GetRequiredService<IOptions<User>>().Value;
-            if(!_userManager.Users.Any())
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            User user = scope.ServiceProvider.GetRequiredService<IOptions<User>>().Value;
+            await CreateUserIfNotExist(userManager, user);
+        }
+    }
+
+    private static async Task CreateUserIfNotExist(UserManager<User> userManager, User user)
+    {
+        if(!userManager.Users.Any())
+        {
+            var result = await userManager.CreateAsync(user);
+            if(!result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(_user);
-                if(!result.Succeeded)
-                {
-                    foreach (var e in result.Errors)
-                        Console.WriteLine(e.Description);
-                }
+                foreach(var e in result.Errors)
+                    Console.WriteLine(e.Description);
             }
         }
     }
