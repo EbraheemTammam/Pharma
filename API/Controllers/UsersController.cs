@@ -52,4 +52,8 @@ public class AuthController : GenericController<int, UserDTO>
         BaseResponse result = await ((IAuthService)_service).Logout();
         return result.StatusCode == 200 ? Ok() : ProcessError(result);
     }
+
+    [HttpGet("AccessDenied")]
+    public IActionResult AccessDenied() =>
+        Forbid("Permission Denied");
 }
