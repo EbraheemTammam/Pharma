@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pharmacy.Shared.DTOs;
 
@@ -17,6 +19,9 @@ public abstract record UserBaseDTO
 
 public record UserCreateDTO : UserBaseDTO
 {
+    [AllowNull, DefaultValue(false)]
+    public bool IsManager {get; set;}
+
     [Required]
     public required string Password {get; set;}
 }
