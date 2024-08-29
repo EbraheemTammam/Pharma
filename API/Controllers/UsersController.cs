@@ -8,30 +8,47 @@ namespace Pharmacy.Presentation.Controllers;
 
 
 [ApiController]
-public class UsersController : GenericController<int, UserDTO>
+public class AuthController : GenericController<int, UserDTO>
 {
-    public UsersController(IAuthService authService) : base(authService) {}
+    public AuthController(IAuthService authService) : base(authService) {}
 
-    [HttpPost]
-    public async Task<IActionResult> Create(UserCreateDTO product)
+    [HttpGet("Users")]
+    public async override Task<IActionResult> Get() => await base.Get();
+
+    [HttpGet("Users/{id}")]
+    public async override Task<IActionResult> Get(int id) => await base.Get(id);
+
+    [HttpPost("Users")]
+    public async Task<IActionResult> Create(UserCreateDTO user)
     {
-        BaseResponse result = await ((IAuthService)_service).Create(product);
-        return
-        (
-            result.StatusCode == 200 ? Ok(result.GetResult<UserDTO>())
-            : ProcessError(result)
-        );
+        BaseResponse result = await ((IAuthService)_service).Create(user);
+        if(result.StatusCode != 201) return ProcessError(result);
+        var resultDTO = result.GetData<UserDTO>();
+        return Created($"/api/Users/{resultDTO.Id}", resultDTO);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("Users/{id}")]
     public async Task<IActionResult> Update(int id, UserCreateDTO product)
     {
         BaseResponse result = await ((IAuthService)_service).Update(id, product);
-        if(result.StatusCode != 200) return ProcessError(result);
-        return
-        (
-            result.StatusCode == 200 ? Ok(result.GetResult<UserDTO>())
-            : ProcessError(result)
-        );
+        if(result.StatusCode != 201) return ProcessError(result);
+        return Created($"/api/Users/{id}", result.GetData<UserDTO>());
+    }
+
+    [HttpDelete("Users/{id}")]
+    public async override Task<IActionResult> Delete(int id) => await base.Delete(id);
+
+    [HttpPost("Login")]
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+    {
+        BaseResponse result = await ((IAuthService)_service).Login(loginDTO);
+        return result.StatusCode == 200 ? Ok() : ProcessError(result);
+    }
+
+    [HttpPost("Logout")]
+    public async Task<IActionResult> Logout()
+    {
+        BaseResponse result = await ((IAuthService)_service).Logout();
+        return result.StatusCode == 200 ? Ok() : ProcessError(result);
     }
 }
