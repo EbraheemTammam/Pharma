@@ -25,24 +25,24 @@ public abstract class GenericController<TId, TResponseDTO>: ControllerBase
     public async virtual Task<IActionResult> Get(TId id)
     {
         BaseResponse response = await _service.GetById(id);
-        if(response.StatusCode != 200) return ProcessError(response);
-        return Ok(response.GetResult<TResponseDTO>());
+        return response.StatusCode == 200 ? Ok(response.GetResult<TResponseDTO>()) : ProcessError(response);
     }
 
     [HttpDelete("{id}")]
     public async virtual Task<IActionResult> Delete(TId id)
     {
         BaseResponse response = await _service.Delete(id);
-        if(response.StatusCode != 204) return ProcessError(response);
-        return NoContent();
+        return response.StatusCode == 204 ? NoContent() : ProcessError(response);
     }
 
     protected IActionResult ProcessError(BaseResponse response)
     {
         return response.StatusCode switch
         {
-            404 => NotFound((NotFoundResponse)response),
             400 => BadRequest((BadRequestResponse)response),
+            401 => Unauthorized((UnAuthorizedResponse)response),
+            403 => StatusCode(response.StatusCode, ((ForbiddenResponse)response).Message),
+            404 => NotFound((NotFoundResponse)response),
             500 => StatusCode(response.StatusCode, ((InternalServerErrorResponse)response).Message),
             _ => throw new NotImplementedException()
         };
