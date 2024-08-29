@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
@@ -6,7 +7,6 @@ using Pharmacy.Service.Interfaces;
 using Pharmacy.Infrastructure.Data;
 using Pharmacy.Infrastructure.Data.Repositories;
 using Pharmacy.Application.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -19,6 +19,7 @@ public static class ServiceExtensions
                 .AddSwaggerGen()
                 .ConfigureDbContextPool(configuration)
                 .ConfigureAuth(configuration)
+                .ConfigureCookie()
                 .ConfigureCors()
                 .ConfigureIISIntegration()
                 .ConfigureRepositories()
@@ -32,19 +33,8 @@ public static class ServiceExtensions
 
     private static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        /* ------- Configure Cookies ------- */
-        services.ConfigureApplicationCookie(
-                    options =>
-                    {
-                        options.LoginPath = "/api/auth/Login";
-                        options.LogoutPath = "/api/auth/Logout";
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                        options.SlidingExpiration = true;
-                        options.AccessDeniedPath = "/api/auth/AccessDenied";
-                    }
-                )
         /* ------- Register Identity ------- */
-                .AddIdentity<User, IdentityRole<int>>()
+        services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         /* ------- Add Authentication And Authorization ------- */
@@ -55,6 +45,21 @@ public static class ServiceExtensions
         services.Configure<User>(configuration.GetSection("DefaultUserModel"));
         return services;
     }
+
+    private static IServiceCollection ConfigureCookie(this IServiceCollection services) =>
+        services.ConfigureApplicationCookie(
+                    options =>
+                    {
+                        options.LoginPath = "/Api/Auth/Login";
+                        options.LogoutPath = "/Api/Auth/Logout";
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                        options.SlidingExpiration = true;
+                        options.AccessDeniedPath = "/Api/Auth/AccessDenied";
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.SameSite = SameSiteMode.None;
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    }
+                );
 
     private static IServiceCollection ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options =>
