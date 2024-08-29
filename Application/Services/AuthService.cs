@@ -12,12 +12,14 @@ namespace Pharmacy.Application.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<User> _manager;
+    private readonly SignInManager<User> _signInManager;
     private readonly PasswordHasher<User> _passwordHasher;
 
-    public AuthService(UserManager<User> manager, PasswordHasher<User> hasher)
+    public AuthService(UserManager<User> manager, PasswordHasher<User> hasher, SignInManager<User> signInManager)
     {
         _manager = manager;
         _passwordHasher = hasher;
+        _signInManager = signInManager;
     }
 
     public async Task<BaseResponse> GetAll() =>
@@ -39,7 +41,7 @@ public class AuthService : IAuthService
         User newUser = user.ToModel();
         newUser.PasswordHash = _passwordHasher.HashPassword(newUser, user.Password);
         var result = await _manager.CreateAsync(newUser);
-        if(result.Succeeded) return new OkResponse<UserDTO>(newUser.ToDTO());
+        if(result.Succeeded) return new CreatedResponse<UserDTO>(newUser.ToDTO());
         else return new InternalServerErrorResponse("User could not be created");
     }
 
@@ -50,7 +52,7 @@ public class AuthService : IAuthService
         user.Update(schema);
         user.PasswordHash = _passwordHasher.HashPassword(user, schema.Password);
         var result = await _manager.UpdateAsync(user);
-        if(result.Succeeded) return new OkResponse<UserDTO>(user.ToDTO());
+        if(result.Succeeded) return new CreatedResponse<UserDTO>(user.ToDTO());
         else return new InternalServerErrorResponse("User could not be updated");
     }
 
@@ -61,5 +63,22 @@ public class AuthService : IAuthService
         var result = await _manager.DeleteAsync(user);
         if(result.Succeeded) return new NoContentResponse();
         else return new InternalServerErrorResponse("User could not be deleted");
+    }
+
+    public async Task<BaseResponse> Login(LoginDTO loginDTO)
+    {
+        User? user = await _manager.FindByNameAsync(loginDTO.Email);
+        if(user is not null)
+        {
+            var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
+            if(result.Succeeded) return new OkResponse<bool>(true);
+        }
+        return new UnAuthorizedResponse();
+    }
+
+    public async Task<BaseResponse> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return new OkResponse<bool>(true);
     }
 }
