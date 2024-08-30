@@ -36,13 +36,6 @@ public class ProductService : IProductService
         : new OkResponse<ProductDTO>(product.ToDTO());
     }
 
-    public async Task<BaseResponse> GetByBarcode(string barcode)
-    {
-        Product? product = await _manager.Products.GetByBarcode(barcode);
-        return product is null ? new NotFoundResponse(barcode, nameof(Product), "barcode")
-        : new OkResponse<ProductDTO>(product.ToDTO());
-    }
-
     public async Task<BaseResponse> Create(ProductCreateDTO schema)
     {
         Product product = schema.ToModel();

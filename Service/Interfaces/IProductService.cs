@@ -7,7 +7,6 @@ namespace Pharmacy.Service.Interfaces;
 public interface IProductService : IService<Guid>
 {
     Task<BaseResponse> GetLacked();
-    Task<BaseResponse> GetByBarcode(string barcode);
     Task<BaseResponse> Create(ProductCreateDTO schema);
     Task<BaseResponse> Update(Guid id, ProductCreateDTO schema);
 }
