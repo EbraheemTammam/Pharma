@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Service.Interfaces;
 using Pharmacy.Presentation.Utilities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Presentation.Controllers;
 
 
-[Route("Api/[controller]"), Authorize]
+[Route("Api/[controller]")]
 public abstract class GenericController<TId, TResponseDTO>: ControllerBase
 {
     protected readonly IService<TId> _service;
