@@ -17,11 +17,8 @@ public abstract record ProductItemBaseDTO
 
 public record ProductItemCreateDTO : ProductItemBaseDTO
 {
-    [OneRequired(nameof(ProductId)), MaxLength(15)]
-    public string? Barcode {get; set;}
-
-    [OneRequired(nameof(Barcode))]
-    public Guid? ProductId {get; set;}
+    [Required]
+    public Guid ProductId {get; set;}
 }
 
 public record ProductItemDTO : ProductItemBaseDTO

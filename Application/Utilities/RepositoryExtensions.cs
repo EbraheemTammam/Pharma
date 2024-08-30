@@ -10,12 +10,6 @@ namespace Pharmacy.Application.Utilities;
 
 internal static class RepositoryExtensions
 {
-    public static async Task<(Product? product, string fieldVal, string fieldType)> GetByIdOrBarcode(this IProductRepository repo, Guid? id, string? barcode)
-    {
-        if(id is not null) return (await repo.GetById(id), id.ToString(), "id")!;
-        return (await repo.GetByBarcode(barcode!), barcode, "barcode")!;
-    }
-
     public static async Task PreDeleteIncomingOrder(this IRepositoryManager manager, Guid id)
     {
         IEnumerable<ProductItem> items = await manager.ProductItems.Filter(obj => obj.IncomingOrderId == id);
@@ -44,11 +38,10 @@ internal static class RepositoryExtensions
         foreach(ProductItemCreateDTO itemDTO in items)
         {
             /* ------- Get Product ------- */
-            var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.Barcode);
+            Product? product = await manager.Products.GetById(itemDTO.ProductId);
             /* ------- Check if product null ------- */
-            Product? product = result.product;
             if(product is null)
-                return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
+                return new NotFoundResponse(itemDTO.ProductId, nameof(Product));
             /* ------- Add Item and Update Product ------- */
             await manager.ProductItems.Add(itemDTO.ToModel(product, incomingOrderId));
             product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
@@ -62,11 +55,10 @@ internal static class RepositoryExtensions
         foreach(OrderItemCreateDTO itemDTO in items)
         {
             /* ------- Get Product ------- */
-            var result = await manager.Products.GetByIdOrBarcode(itemDTO.ProductId, itemDTO.ProductBarcode);
+            Product? product = await manager.Products.GetById(itemDTO.ProductId);
             /* ------- Check if product null ------- */
-            Product? product = result.product;
             if(product is null)
-                return new NotFoundResponse(result.fieldVal, nameof(Product), result.fieldType);
+                return new NotFoundResponse(itemDTO.ProductId, nameof(Product));
             /* ------- Add Item and Update Product ------- */
             await manager.OrderItems.Add(itemDTO.ToModel(order.Id, product));
             product.OwnedElements -= itemDTO.Amount;
