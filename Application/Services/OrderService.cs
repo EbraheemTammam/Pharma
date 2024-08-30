@@ -45,12 +45,15 @@ public class OrderService : IOrderService
         return new OkResponse<IEnumerable<OrderItemDTO>>(items.ConvertAll(obj => obj.ToDTO()));
     }
 
-    public async Task<BaseResponse> Create(OrderCreateDTO orderDTO, int userId)
+    public async Task<BaseResponse> Create(OrderCreateDTO orderDTO, string userName)
     {
         /* ------- Check if Customer Exists ------- */
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
         if(customer is null) return new NotFoundResponse(orderDTO.CustomerId, nameof(Customer));
-        Order order = await _manager.Orders.Add(orderDTO.ToModel(userId));
+        /* ------- Get User ------- */
+        User user = (await _userManager.FindByNameAsync(userName))!;
+        /* ------- Create Order ------- */
+        Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
         /* ------- Add Order Items ------- */
         BaseResponse response = await _manager.AddAllOrderItems(orderDTO.Items, order);
         if(response.StatusCode != 200)
@@ -63,15 +66,13 @@ public class OrderService : IOrderService
         _manager.Customers.Update(customer);
         /* ------- Save Changes ------- */
         await _manager.Save();
-        /* ------- Get User ------- */
-        User user = (await _userManager.FindByIdAsync(userId.ToString()))!;
         /* ------- Return Response ------- */
         return new CreatedResponse<OrderDTO>(
             order.ToDTO(customer.Name, user.GetFullName())
         );
     }
 
-    public async Task<BaseResponse> Update(Guid id, OrderUpdateDTO orderDTO, int userId)
+    public async Task<BaseResponse> Update(Guid id, OrderUpdateDTO orderDTO, string userName)
     {
         /* ------- Check if Order Exists ------- */
         Order? order = await _manager.Orders.GetById(id);
@@ -87,7 +88,7 @@ public class OrderService : IOrderService
         /* ------- Save Changes ------- */
         await _manager.Save();
         /* ------- Get User ------- */
-        User user = (await _userManager.FindByIdAsync(userId.ToString()))!;
+        User user = (await _userManager.FindByNameAsync(userName))!;
         /* ------- Return Response ------- */
         return new OkResponse<OrderDTO>(
             order.ToDTO(customer.Name, user.GetFullName())

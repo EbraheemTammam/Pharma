@@ -22,6 +22,7 @@ public static class OrderMapper
     public static OrderDTO ToDTO(this Order order, string CustomerName, string userFullName) =>
         new()
         {
+            Id = order.Id,
             Paid = (decimal)order.Paid,
             CreatedAt = order.CreatedAt,
             TotalPrice = (decimal)order.TotalPrice,
