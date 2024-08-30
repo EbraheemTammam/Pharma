@@ -14,7 +14,7 @@ public class RepositoryManager : IRepositoryManager
         _context = context;
         _serviceProvider = serviceProvider;
     }
-    public IProductRepository Products => _serviceProvider.GetRequiredService<IProductRepository>();
+    public IRepository<Product> Products => _serviceProvider.GetRequiredService<IRepository<Product>>();
     public IRepository<ProductProvider> ProductProviders => _serviceProvider.GetRequiredService<IRepository<ProductProvider>>();
     public IRepository<IncomingOrder> IncomingOrders => _serviceProvider.GetRequiredService<IRepository<IncomingOrder>>();
     public IProductItemRepository ProductItems => _serviceProvider.GetRequiredService<IProductItemRepository>();

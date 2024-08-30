@@ -88,7 +88,6 @@ public static class ServiceExtensions
                 .AddScoped<IProductItemRepository, ProductItemRepository>()
                 .AddScoped<IRepository<Order>, OrderRepository>()
                 .AddScoped<IRepository<OrderItem>, OrderItemRepository>()
-                .AddScoped<IProductRepository, ProductRepository>()
                 .AddScoped<IPaymentRepository, PaymentRepositry>();
 
     /// <summary>
