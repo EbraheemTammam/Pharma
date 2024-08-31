@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Service.Interfaces;
+using Pharmacy.Application.Interfaces;
+using Pharmacy.Application.Services;
 using Pharmacy.Infrastructure.Data;
 using Pharmacy.Infrastructure.Data.Repositories;
-using Pharmacy.Application.Services;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -23,7 +23,6 @@ public static class ServiceExtensions
                 .ConfigureCors()
                 .ConfigureIISIntegration()
                 .ConfigureRepositories()
-                .ConfigureServices()
                 .AddControllers();
 
     private static IServiceCollection ConfigureDbContextPool(this IServiceCollection services, IConfiguration configuration) =>
@@ -89,19 +88,4 @@ public static class ServiceExtensions
                 .AddScoped<IRepository<Order>, OrderRepository>()
                 .AddScoped<IRepository<OrderItem>, OrderItemRepository>()
                 .AddScoped<IPaymentRepository, PaymentRepositry>();
-
-    /// <summary>
-    ///     Inject all the services
-    /// </summary>
-    /// <param name="services">IServiceCollection</param>
-    /// <returns>A reference to this instance after injecting services</returns>
-    private static IServiceCollection ConfigureServices(this IServiceCollection services) =>
-        services.AddScoped<UserManager<User>, UserManager<User>>()
-                .AddScoped<PasswordHasher<User>, PasswordHasher<User>>()
-                .AddScoped<IAuthService, AuthService>()
-                .AddScoped<IProductService, ProductService>()
-                .AddScoped<IScarceProductService, ScarceProductService>()
-                .AddScoped<IProductProviderService, ProductProviderService>()
-                .AddScoped<IIncomingOrderService, IncomingOrderService>()
-                .AddScoped<ICustomerService, CustomerService>();
 }
