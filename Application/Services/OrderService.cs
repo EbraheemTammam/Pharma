@@ -3,7 +3,7 @@ using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Shared.Responses;
 using Pharmacy.Shared.DTOs;
-using Pharmacy.Service.Interfaces;
+using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Utilities;
 

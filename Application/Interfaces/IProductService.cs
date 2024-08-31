@@ -1,7 +1,7 @@
 using Pharmacy.Shared.Responses;
 using Pharmacy.Shared.DTOs;
 
-namespace Pharmacy.Service.Interfaces;
+namespace Pharmacy.Application.Interfaces;
 
 
 public interface IProductService : IService<Guid>

@@ -1,6 +1,6 @@
 using Pharmacy.Shared.Responses;
 
-namespace Pharmacy.Service.Interfaces;
+namespace Pharmacy.Application.Interfaces;
 
 
 public interface IService<TId>
