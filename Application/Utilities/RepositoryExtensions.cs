@@ -1,8 +1,8 @@
 using Pharmacy.Application.Mappers;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Models;
-using Pharmacy.Shared.DTOs;
-using Pharmacy.Shared.Responses;
+using Pharmacy.Application.DTOs;
+using Pharmacy.Application.Responses;
 
 namespace Pharmacy.Application.Utilities;
 

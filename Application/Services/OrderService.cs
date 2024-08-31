@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
-using Pharmacy.Shared.Responses;
-using Pharmacy.Shared.DTOs;
+using Pharmacy.Application.Responses;
+using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Utilities;

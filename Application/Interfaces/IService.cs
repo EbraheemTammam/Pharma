@@ -1,4 +1,4 @@
-using Pharmacy.Shared.Responses;
+using Pharmacy.Application.Responses;
 
 namespace Pharmacy.Application.Interfaces;
 

@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Domain.Models;
 using Pharmacy.Application.Interfaces;
-using Pharmacy.Shared.Responses;
-using Pharmacy.Shared.DTOs;
+using Pharmacy.Application.Responses;
+using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Services;
 
