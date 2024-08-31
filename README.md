@@ -1,5 +1,5 @@
 # Pharma
-Pharmacy Management System built with $\bold{.NET\ 8}\ Web\ API$ following $\bold{Onion\ Architecture}$.
+Pharmacy Management System built with .NET 8 Web API following Onion Architecture.
 
 ## Project Overview
 This project is concerned with managing pharmacy from financial prespective, starting from product providers and the incoming orders at which products enter the system, followed by the storage and ends with orders and customers.
