@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Presentation.Utilities;
-using Pharmacy.Service.Interfaces;
-using Pharmacy.Shared.DTOs;
-using Pharmacy.Shared.Responses;
+using Pharmacy.Application.Interfaces;
+using Pharmacy.Application.DTOs;
+using Pharmacy.Application.Responses;
 
 namespace Pharmacy.Presentation.Controllers;
 

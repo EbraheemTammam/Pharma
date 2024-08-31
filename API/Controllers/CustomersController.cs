@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.Shared.DTOs;
-using Pharmacy.Shared.Responses;
-using Pharmacy.Service.Interfaces;
+using Pharmacy.Application.DTOs;
+using Pharmacy.Application.Responses;
+using Pharmacy.Application.Interfaces;
 using Pharmacy.Presentation.Utilities;
 using Microsoft.AspNetCore.Authorization;
 
