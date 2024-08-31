@@ -2,11 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
-using Pharmacy.Domain.Interfaces;
-using Pharmacy.Application.Interfaces;
-using Pharmacy.Application.Services;
+using Pharmacy.Application.Utilities;
+using Pharmacy.Infrastructure.Utilities;
 using Pharmacy.Infrastructure.Data;
-using Pharmacy.Infrastructure.Data.Repositories;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -14,23 +12,27 @@ namespace Pharmacy.Presentation.Utilities;
 
 public static class ServiceExtensions
 {
-    public static void Configure(this IServiceCollection services, IConfiguration configuration) =>
-        services.AddEndpointsApiExplorer()
-                .AddSwaggerGen()
-                .ConfigureDbContextPool(configuration)
-                .ConfigureAuth(configuration)
-                .ConfigureCookie()
-                .ConfigureCors()
-                .ConfigureIISIntegration()
-                .ConfigureRepositories()
-                .AddControllers();
+    public static IServiceCollection Configure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+        services.ConfigureDbContextPool(configuration);
+        services.ConfigureAuth(configuration);
+        services.ConfigureCookie();
+        services.ConfigureCors();
+        services.ConfigureIISIntegration();
+        services.AddControllers();
+        services.AddServices();
+        services.AddRepositories();
+        return services;
+    }
 
-    private static IServiceCollection ConfigureDbContextPool(this IServiceCollection services, IConfiguration configuration) =>
+    public static IServiceCollection ConfigureDbContextPool(this IServiceCollection services, IConfiguration configuration) =>
         services.AddDbContextPool<ApplicationDbContext>(
             options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
 
-    private static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
     {
         /* ------- Register Identity ------- */
         services.AddIdentity<User, IdentityRole<int>>()
@@ -45,7 +47,7 @@ public static class ServiceExtensions
         return services;
     }
 
-    private static IServiceCollection ConfigureCookie(this IServiceCollection services) =>
+    public static IServiceCollection ConfigureCookie(this IServiceCollection services) =>
         services.ConfigureApplicationCookie(
                     options =>
                     {
@@ -60,7 +62,7 @@ public static class ServiceExtensions
                     }
                 );
 
-    private static IServiceCollection ConfigureCors(this IServiceCollection services) =>
+    public static IServiceCollection ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options =>
             {
                 options.AddPolicy(
@@ -72,20 +74,6 @@ public static class ServiceExtensions
             }
         );
 
-    private static IServiceCollection ConfigureIISIntegration(this IServiceCollection services) =>
+    public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services) =>
         services.Configure<IISOptions>(options => {});
-
-    /// <summary>
-    ///     Inject all the repositories
-    /// </summary>
-    /// <param name="services">IServiceCollection</param>
-    /// <returns>A reference to this instance after injecting services</returns>
-    private static IServiceCollection ConfigureRepositories(this IServiceCollection services) =>
-        services.AddScoped<IRepositoryManager, RepositoryManager>()
-                .AddScoped(typeof(IRepository<>), typeof(GenericRepository<>))
-                .AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>()
-                .AddScoped<IProductItemRepository, ProductItemRepository>()
-                .AddScoped<IRepository<Order>, OrderRepository>()
-                .AddScoped<IRepository<OrderItem>, OrderItemRepository>()
-                .AddScoped<IPaymentRepository, PaymentRepositry>();
 }
