@@ -26,11 +26,11 @@ public class CustomerService : ICustomerService
     public async Task<BaseResponse> GetById(Guid id)
     {
         Customer? customer = await _manager.Customers.GetById(id);
-        return
-        (
-            customer is null ? new NotFoundResponse(id, nameof(Customer))
-            : new OkResponse<CustomerDTO>(customer.ToDTO())
-        );
+        return customer switch
+        {
+            null => new NotFoundResponse(id, nameof(Customer)),
+            _ => new OkResponse<CustomerDTO>(customer.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> Create(CustomerCreateDTO customerDTO)

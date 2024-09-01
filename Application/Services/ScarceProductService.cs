@@ -18,15 +18,20 @@ public class ScarceProductService : IScarceProductService
         _manager = repoManager;
 
     public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<ScarceProductDTO>>(
-            (await _manager.ScarceProducts.GetAll()).ConvertAll(obj => obj.ToDTO())
+        new OkResponse<IEnumerable<ScarceProductDTO>>
+        (
+            (await _manager.ScarceProducts.GetAll())
+            .ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetById(Guid id)
     {
         ScarceProduct? product = await _manager.ScarceProducts.GetById(id);
-        return product is null ? new NotFoundResponse(id, nameof(ScarceProduct))
-        : new OkResponse<ScarceProductDTO>(product.ToDTO());
+        return product switch
+        {
+            null => new NotFoundResponse(id, nameof(ScarceProduct)),
+            _ => new OkResponse<ScarceProductDTO>(product.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> Create(ScarceProductCreateDTO schema)

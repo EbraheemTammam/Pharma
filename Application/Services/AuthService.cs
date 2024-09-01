@@ -23,17 +23,19 @@ public class AuthService : IAuthService
     }
 
     public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<UserDTO>>(
+        new OkResponse<IEnumerable<UserDTO>>
+        (
             (await _manager.Users.ToListAsync()).ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetById(int id)
     {
         User? user = await _manager.FindByIdAsync(id.ToString());
-        return (
-            user is null ? new NotFoundResponse(id, nameof(User))
-            : new OkResponse<UserDTO>(user.ToDTO())
-        );
+        return user switch
+        {
+            null => new NotFoundResponse(id, nameof(User)),
+            _ => new OkResponse<UserDTO>(user.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> Create(UserCreateDTO user)
@@ -54,8 +56,11 @@ public class AuthService : IAuthService
         user.Update(schema);
         user.PasswordHash = _passwordHasher.HashPassword(user, schema.Password);
         var result = await _manager.UpdateAsync(user);
-        if(result.Succeeded) return new CreatedResponse<UserDTO>(user.ToDTO());
-        else return new InternalServerErrorResponse("User could not be updated");
+        return result.Succeeded switch
+        {
+            true => new CreatedResponse<UserDTO>(user.ToDTO()),
+            false => new InternalServerErrorResponse("User could not be updated")
+        };
     }
 
     public async Task<BaseResponse> Delete(int id)
@@ -63,14 +68,17 @@ public class AuthService : IAuthService
         User? user = await _manager.FindByIdAsync(id.ToString());
         if(user is null) return new NotFoundResponse(id, nameof(User));
         var result = await _manager.DeleteAsync(user);
-        if(result.Succeeded) return new NoContentResponse();
-        else return new InternalServerErrorResponse("User could not be deleted");
+        return result.Succeeded switch
+        {
+            true => new NoContentResponse(),
+            false => new InternalServerErrorResponse("User could not be deleted")
+        };
     }
 
     public async Task<BaseResponse> Login(LoginDTO loginDTO)
     {
         User? user = await _manager.FindByNameAsync(loginDTO.Email);
-        if(user is not null)
+        if(user is null)
         {
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
             if(result.Succeeded) return new OkResponse<bool>(true);

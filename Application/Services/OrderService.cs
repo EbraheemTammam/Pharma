@@ -23,35 +23,35 @@ public class OrderService : IOrderService
     }
 
     public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<OrderDTO>>(
-            (await _manager.Orders.GetAll()).ConvertAll(obj => obj.ToDTO())
+        new OkResponse<IEnumerable<OrderDTO>>
+        (
+            (await _manager.Orders.GetAll())
+            .ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetById(Guid id)
     {
-        /* ------- Check if Order Exist ------- */
         Order? order = await _manager.Orders.GetById(id);
-        if(order is null) return new NotFoundResponse(id, nameof(Order));
-        return new OkResponse<OrderDTO>(order.ToDTO());
+        return order switch
+        {
+            null => new NotFoundResponse(id, nameof(Order)),
+            _ => new OkResponse<OrderDTO>(order.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> GetItems(Guid id)
     {
-        /* ------- Check if Order Exist ------- */
         Order? Order = await _manager.Orders.GetById(id);
         if(Order is null) return new NotFoundResponse(id, nameof(Order));
-        /* ------- Get Items ------- */
+
         IEnumerable<OrderItem> items = await _manager.OrderItems.Filter(obj => obj.OrderId == id);
         return new OkResponse<IEnumerable<OrderItemDTO>>(items.ConvertAll(obj => obj.ToDTO()));
     }
 
     public async Task<BaseResponse> Create(OrderCreateDTO orderDTO, string userName)
     {
-        /* ------- Check if Customer Exists ------- */
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
-        /* ------- Get User ------- */
         User user = (await _userManager.FindByNameAsync(userName))!;
-        /* ------- Create Order ------- */
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
         /* ------- Add Order Items ------- */
         BaseResponse response = await _manager.AddAllOrderItems(orderDTO.Items, order);
@@ -69,7 +69,8 @@ public class OrderService : IOrderService
         /* ------- Save Changes ------- */
         await _manager.Save();
         /* ------- Return Response ------- */
-        return new CreatedResponse<OrderDTO>(
+        return new CreatedResponse<OrderDTO>
+        (
             order.ToDTO(customer?.Name, user.GetFullName())
         );
     }
@@ -95,7 +96,8 @@ public class OrderService : IOrderService
         /* ------- Get User ------- */
         User user = (await _userManager.FindByNameAsync(userName))!;
         /* ------- Return Response ------- */
-        return new OkResponse<OrderDTO>(
+        return new OkResponse<OrderDTO>
+        (
             order.ToDTO(customer?.Name, user.GetFullName())
         );
     }

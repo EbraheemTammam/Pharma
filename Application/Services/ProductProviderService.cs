@@ -20,15 +20,20 @@ public class ProductProviderService : IProductProviderService
     }
 
     public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<ProductProviderDTO>>(
-            (await _manager.ProductProviders.GetAll()).ConvertAll(obj => obj.ToDTO())
+        new OkResponse<IEnumerable<ProductProviderDTO>>
+        (
+            (await _manager.ProductProviders.GetAll())
+            .ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetById(Guid id)
     {
         ProductProvider? productProvider = await _manager.ProductProviders.GetById(id);
-        return productProvider is null ? new NotFoundResponse(id, nameof(ProductProvider))
-        : new OkResponse<ProductProviderDTO>(productProvider.ToDTO());
+        return productProvider switch
+        {
+            null => new NotFoundResponse(id, nameof(ProductProvider)),
+            _ => new OkResponse<ProductProviderDTO>(productProvider.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> Create(ProductProviderCreateDTO schema)

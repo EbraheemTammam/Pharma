@@ -18,8 +18,10 @@ public class IncomingOrderService : IIncomingOrderService
         _manager = repoManager;
 
     public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<IncomingOrderDTO>>(
-            (await _manager.IncomingOrders.GetAll()).ConvertAll(obj => obj.ToDTO())
+        new OkResponse<IEnumerable<IncomingOrderDTO>>
+        (
+            (await _manager.IncomingOrders.GetAll())
+            .ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetById(Guid id)
@@ -56,7 +58,8 @@ public class IncomingOrderService : IIncomingOrderService
             return response;
         /* ------- Save Changes ------- */
         await _manager.Save();
-        return new CreatedResponse<IncomingOrderDTO>(
+        return new CreatedResponse<IncomingOrderDTO>
+        (
             incomingOrder.ToDTO(provider.Name)
         );
     }
@@ -73,7 +76,8 @@ public class IncomingOrderService : IIncomingOrderService
         await _manager.Save();
         /* ------- Get Provider ------- */
         ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
-        return new CreatedResponse<IncomingOrderDTO>(
+        return new CreatedResponse<IncomingOrderDTO>
+        (
             incomingOrder.ToDTO(provider.Name)
         );
     }

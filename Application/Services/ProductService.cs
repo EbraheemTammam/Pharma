@@ -20,7 +20,8 @@ public class ProductService : IProductService
     public async Task<BaseResponse> GetAll() =>
         new OkResponse<IEnumerable<ProductDTO>>
         (
-            (await _manager.Products.GetAll()).ConvertAll(obj => obj.ToDTO())
+            (await _manager.Products.GetAll())
+            .ConvertAll(obj => obj.ToDTO())
         );
 
     public async Task<BaseResponse> GetLacked() =>
@@ -32,8 +33,11 @@ public class ProductService : IProductService
     public async Task<BaseResponse> GetById(Guid id)
     {
         Product? product = await _manager.Products.GetById(id);
-        return product is null ? new NotFoundResponse(id, nameof(Product))
-        : new OkResponse<ProductDTO>(product.ToDTO());
+        return product switch
+        {
+            null => new NotFoundResponse(id, nameof(Product)),
+            _ => new OkResponse<ProductDTO>(product.ToDTO())
+        };
     }
 
     public async Task<BaseResponse> Create(ProductCreateDTO schema)
