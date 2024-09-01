@@ -49,7 +49,6 @@ public class OrderService : IOrderService
     {
         /* ------- Check if Customer Exists ------- */
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
-        if(customer is null) return new NotFoundResponse(orderDTO.CustomerId, nameof(Customer));
         /* ------- Get User ------- */
         User user = (await _userManager.FindByNameAsync(userName))!;
         /* ------- Create Order ------- */
@@ -62,13 +61,16 @@ public class OrderService : IOrderService
         order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
         _manager.Orders.Update(order);
         /* ------- Update Customer Dept ------- */
-        customer.Dept += order.TotalPrice - order.Paid;
-        _manager.Customers.Update(customer);
+        if(customer is not null)
+        {
+            customer.Dept += order.TotalPrice - order.Paid;
+            _manager.Customers.Update(customer);
+        }
         /* ------- Save Changes ------- */
         await _manager.Save();
         /* ------- Return Response ------- */
         return new CreatedResponse<OrderDTO>(
-            order.ToDTO(customer.Name, user.GetFullName())
+            order.ToDTO(customer?.Name, user.GetFullName())
         );
     }
 
@@ -78,9 +80,12 @@ public class OrderService : IOrderService
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return new NotFoundResponse(id, nameof(Order));
         /* ------- Update Customer ------- */
-        Customer customer = (await _manager.Customers.GetById(order.CustomerId))!;
-        customer.Dept -= order.TotalPrice - order.Paid;
-        _manager.Customers.Update(customer);
+        Customer? customer = await _manager.Customers.GetById(order.CustomerId);
+        if(customer is not null)
+        {
+            customer.Dept -= order.TotalPrice - order.Paid;
+            _manager.Customers.Update(customer);
+        }
         /* ------- Update Order Items ------- */
         await _manager.DeleteAllOrderItems(id);
         order.TotalPrice = 0;
@@ -91,7 +96,7 @@ public class OrderService : IOrderService
         User user = (await _userManager.FindByNameAsync(userName))!;
         /* ------- Return Response ------- */
         return new OkResponse<OrderDTO>(
-            order.ToDTO(customer.Name, user.GetFullName())
+            order.ToDTO(customer?.Name, user.GetFullName())
         );
     }
 
