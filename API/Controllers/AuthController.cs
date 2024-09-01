@@ -8,10 +8,10 @@ using Pharmacy.Presentation.Utilities;
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController, Authorize(Roles = "Admin, Manager")]
-public class UsersController : GenericController<int, UserDTO>
+[ApiController]
+public class AuthController : GenericController<int, UserDTO>
 {
-    public UsersController(IAuthService authService) : base(authService) {}
+    public AuthController(IAuthService authService) : base(authService) {}
 
     [HttpPost("Register"), Authorize(Roles = "Admin, Manager")]
     public async Task<IActionResult> Create(UserCreateDTO user)
@@ -21,17 +21,6 @@ public class UsersController : GenericController<int, UserDTO>
         var resultDTO = result.GetData<UserDTO>();
         return Created($"/api/Users/{resultDTO.Id}", resultDTO);
     }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UserCreateDTO product)
-    {
-        BaseResponse result = await ((IAuthService)_service).Update(id, product);
-        if(result.StatusCode != 201) return ProcessError(result);
-        return Created($"/api/Users/{id}", result.GetData<UserDTO>());
-    }
-
-    [HttpDelete("{id}")]
-    public async override Task<IActionResult> Delete(int id) => await base.Delete(id);
 
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
