@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pharmacy.Application.DTOs;
 
@@ -6,6 +6,6 @@ namespace Pharmacy.Application.DTOs;
 
 public record OrderCreateDTO : OrderUpdateDTO
 {
-    [Required]
-    public required Guid CustomerId {get; set;}
+    [AllowNull]
+    public Guid? CustomerId {get; set;}
 }
