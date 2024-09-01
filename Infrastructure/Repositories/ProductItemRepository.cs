@@ -2,8 +2,9 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Models;
+using Pharmacy.Infrastructure.Data;
 
-namespace Pharmacy.Infrastructure.Data.Repositories;
+namespace Pharmacy.Infrastructure.Repositories;
 
 
 public class ProductItemRepository : GenericRepository<ProductItem>, IProductItemRepository

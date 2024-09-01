@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
+using Pharmacy.Infrastructure.Data;
 
-namespace Pharmacy.Infrastructure.Data.Repositories;
+namespace Pharmacy.Infrastructure.Repositories;
 
 
 public class IncomingOrderRepository : GenericRepository<IncomingOrder>

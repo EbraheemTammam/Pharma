@@ -1,8 +1,9 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
+using Pharmacy.Infrastructure.Data;
 
-namespace Pharmacy.Infrastructure.Data.Repositories;
+namespace Pharmacy.Infrastructure.Repositories;
 
 
 public class OrderItemRepository : GenericRepository<OrderItem>

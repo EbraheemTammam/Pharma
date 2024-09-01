@@ -1,8 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Models;
-using Microsoft.Extensions.DependencyInjection;
+using Pharmacy.Infrastructure.Data;
 
-namespace Pharmacy.Infrastructure.Data;
+namespace Pharmacy.Infrastructure.Repositories;
 
 
 public class RepositoryManager : IRepositoryManager

@@ -1,9 +1,10 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Interfaces;
 using Pharmacy.Domain.Generics;
-using System.Linq.Expressions;
+using Pharmacy.Infrastructure.Data;
 
-namespace Pharmacy.Infrastructure.Data.Repositories;
+namespace Pharmacy.Infrastructure.Repositories;
 
 
 public class GenericRepository<TModel> : IRepository<TModel> where TModel : BaseModel
