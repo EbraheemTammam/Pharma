@@ -78,7 +78,7 @@ public class AuthService : IAuthService
     public async Task<BaseResponse> Login(LoginDTO loginDTO)
     {
         User? user = await _manager.FindByNameAsync(loginDTO.Email);
-        if(user is null)
+        if(user is not null)
         {
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, false, false);
             if(result.Succeeded) return new OkResponse<bool>(true);
