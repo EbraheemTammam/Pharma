@@ -14,7 +14,7 @@ public static class ProductMapper
             NumberOfElements = schema.NumberOfElements ?? 1,
             Barcode = schema.Barcode,
             PricePerElement = schema.PricePerElement,
-            IsLack = schema.IsLack ?? false,
+            IsLack = false,
             Minimum = schema.Minimum
         };
 
@@ -40,7 +40,6 @@ public static class ProductMapper
         product.Name = schema.Name;
         product.NumberOfElements = schema.NumberOfElements ?? product.NumberOfElements;
         product.PricePerElement = schema.PricePerElement;
-        product.IsLack = schema.IsLack ?? product.IsLack;
         product.Minimum = schema.Minimum;
     }
 }
