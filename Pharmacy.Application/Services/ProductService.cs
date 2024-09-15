@@ -27,8 +27,23 @@ public class ProductService : IProductService
     public async Task<BaseResponse> GetLacked() =>
         new OkResponse<IEnumerable<ProductDTO>>
         (
-            (await _manager.Products.Filter(obj => obj.IsLack)).ConvertAll(obj => obj.ToDTO())
+            (await _manager.Products.Filter(obj => obj.IsLack))
+            .ConvertAll(obj => obj.ToDTO())
         );
+
+    public async Task<BaseResponse> GetAboutToExpire()
+    {
+        DateOnly currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        return new OkResponse<IEnumerable<ProductItemDTO>>
+        (
+            (
+                await _manager.ProductItems.Filter(
+                    obj => ((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6
+                )
+            )
+            .ConvertAll(obj => obj.ToDTO())
+        );
+    }
 
     public async Task<BaseResponse> GetById(Guid id)
     {

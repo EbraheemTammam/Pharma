@@ -8,14 +8,10 @@ using Pharmacy.Presentation.Utilities;
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController, Authorize]
+[ApiController]
 public class ProductsController : GenericController<Guid, ProductDTO>
 {
     public ProductsController(IProductService productService) : base(productService) {}
-
-    [HttpGet("Lacked")]
-    public async Task<IActionResult> GetLacked() =>
-        Ok((await ((IProductService)_service).GetLacked()).GetResult<IEnumerable<ProductDTO>>());
 
     [HttpPost]
     public async Task<IActionResult> Create(ProductCreateDTO product)
@@ -33,4 +29,11 @@ public class ProductsController : GenericController<Guid, ProductDTO>
         if(response.StatusCode != 201) return ProcessError(response);
         return Created($"/api/Products/{id}", response.GetData<ProductDTO>());
     }
+
+    [HttpGet("AboutToExpire")]
+    public async Task<IActionResult> GetAboutToExpire() =>
+        Ok(
+            (await ((IProductService)_service).GetAboutToExpire())
+            .GetResult<IEnumerable<ProductItemDTO>>()
+        );
 }
