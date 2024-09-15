@@ -21,9 +21,6 @@ public abstract record ProductBaseDTO
     [Required, NonNegative]
     public double PricePerElement {get; set;}
 
-    [AllowNull, DefaultValue(false)]
-    public bool? IsLack {get; set;}
-
     [Required, NonNegative, DefaultValue(0)]
     public int Minimum {get; set;}
 }
