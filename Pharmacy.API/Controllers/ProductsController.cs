@@ -8,7 +8,7 @@ using Pharmacy.Presentation.Utilities;
 namespace Pharmacy.Presentation.Controllers;
 
 
-[ApiController]
+[Authorize, ApiController]
 public class ProductsController : GenericController<Guid, ProductDTO>
 {
     public ProductsController(IProductService productService) : base(productService) {}
