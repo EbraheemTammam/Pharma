@@ -2,7 +2,4 @@ namespace Pharmacy.Application.Responses;
 
 
 
-public class NoContentResponse : BaseResponse
-{
-    public NoContentResponse() : base(204) {}
-}
+public record NoContentResponse() : BaseResponse(204);
