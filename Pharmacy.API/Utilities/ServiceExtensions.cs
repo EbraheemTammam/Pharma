@@ -37,7 +37,6 @@ public static class ServiceExtensions
         /* ------- Register Identity ------- */
         services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
         /* ------- Add Authentication And Authorization ------- */
         services.AddAuthorization()
