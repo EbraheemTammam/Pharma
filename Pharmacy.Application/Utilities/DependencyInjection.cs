@@ -17,8 +17,6 @@ public static class DependencyInjection
     /// <returns>A reference to this instance after injecting services</returns>
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<UserManager<User>, UserManager<User>>();
-        services.AddScoped<PasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IScarceProductService, ScarceProductService>();
