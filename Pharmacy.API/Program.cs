@@ -1,11 +1,10 @@
+using DotNetEnv;
 using Pharmacy.Presentation.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if(builder.Environment.IsDevelopment())
-{
-    builder.Configuration.AddUserSecrets<Program>();
-}
+Env.Load();
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

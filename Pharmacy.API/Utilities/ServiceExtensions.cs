@@ -1,14 +1,14 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Domain.Models;
 using Pharmacy.Application.Utilities;
-using Pharmacy.Infrastructure.Utilities;
 using Pharmacy.Infrastructure.Data;
+using Pharmacy.Infrastructure.Utilities;
 
 namespace Pharmacy.Presentation.Utilities;
-
-
 
 public static class ServiceExtensions
 {
@@ -17,13 +17,15 @@ public static class ServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.ConfigureDbContextPool(configuration);
-        services.ConfigureAuth(configuration);
-        services.ConfigureCookie();
+        services.AddIdentityConfiguration(configuration);
+        services.AddAuthentication();
+        services.AddAuthorization();
+        services.AddJWTAuthentication(configuration);
         services.ConfigureCors();
         services.ConfigureIISIntegration();
         services.AddControllers();
-        services.AddServices();
         services.AddRepositories();
+        services.AddServices();
         return services;
     }
 
@@ -32,35 +34,45 @@ public static class ServiceExtensions
             options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
 
-    public static IServiceCollection ConfigureAuth(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
         /* ------- Register Identity ------- */
         services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-        /* ------- Add Authentication And Authorization ------- */
-        services.AddAuthorization()
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
         /* ------- Get Default User Data from appsettings.json ------- */
-        services.Configure<User>(configuration.GetSection("DefaultUserModel"));
+        var defaultUserModel = configuration.GetSection("DefaultUserModel");
+        if (defaultUserModel.Exists())
+            services.Configure<User>(defaultUserModel);
         return services;
     }
 
-    public static IServiceCollection ConfigureCookie(this IServiceCollection services) =>
-        services.ConfigureApplicationCookie(
-                    options =>
-                    {
-                        options.LoginPath = "/Api/Auth/Login";
-                        options.LogoutPath = "/Api/Auth/Logout";
-                        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                        options.SlidingExpiration = true;
-                        options.AccessDeniedPath = "/Api/Auth/AccessDenied";
-                        options.Cookie.HttpOnly = true;
-                        options.Cookie.SameSite = SameSiteMode.None;
-                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    }
-                );
+    public static IServiceCollection AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettingSection = configuration.GetSection("JwtSetting");
+        if (!jwtSettingSection.Exists()) return services;
+        services.Configure<JwtSetting>(jwtSettingSection);
+        var jwtSetting = jwtSettingSection.Get<JwtSetting>();
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSetting!.ValidIssuer,
+                // ValidAudience = jwtSetting.ValidAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.SecretKey))
+            };
+        });
+        return services;
+    }
 
     public static IServiceCollection ConfigureCors(this IServiceCollection services) =>
         services.AddCors(options =>

@@ -4,7 +4,6 @@ using Pharmacy.Domain.Models;
 
 namespace Pharmacy.Presentation.Utilities;
 
-
 public static class WebAppExtensions
 {
     public static void Configure(this WebApplication app)

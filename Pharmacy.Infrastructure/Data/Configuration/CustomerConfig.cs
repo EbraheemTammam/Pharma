@@ -4,7 +4,6 @@ using Pharmacy.Domain.Models;
 
 namespace Pharmacy.Infrastructure.Data.Configuration;
 
-
 public class CustomerConfigurations : IEntityTypeConfiguration<Customer>
 {
     public void Configure(EntityTypeBuilder<Customer> builder)
