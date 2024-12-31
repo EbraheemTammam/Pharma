@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Interfaces;
@@ -8,57 +9,51 @@ using Pharmacy.Application.Utilities;
 
 namespace Pharmacy.Application.Services;
 
-
-
 public class ProductProviderService : IProductProviderService
 {
-    private readonly IRepositoryManager _manager;
+    private readonly IRepository<ProductProvider> _productProviders;
 
-    public ProductProviderService(IRepositoryManager repoManager)
-    {
-        _manager = repoManager;
-    }
+    public ProductProviderService(IRepository<ProductProvider> repo) => _productProviders = repo;
 
-    public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<ProductProviderDTO>>
-        (
-            (await _manager.ProductProviders.GetAll())
-            .ConvertAll(obj => obj.ToDTO())
+    public async Task<Result<IEnumerable<ProductProviderDTO>>> GetAll() =>
+        Result.Success(
+            (await _productProviders.GetAll())
+            .ConvertAll(ProductProviderMapper.ToDTO)
         );
 
-    public async Task<BaseResponse> GetById(Guid id)
+    public async Task<Result<ProductProviderDTO>> GetById(Guid id)
     {
-        ProductProvider? productProvider = await _manager.ProductProviders.GetById(id);
+        ProductProvider? productProvider = await _productProviders.GetById(id);
         return productProvider switch
         {
-            null => new NotFoundResponse(id, nameof(ProductProvider)),
-            _ => new OkResponse<ProductProviderDTO>(productProvider.ToDTO())
+            null => Result.Fail<ProductProviderDTO>(AppResponses.NotFoundResponse(id, nameof(ProductProvider))),
+            _ => Result.Success(productProvider.ToDTO())
         };
     }
 
-    public async Task<BaseResponse> Create(ProductProviderCreateDTO schema)
+    public async Task<Result<ProductProviderDTO>> Create(ProductProviderCreateDTO schema)
     {
-        ProductProvider productProvider = await _manager.ProductProviders.Add(schema.ToModel());
-        await _manager.Save();
-        return new CreatedResponse<ProductProviderDTO>(productProvider.ToDTO());
+        ProductProvider productProvider = await _productProviders.Add(schema.ToModel());
+        await _productProviders.Save();
+        return Result.Success(productProvider.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<BaseResponse> Update(Guid id, ProductProviderCreateDTO schema)
+    public async Task<Result<ProductProviderDTO>> Update(Guid id, ProductProviderCreateDTO schema)
     {
-        ProductProvider? productProvider = await _manager.ProductProviders.GetById(id);
-        if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
+        ProductProvider? productProvider = await _productProviders.GetById(id);
+        if(productProvider is null) return Result.Fail<ProductProviderDTO>(AppResponses.NotFoundResponse(id, nameof(ProductProvider)));
         productProvider.Update(schema);
-        productProvider = _manager.ProductProviders.Update(productProvider);
-        await _manager.Save();
-        return new CreatedResponse<ProductProviderDTO>(productProvider.ToDTO());
+        productProvider = _productProviders.Update(productProvider);
+        await _productProviders.Save();
+        return Result.Success(productProvider.ToDTO());
     }
 
-    public async Task<BaseResponse> Delete(Guid id)
+    public async Task<Result> Delete(Guid id)
     {
-        ProductProvider? productProvider = await _manager.ProductProviders.GetById(id);
-        if(productProvider is null) return new NotFoundResponse(id, nameof(ProductProvider));
-        _manager.ProductProviders.Delete(productProvider);
-        await _manager.Save();
-        return new NoContentResponse();
+        ProductProvider? productProvider = await _productProviders.GetById(id);
+        if(productProvider is null) return Result.Fail(AppResponses.NotFoundResponse(id, nameof(ProductProvider)));
+        _productProviders.Delete(productProvider);
+        await _productProviders.Save();
+        return Result.Success(StatusCodes.Status204NoContent);
     }
 }

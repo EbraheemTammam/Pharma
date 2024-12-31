@@ -1,13 +1,11 @@
-using Pharmacy.Application.Responses;
+﻿using Pharmacy.Application.Responses;
 using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Interfaces;
 
-
-public interface IAuthService : IService<int>
+public interface IAuthService
 {
-    Task<BaseResponse> Create(UserCreateDTO user);
-    Task<BaseResponse> Update(int id, UserCreateDTO user);
-    Task<BaseResponse> Login(LoginDTO loginDTO);
-    Task<BaseResponse> Logout();
+    Task<Result<TokenDTO>> RegisterAsync(RegisterDTO registerDTO);
+    Task<Result<TokenDTO>> LoginAsync(LoginDTO loginDTO);
+    Task<Result<TokenDTO>> RefreshToken(TokenDTO tokenDTO);
 }

@@ -5,59 +5,57 @@ using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Responses;
 using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Utilities;
+using Microsoft.AspNetCore.Http;
 
 namespace Pharmacy.Application.Services;
 
-
-
 public class ScarceProductService : IScarceProductService
 {
-    private readonly IRepositoryManager _manager;
+    private readonly IRepository<ScarceProduct> _scarceProducts;
 
-    public ScarceProductService(IRepositoryManager repoManager) =>
-        _manager = repoManager;
+    public ScarceProductService(IRepository<ScarceProduct> repo) =>
+        _scarceProducts = repo;
 
-    public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<ScarceProductDTO>>
-        (
-            (await _manager.ScarceProducts.GetAll())
-            .ConvertAll(obj => obj.ToDTO())
+    public async Task<Result<IEnumerable<ScarceProductDTO>>> GetAll() =>
+        Result.Success(
+            (await _scarceProducts.GetAll())
+            .ConvertAll(ScarceProductMapper.ToDTO)
         );
 
-    public async Task<BaseResponse> GetById(Guid id)
+    public async Task<Result<ScarceProductDTO>> GetById(Guid id)
     {
-        ScarceProduct? product = await _manager.ScarceProducts.GetById(id);
+        ScarceProduct? product = await _scarceProducts.GetById(id);
         return product switch
         {
-            null => new NotFoundResponse(id, nameof(ScarceProduct)),
-            _ => new OkResponse<ScarceProductDTO>(product.ToDTO())
+            null => Result.Fail<ScarceProductDTO>(AppResponses.NotFoundResponse(id, nameof(ScarceProduct))),
+            _ => Result.Success(product.ToDTO())
         };
     }
 
-    public async Task<BaseResponse> Create(ScarceProductCreateDTO schema)
+    public async Task<Result<ScarceProductDTO>> Create(ScarceProductCreateDTO schema)
     {
         ScarceProduct product = schema.ToModel();
-        await _manager.ScarceProducts.Add(product);
-        await _manager.Save();
-        return new CreatedResponse<ScarceProductDTO>(product.ToDTO());
+        await _scarceProducts.Add(product);
+        await _scarceProducts.Save();
+        return Result.Success(product.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<BaseResponse> Update(Guid id, ScarceProductCreateDTO schema)
+    public async Task<Result<ScarceProductDTO>> Update(Guid id, ScarceProductCreateDTO schema)
     {
-        ScarceProduct? product = await _manager.ScarceProducts.GetById(id);
-        if(product is null) return new NotFoundResponse(id, nameof(ScarceProduct));
+        ScarceProduct? product = await _scarceProducts.GetById(id);
+        if(product is null) return Result.Fail<ScarceProductDTO>(AppResponses.NotFoundResponse(id, nameof(ScarceProduct)));
         product.Update(schema);
-        _manager.ScarceProducts.Update(product);
-        await _manager.Save();
-        return new CreatedResponse<ScarceProductDTO>(product.ToDTO());
+        _scarceProducts.Update(product);
+        await _scarceProducts.Save();
+        return Result.Success(product.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<BaseResponse> Delete(Guid id)
+    public async Task<Result> Delete(Guid id)
     {
-        ScarceProduct? product = await _manager.ScarceProducts.GetById(id);
-        if(product is null) return new NotFoundResponse(id, nameof(Product));
-        _manager.ScarceProducts.Delete(product);
-        await _manager.Save();
-        return new NoContentResponse();
+        ScarceProduct? product = await _scarceProducts.GetById(id);
+        if(product is null) return Result.Fail(AppResponses.NotFoundResponse(id, nameof(ScarceProduct)));
+        _scarceProducts.Delete(product);
+        await _scarceProducts.Save();
+        return Result.Success(StatusCodes.Status204NoContent);
     }
 }

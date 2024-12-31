@@ -3,11 +3,9 @@ using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Mappers;
 
-
-
 public static class UserMapper
 {
-    public static User ToModel(this UserCreateDTO schema) =>
+    public static User ToUserModel(this RegisterDTO schema) =>
         new()
         {
             FirstName = schema.FirstName,
@@ -15,7 +13,7 @@ public static class UserMapper
             UserName = schema.Email
         };
 
-    public static UserDTO ToDTO(this User model) =>
+    public static UserDTO ToUserDTO(this User model) =>
         new()
         {
             Id = model.Id,
@@ -24,7 +22,7 @@ public static class UserMapper
             Email = model.UserName!
         };
 
-    public static void Update(this User user, UserCreateDTO schema)
+    public static void Update(this User user, RegisterDTO schema)
     {
         user.FirstName = schema.FirstName;
         user.LastName = schema.LastName;

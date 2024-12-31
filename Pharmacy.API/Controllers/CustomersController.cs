@@ -1,55 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.Application.DTOs;
-using Pharmacy.Application.Responses;
-using Pharmacy.Application.Interfaces;
-using Pharmacy.Presentation.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Pharmacy.Application.DTOs;
+using Pharmacy.Application.Interfaces;
 
 namespace Pharmacy.Presentation.Controllers;
 
-
-[ApiController, Authorize]
-public class CustomersController : GenericController<Guid, CustomerDTO>
+[Authorize]
+public class CustomersController : ApiBaseController
 {
-    public CustomersController(ICustomerService service) : base(service){}
+    private readonly ICustomerService _service;
+    public CustomersController(ICustomerService service) => _service = service;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll() =>
+        HandleResult(await _service.GetAll());
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id) =>
+        HandleResult(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(CustomerCreateDTO customerDTO)
-    {
-        BaseResponse response = await ((ICustomerService)_service).Create(customerDTO);
-        if(response.StatusCode != 201) return ProcessError(response);
-        var result = response.GetData<CustomerDTO>();
-        return Created($"/api/Customers/{result.Id}", result);
-    }
+    public async Task<IActionResult> Create(CustomerCreateDTO customerDTO) =>
+        HandleResult(await _service.Create(customerDTO));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, CustomerCreateDTO customerDTO)
-    {
-        BaseResponse result = await ((ICustomerService)_service).Update(id, customerDTO);
-        if(result.StatusCode != 201) return ProcessError(result);
-        return Created($"/api/Customers/{id}", result.GetData<CustomerDTO>());
-    }
+    public async Task<IActionResult> Update(Guid id, CustomerCreateDTO customerDTO) =>
+        HandleResult(await _service.Update(id, customerDTO));
 
     [HttpGet("{customerId}/Payments")]
     public async Task<IActionResult> GetPayments(Guid customerId) =>
-        Ok(
-            (await ((ICustomerService)_service).GetPaymentOperations(customerId))
-            .GetResult<IEnumerable<PaymentDTO>>()
-        );
+        HandleResult(await _service.GetPaymentOperations(customerId));
 
     [HttpPost("{customerId}/Payments")]
-    public async Task<IActionResult> CreatePayments(Guid customerId, PaymentCreateDTO paymentDTO)
-    {
-        BaseResponse result = await ((ICustomerService)_service).AddPaymentOperation(customerId, paymentDTO);
-        if(result.StatusCode != 200) return ProcessError(result);
-        return Ok(result.GetResult<PaymentDTO>());
-    }
+    public async Task<IActionResult> CreatePayments(Guid customerId, PaymentCreateDTO paymentDTO) =>
+        HandleResult(await _service.AddPaymentOperation(customerId, paymentDTO));
 
     [HttpDelete("{customerId}/Payments/{paymentId}")]
-    public async Task<IActionResult> DeletePayments(Guid customerId, int paymentId)
-    {
-        BaseResponse result = await ((ICustomerService)_service).RemovePaymentOperation(customerId, paymentId);
-        if(result.StatusCode != 204) return ProcessError(result);
-        return NoContent();
-    }
+    public async Task<IActionResult> DeletePayments(Guid customerId, int paymentId) =>
+        HandleResult(await _service.RemovePaymentOperation(customerId, paymentId));
 }

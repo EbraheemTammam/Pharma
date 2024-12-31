@@ -1,33 +1,37 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Pharmacy.Presentation.Utilities;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.DTOs;
-using Pharmacy.Application.Responses;
 
 namespace Pharmacy.Presentation.Controllers;
 
-
-
-[ApiController, Authorize]
-public class OrdersController : GenericController<Guid, OrderDTO>
+[Authorize]
+public class OrdersController : ApiBaseController
 {
-    public OrdersController(IOrderService service) : base(service) {}
+    private readonly IOrderService _service;
+    public OrdersController(IOrderService service) => _service = service;
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll() =>
+        HandleResult(await _service.GetAll());
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id) =>
+        HandleResult(await _service.GetById(id));
+
+    [HttpGet("{id}/Items")]
+    public async Task<IActionResult> GetItems(Guid id) =>
+        HandleResult(await _service.GetItems(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(OrderCreateDTO orderDTO)
-    {
-        BaseResponse result = await ((IOrderService)_service).Create(orderDTO, User.Identity!.Name!);
-        if(result.StatusCode != 201) return ProcessError(result);
-        var response = result.GetData<OrderDTO>();
-        return Created($"/Api/Orders/{response.Id}", response);
-    }
+    public async Task<IActionResult> Create(OrderCreateDTO orderDTO) =>
+        HandleResult(await _service.Create(orderDTO));
 
     [HttpPut]
-    public async Task<IActionResult> Update(Guid id, OrderCreateDTO orderDTO)
-    {
-        BaseResponse result = await ((IOrderService)_service).Update(id, orderDTO, User.Identity!.Name!);
-        if(result.StatusCode != 201) return ProcessError(result);
-        return Created($"/Api/Orders/{id}", result.GetData<OrderDTO>());
-    }
+    public async Task<IActionResult> Update(Guid id, OrderCreateDTO orderDTO) =>
+        HandleResult(await _service.Update(id, orderDTO));
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id) =>
+        HandleResult(await _service.Delete(id));
 }

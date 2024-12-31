@@ -4,9 +4,12 @@ using Pharmacy.Application.DTOs;
 namespace Pharmacy.Application.Interfaces;
 
 
-public interface IIncomingOrderService : IService<Guid>
+public interface IIncomingOrderService
 {
-    Task<BaseResponse> GetItems(Guid id);
-    Task<BaseResponse> Create(IncomingOrderCreateDTO schema);
-    Task<BaseResponse> Update(Guid id, IncomingOrderUpdateDTO schema);
+    Task<Result<IEnumerable<IncomingOrderDTO>>> GetAll();
+    Task<Result<IEnumerable<ProductItemDTO>>> GetItems(Guid id);
+    Task<Result<IncomingOrderDTO>> GetById(Guid id);
+    Task<Result<IncomingOrderDTO>> Create(IncomingOrderCreateDTO schema);
+    Task<Result<IncomingOrderDTO>> Update(Guid id, IncomingOrderUpdateDTO schema);
+    Task<Result> Delete(Guid id);
 }

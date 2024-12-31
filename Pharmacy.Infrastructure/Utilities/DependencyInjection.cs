@@ -18,11 +18,6 @@ public static class DependencyInjection
     {
         services.AddScoped<IRepositoryManager, RepositoryManager>();
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IRepository<IncomingOrder>, IncomingOrderRepository>();
-        services.AddScoped<IProductItemRepository, ProductItemRepository>();
-        services.AddScoped<IRepository<Order>, OrderRepository>();
-        services.AddScoped<IRepository<OrderItem>, OrderItemRepository>();
-        services.AddScoped<IPaymentRepository, PaymentRepositry>();
         return services;
     }
 }

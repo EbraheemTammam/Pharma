@@ -3,8 +3,6 @@ using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Mappers;
 
-
-
 public static class IncomingOrderMapper
 {
     public static IncomingOrder ToModel(this IncomingOrderCreateDTO schema) =>
@@ -22,8 +20,8 @@ public static class IncomingOrderMapper
         new()
         {
             Id = model.Id,
-            Price = (decimal)model.Price,
-            Paid = (decimal)model.Paid,
+            Price = model.Price,
+            Paid = model.Paid,
             CreatedAt = model.CreatedAt,
             ProviderName = provider,
         };

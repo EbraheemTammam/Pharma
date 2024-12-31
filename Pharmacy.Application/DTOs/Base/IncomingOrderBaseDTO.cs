@@ -9,8 +9,8 @@ namespace Pharmacy.Application.DTOs;
 public abstract record IncomingOrderBaseDTO
 {
     [Required, NonNegative]
-    public decimal Price {get; set;}
+    public double Price {get; set;}
 
     [Required, NonNegative, DefaultValue(0)]
-    public decimal Paid {get; set;} = 0;
+    public double Paid {get; set;} = 0;
 }

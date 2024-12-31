@@ -1,10 +1,7 @@
-using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Models;
 using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Mappers;
-
-
 
 public static class OrderMapper
 {

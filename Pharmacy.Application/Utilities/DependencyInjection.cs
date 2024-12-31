@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Pharmacy.Domain.Models;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Services;
 

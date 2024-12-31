@@ -5,11 +5,14 @@ namespace Pharmacy.Application.Interfaces;
 
 
 
-public interface ICustomerService : IService<Guid>
+public interface ICustomerService
 {
-    Task<BaseResponse> Create(CustomerCreateDTO customerDTO);
-    Task<BaseResponse> Update(Guid id, CustomerCreateDTO customerDTO);
-    Task<BaseResponse> GetPaymentOperations(Guid customerId);
-    Task<BaseResponse> AddPaymentOperation(Guid customerId, PaymentCreateDTO paymentDTO);
-    Task<BaseResponse> RemovePaymentOperation(Guid customerId, int PaymentId);
+    Task<Result<IEnumerable<CustomerDTO>>> GetAll();
+    Task<Result<IEnumerable<PaymentDTO>>> GetPaymentOperations(Guid customerId);
+    Task<Result<CustomerDTO>> GetById(Guid id);
+    Task<Result<CustomerDTO>> Create(CustomerCreateDTO customerDTO);
+    Task<Result<CustomerDTO>> Update(Guid id, CustomerCreateDTO customerDTO);
+    Task<Result<PaymentDTO>> AddPaymentOperation(Guid customerId, PaymentCreateDTO paymentDTO);
+    Task<Result> Delete(Guid id);
+    Task<Result> RemovePaymentOperation(Guid customerId, int PaymentId);
 }

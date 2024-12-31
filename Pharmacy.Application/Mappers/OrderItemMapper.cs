@@ -3,8 +3,6 @@ using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Mappers;
 
-
-
 public static class OrderItemMapper
 {
     public static OrderItem ToModel(this OrderItemCreateDTO orderItemDTO, Guid orderId, Product product) =>

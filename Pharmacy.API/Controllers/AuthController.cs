@@ -1,42 +1,33 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Pharmacy.Application.DTOs;
-using Pharmacy.Application.Responses;
+﻿using Microsoft.AspNetCore.Mvc;
 using Pharmacy.Application.Interfaces;
-using Pharmacy.Presentation.Utilities;
+using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Presentation.Controllers;
 
-
-[ApiController]
-public class AuthController : GenericController<int, UserDTO>
+public class AuthController : ApiBaseController
 {
-    public AuthController(IAuthService authService) : base(authService) {}
+    private readonly IAuthService _authService;
+    public AuthController(IAuthService authService)
+        => _authService = authService;
 
-    [HttpPost("Register"), Authorize(Roles = "Admin, Manager")]
-    public async Task<IActionResult> Create(UserCreateDTO user)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
     {
-        BaseResponse result = await ((IAuthService)_service).Create(user);
-        if(result.StatusCode != 201) return ProcessError(result);
-        var resultDTO = result.GetData<UserDTO>();
-        return Created($"/api/Users/{resultDTO.Id}", resultDTO);
+        var result = await _authService.RegisterAsync(registerDTO);
+        return HandleResult(result);
     }
 
-    [HttpPost("Login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
     {
-        BaseResponse result = await ((IAuthService)_service).Login(loginDTO);
-        return result.StatusCode == 200 ? Ok() : ProcessError(result);
+        var result = await _authService.LoginAsync(loginDTO);
+        return HandleResult(result);
     }
 
-    [HttpPost("Logout"), Authorize(Roles = "Admin, Manager")]
-    public async Task<IActionResult> Logout()
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] TokenDTO tokenDTO)
     {
-        BaseResponse result = await ((IAuthService)_service).Logout();
-        return result.StatusCode == 200 ? Ok() : ProcessError(result);
+        var result = await _authService.RefreshToken(tokenDTO);
+        return HandleResult(result);
     }
-
-    [HttpGet("AccessDenied")]
-    public IActionResult AccessDenied() =>
-        Forbid("Permission Denied");
 }

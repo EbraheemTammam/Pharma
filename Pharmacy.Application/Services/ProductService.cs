@@ -5,81 +5,79 @@ using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Responses;
 using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Utilities;
+using Pharmacy.Domain.Specifications;
+using Microsoft.AspNetCore.Http;
 
 namespace Pharmacy.Application.Services;
 
-
-
 public class ProductService : IProductService
 {
-    private readonly IRepositoryManager _manager;
+    private readonly IRepository<Product> _products;
+    private readonly IRepository<ProductItem> _productItems;
 
-    public ProductService(IRepositoryManager repoManager) =>
-        _manager = repoManager;
+    public ProductService(IRepository<Product> repo, IRepository<ProductItem> itemsRepo) =>
+        (_products, _productItems) = (repo, itemsRepo);
 
-    public async Task<BaseResponse> GetAll() =>
-        new OkResponse<IEnumerable<ProductDTO>>
-        (
-            (await _manager.Products.GetAll())
-            .ConvertAll(obj => obj.ToDTO())
+    public async Task<Result<IEnumerable<ProductDTO>>> GetAll() =>
+        Result.Success(
+            (await _products.GetAll())
+            .ConvertAll(ProductMapper.ToDTO)
         );
 
-    public async Task<BaseResponse> GetLacked() =>
-        new OkResponse<IEnumerable<ProductDTO>>
-        (
-            (await _manager.Products.Filter(obj => obj.IsLack))
-            .ConvertAll(obj => obj.ToDTO())
+    public async Task<Result<IEnumerable<ProductDTO>>> GetLacked() =>
+        Result.Success(
+            (await _products.GetAll(new Specification<Product>(obj => obj.IsLack)))
+            .ConvertAll(ProductMapper.ToDTO)
         );
 
-    public async Task<BaseResponse> GetAboutToExpire()
+    public async Task<Result<IEnumerable<ProductItemDTO>>> GetAboutToExpire()
     {
         DateOnly currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
-        return new OkResponse<IEnumerable<ProductItemDTO>>
-        (
-            (
-                await _manager.ProductItems.Filter(
-                    obj => ((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6
+        return Result.Success(
+            (await _productItems.GetAll(
+                    new Specification<ProductItem>(
+                        obj => ((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6
+                    )
                 )
-            )
-            .ConvertAll(obj => obj.ToDTO())
+            ).ConvertAll(ProductItemMapper.ToDTO)
         );
     }
 
-    public async Task<BaseResponse> GetById(Guid id)
+    public async Task<Result<ProductDTO>> GetById(Guid id)
     {
-        Product? product = await _manager.Products.GetById(id);
+        Product? product = await _products.GetById(id);
         return product switch
         {
-            null => new NotFoundResponse(id, nameof(Product)),
-            _ => new OkResponse<ProductDTO>(product.ToDTO())
+            null => Result.Fail<ProductDTO>(AppResponses.NotFoundResponse(id, nameof(Product))),
+            _ => Result.Success(product.ToDTO())
         };
     }
 
-    public async Task<BaseResponse> Create(ProductCreateDTO schema)
+    public async Task<Result<ProductDTO>> Create(ProductCreateDTO schema)
     {
         Product product = schema.ToModel();
         product.OwnedElements = 0;
-        await _manager.Products.Add(product);
-        await _manager.Save();
-        return new CreatedResponse<ProductDTO>(product.ToDTO());
+        await _products.Add(product);
+        await _products.Save();
+        return Result.Success(product.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<BaseResponse> Update(Guid id, ProductCreateDTO schema)
+    public async Task<Result<ProductDTO>> Update(Guid id, ProductCreateDTO schema)
     {
-        Product? product = await _manager.Products.GetById(id);
-        if(product is null) return new NotFoundResponse(id, nameof(Product));
+        Product? product = await _products.GetById(id);
+        if(product is null) return Result.Fail<ProductDTO>(AppResponses.NotFoundResponse(id, nameof(Product)));
         product.Update(schema);
-        _manager.Products.Update(product);
-        await _manager.Save();
-        return new CreatedResponse<ProductDTO>(product.ToDTO());
+        _products.Update(product);
+        await _products.Save();
+        return Result.Success(product.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<BaseResponse> Delete(Guid id)
+    public async Task<Result> Delete(Guid id)
     {
-        Product? product = await _manager.Products.GetById(id);
-        if(product is null) return new NotFoundResponse(id, nameof(Product));
-        _manager.Products.Delete(product);
-        await _manager.Save();
-        return new NoContentResponse();
+        Product? product = await _products.GetById(id);
+        if(product is null) return Result.Fail(AppResponses.NotFoundResponse(id, nameof(Product)));
+        _products.Delete(product);
+        await _products.Save();
+        return Result.Success(StatusCodes.Status204NoContent);
     }
 }

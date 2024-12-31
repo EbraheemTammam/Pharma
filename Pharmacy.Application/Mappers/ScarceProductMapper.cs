@@ -3,8 +3,6 @@ using Pharmacy.Application.DTOs;
 
 namespace Pharmacy.Application.Mappers;
 
-
-
 public static class ScarceProductMapper
 {
     public static ScarceProduct ToModel(this ScarceProductCreateDTO schema) =>
