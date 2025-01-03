@@ -53,12 +53,8 @@ public class OrderService : IOrderService
         User user = await _currentLoggedInUser.GetUser();
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
 
-        Result<OrderDTO> result = await _manager.AddAllOrderItems(orderDTO.Items, order);
-        if(!result.Succeeded)
-            return result;
-
-        order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
-        _manager.Orders.Update(order);
+        Result<OrderDTO> result = await InternalEventHandler.OrderPreSave(_manager, order, orderDTO);
+        if (!result.Succeeded) return result;
 
         if(customer is not null)
         {
@@ -86,15 +82,8 @@ public class OrderService : IOrderService
             _manager.Customers.Update(customer);
         }
 
-        await _manager.DeleteAllOrderItems(id);
-        order.TotalPrice = 0;
-
-        Result<OrderDTO> result = await _manager.AddAllOrderItems(orderDTO.Items, order);
-        if(!result.Succeeded)
-            return result;
-
-        order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
-        _manager.Orders.Update(order);
+        Result<OrderDTO> result = await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
+        if(!result.Succeeded) return result;
 
         if(customer is not null)
         {
@@ -103,22 +92,23 @@ public class OrderService : IOrderService
         }
 
         await _manager.Save();
-        User user = (await _userManager.FindByEmailAsync(_currentLoggedInUser.Email))!;
-        return Result.Success(order.ToDTO(customer?.Name, user.GetFullName()));
+        User user = await _currentLoggedInUser.GetUser();
+        return Result.Success
+        (
+            order.ToDTO(customer?.Name, user.GetFullName()),
+            StatusCodes.Status201Created
+        );
     }
 
     public async Task<Result> Delete(Guid id)
     {
-        /* ------- Check if Order Exist ------- */
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return Result.Fail(AppResponses.NotFoundResponse(id, nameof(Order)));
-        /* ------- Remove Items from Owned Elements ------- */
-        await _manager.PreDeleteOrder(id);
-        /* ------- Delete ------- */
+
+        await InternalEventHandler.OrderPreDelete(_manager, order);
         _manager.Orders.Delete(order);
-        /* ------- Save Changes ------- */
+
         await _manager.Save();
-        /* ------- Return Response ------- */
         return Result.Success(StatusCodes.Status204NoContent);
     }
 }
