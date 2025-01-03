@@ -7,7 +7,7 @@ namespace Pharmacy.Presentation.Controllers;
 [Route("Api/[controller]")]
 public abstract class ApiBaseController : ControllerBase
 {
-    protected IActionResult HandleResult<TResult>(Result<TResult> result)
+    protected ActionResult<TResult> HandleResult<TResult>(Result<TResult> result)
     {
         if(!result.Succeeded) return ProcessError(result.Response);
         return result.Response.StatusCode switch
@@ -18,7 +18,7 @@ public abstract class ApiBaseController : ControllerBase
         };
     }
 
-    protected IActionResult HandleResult(Result result)
+    protected ActionResult HandleResult(Result result)
     {
         if (!result.Succeeded) return ProcessError(result.Response);
         return result.Response.StatusCode switch
@@ -28,7 +28,7 @@ public abstract class ApiBaseController : ControllerBase
         };
     }
 
-    protected IActionResult ProcessError(Response response)
+    protected ActionResult ProcessError(Response response)
     {
         return response.StatusCode switch
         {

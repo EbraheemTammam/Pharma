@@ -5,6 +5,7 @@ using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Responses;
 using Microsoft.AspNetCore.Http;
 using Pharmacy.Domain.Specifications;
+using Pharmacy.Application.Queries;
 
 namespace Pharmacy.Application.Utilities;
 
@@ -65,38 +66,55 @@ internal static class RepositoryExtensions
     {
         foreach(OrderItemCreateDTO itemDTO in items)
         {
-            /* ------- Get Product ------- */
             Product? product = await manager.Products.GetById(itemDTO.ProductId);
-            /* ------- Check if product null ------- */
             if(product is null)
                 return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(itemDTO.ProductId, nameof(Product)));
-            /* ------- Add Item and Update Product ------- */
+            if(product.OwnedElements < itemDTO.Amount)
+                return Result.Fail<OrderDTO>(AppResponses.BadRequestResponse($"No enough items of {product.Name}, only {product.OwnedElements} remaining"));
+
             await manager.OrderItems.Add(itemDTO.ToModel(order.Id, product));
+
             product.OwnedElements -= itemDTO.Amount;
+            product.IsLack = product.OwnedElements <= product.OwnedElements;
             manager.Products.Update(product);
-            /* ------- Update Order ------- */
+
             order.TotalPrice += itemDTO.Amount * product.PricePerElement;
+
+            foreach (ProductItem item in await manager.ProductItems.GetAll())
+            {
+                (item.NumberOfElements, itemDTO.Amount) =
+                (
+                    item.NumberOfElements > itemDTO.Amount ?
+                    (item.NumberOfElements - itemDTO.Amount, 0) :
+                    (0, itemDTO.Amount - item.NumberOfElements)
+                );
+
+                manager.ProductItems.Update(item);
+                if(itemDTO.Amount == 0) break;
+            }
+
             manager.Orders.Update(order);
         }
         return Result.Success(order.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public static async Task DeleteAllOrderItems(this IRepositoryManager manager, Guid id)
+    public static async Task DeleteAllOrderItems(this IRepositoryManager manager, Guid orderId)
     {
-        IEnumerable<OrderItem> items = await manager.OrderItems.GetAll(
-            new Specification<OrderItem>(obj => obj.OrderId == id)
-        );
-        foreach (OrderItem item in items)
+        foreach (OrderItem item in await manager.OrderItems.GetAll(new OrderItemWithProduct(orderId)))
         {
             item.Product!.OwnedElements += item.Amount;
+            item.Product.IsLack = item.Product.OwnedElements > item.Product.Minimum;
             manager.Products.Update(item.Product);
+
             ProductItem pItem =
             (
                 await manager.ProductItems.GetAll(
                     new Specification<ProductItem>(obj => obj.ProductId == item.ProductId)
                 )
             ).Last();
+
             pItem.NumberOfElements += item.Amount;
+
             manager.ProductItems.Update(pItem);
             manager.OrderItems.Delete(item);
         }

@@ -21,7 +21,8 @@ public static class OrderItemMapper
             Amount = orderItem.Amount,
             Price = (decimal)orderItem.Price,
             ProductName = orderItem.Product!.Name,
-            RemainedItems = orderItem.Product!.OwnedElements
+            RemainedItems = orderItem.Product!.OwnedElements,
+            TotalPrice = (decimal) orderItem.Price * orderItem.Amount
         };
 
     public static void Update(this OrderItem orderItem, OrderItemCreateDTO orderItemDTO)

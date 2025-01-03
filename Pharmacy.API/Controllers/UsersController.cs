@@ -12,19 +12,19 @@ public class UsersController : ApiBaseController
     public UsersController(IUserService authService) => _service = authService;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll() =>
         HandleResult(await _service.GetAllAsync());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id) =>
+    public async Task<ActionResult<UserDTO>> GetById(int id) =>
         HandleResult(await _service.GetByIdAsync(id));
 
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, RegisterDTO user) =>
+    public async Task<ActionResult<UserDTO>> Update(int id, RegisterDTO user) =>
         HandleResult(await _service.UpdateAsync(id, user));
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id) =>
+    public async Task<ActionResult> Delete(int id) =>
         HandleResult(await _service.DeleteAsync(id));
 }

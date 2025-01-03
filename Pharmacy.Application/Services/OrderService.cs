@@ -50,24 +50,23 @@ public class OrderService : IOrderService
     public async Task<Result<OrderDTO>> Create(OrderCreateDTO orderDTO)
     {
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
-        User user = (await _userManager.FindByEmailAsync(_currentLoggedInUser.Email))!;
+        User user = await _currentLoggedInUser.GetUser();
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
-        /* ------- Add Order Items ------- */
+
         Result<OrderDTO> result = await _manager.AddAllOrderItems(orderDTO.Items, order);
         if(!result.Succeeded)
             return result;
-        /* ------- Update Order Paid ------- */
+
         order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
         _manager.Orders.Update(order);
-        /* ------- Update Customer Dept ------- */
+
         if(customer is not null)
         {
             customer.Dept += order.TotalPrice - order.Paid;
             _manager.Customers.Update(customer);
         }
-        /* ------- Save Changes ------- */
+
         await _manager.Save();
-        /* ------- Return Response ------- */
         return Result.Success
         (
             order.ToDTO(customer?.Name, user.GetFullName()),
@@ -77,25 +76,34 @@ public class OrderService : IOrderService
 
     public async Task<Result<OrderDTO>> Update(Guid id, OrderUpdateDTO orderDTO)
     {
-        /* ------- Check if Order Exists ------- */
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order)));
-        /* ------- Update Customer ------- */
+
         Customer? customer = await _manager.Customers.GetById(order.CustomerId);
         if(customer is not null)
         {
             customer.Dept -= order.TotalPrice - order.Paid;
             _manager.Customers.Update(customer);
         }
-        /* ------- Update Order Items ------- */
+
         await _manager.DeleteAllOrderItems(id);
         order.TotalPrice = 0;
-        await _manager.AddAllOrderItems(orderDTO.Items, order);
-        /* ------- Save Changes ------- */
+
+        Result<OrderDTO> result = await _manager.AddAllOrderItems(orderDTO.Items, order);
+        if(!result.Succeeded)
+            return result;
+
+        order.Paid = (double?)orderDTO.Paid ?? order.TotalPrice;
+        _manager.Orders.Update(order);
+
+        if(customer is not null)
+        {
+            customer.Dept += order.TotalPrice - order.Paid;
+            _manager.Customers.Update(customer);
+        }
+
         await _manager.Save();
-        /* ------- Get User ------- */
         User user = (await _userManager.FindByEmailAsync(_currentLoggedInUser.Email))!;
-        /* ------- Return Response ------- */
         return Result.Success(order.ToDTO(customer?.Name, user.GetFullName()));
     }
 

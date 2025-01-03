@@ -13,22 +13,22 @@ public class ScarceProductsController : ApiBaseController
     public ScarceProductsController(IScarceProductService productService) => _service = productService;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
+    public async Task<ActionResult<IEnumerable<ScarceProductDTO>>> GetAll() =>
         HandleResult(await _service.GetAll());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id) =>
+    public async Task<ActionResult<ScarceProductDTO>> GetById(Guid id) =>
         HandleResult(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(ScarceProductCreateDTO product) =>
+    public async Task<ActionResult<ScarceProductDTO>> Create(ScarceProductCreateDTO product) =>
         HandleResult(await _service.Create(product));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, ScarceProductCreateDTO product) =>
+    public async Task<ActionResult<ScarceProductDTO>> Update(Guid id, ScarceProductCreateDTO product) =>
         HandleResult(await _service.Update(id, product));
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id) =>
+    public async Task<ActionResult> Delete(Guid id) =>
         HandleResult(await _service.Delete(id));
 }

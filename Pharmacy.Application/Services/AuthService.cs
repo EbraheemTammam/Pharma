@@ -67,9 +67,9 @@ public class AuthService : IAuthService
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            ValidAudience = _jwtSetting.ValidAudience,
+            // ValidAudience = _jwtSetting.ValidAudience,
             ValidIssuer = _jwtSetting.ValidIssuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey))
         };

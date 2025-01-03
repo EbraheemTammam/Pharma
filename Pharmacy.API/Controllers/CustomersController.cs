@@ -12,30 +12,30 @@ public class CustomersController : ApiBaseController
     public CustomersController(ICustomerService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
+    public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAll() =>
         HandleResult(await _service.GetAll());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id) =>
+    public async Task<ActionResult<CustomerDTO>> GetById(Guid id) =>
         HandleResult(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(CustomerCreateDTO customerDTO) =>
+    public async Task<ActionResult<CustomerDTO>> Create(CustomerCreateDTO customerDTO) =>
         HandleResult(await _service.Create(customerDTO));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, CustomerCreateDTO customerDTO) =>
+    public async Task<ActionResult<CustomerDTO>> Update(Guid id, CustomerCreateDTO customerDTO) =>
         HandleResult(await _service.Update(id, customerDTO));
 
     [HttpGet("{customerId}/Payments")]
-    public async Task<IActionResult> GetPayments(Guid customerId) =>
+    public async Task<ActionResult<IEnumerable<PaymentDTO>>> GetPayments(Guid customerId) =>
         HandleResult(await _service.GetPaymentOperations(customerId));
 
     [HttpPost("{customerId}/Payments")]
-    public async Task<IActionResult> CreatePayments(Guid customerId, PaymentCreateDTO paymentDTO) =>
+    public async Task<ActionResult<PaymentDTO>> CreatePayments(Guid customerId, PaymentCreateDTO paymentDTO) =>
         HandleResult(await _service.AddPaymentOperation(customerId, paymentDTO));
 
     [HttpDelete("{customerId}/Payments/{paymentId}")]
-    public async Task<IActionResult> DeletePayments(Guid customerId, int paymentId) =>
+    public async Task<ActionResult> DeletePayments(Guid customerId, int paymentId) =>
         HandleResult(await _service.RemovePaymentOperation(customerId, paymentId));
 }

@@ -12,26 +12,26 @@ public class ProductsController : ApiBaseController
     public ProductsController(IProductService productService) => _service = productService;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
+    public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAll() =>
         HandleResult(await _service.GetAll());
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id) =>
+    public async Task<ActionResult<ProductDTO>> GetById(Guid id) =>
         HandleResult(await _service.GetById(id));
 
     [HttpPost]
-    public async Task<IActionResult> Create(ProductCreateDTO product) =>
+    public async Task<ActionResult<ProductDTO>> Create(ProductCreateDTO product) =>
         HandleResult(await _service.Create(product));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, ProductCreateDTO product) =>
+    public async Task<ActionResult<ProductDTO>> Update(Guid id, ProductCreateDTO product) =>
         HandleResult(await _service.Update(id, product));
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id) =>
+    public async Task<ActionResult> Delete(Guid id) =>
         HandleResult(await _service.Delete(id));
 
     [HttpGet("AboutToExpire")]
-    public async Task<IActionResult> GetAboutToExpire() =>
+    public async Task<ActionResult<IEnumerable<ProductItemDTO>>> GetAboutToExpire() =>
         HandleResult(await _service.GetAboutToExpire());
 }
