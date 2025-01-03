@@ -282,28 +282,36 @@ namespace Pharmacy.Infrastructure.Data.Migrations
             migrationBuilder.RenameColumn(table: "IncomingOrder", name: "paid", newName: "Paid");
             migrationBuilder.RenameColumn(table: "IncomingOrder", name: "price", newName: "Price");
             migrationBuilder.RenameColumn(table: "IncomingOrder", name: "time", newName: "CreatedAt");
+            migrationBuilder.RenameColumn(table: "IncomingOrder", name: "company_id", newName: "ProviderId");
 
             // Rename columns in Order table
             migrationBuilder.RenameColumn(table: "Order", name: "id", newName: "Id");
             migrationBuilder.RenameColumn(table: "Order", name: "paid", newName: "Paid");
             migrationBuilder.RenameColumn(table: "Order", name: "time", newName: "CreatedAt");
             migrationBuilder.RenameColumn(table: "Order", name: "total_price", newName: "TotalPrice");
+            migrationBuilder.RenameColumn(table: "Order", name: "customer_id", newName: "CustomerId");
+            migrationBuilder.RenameColumn(table: "Order", name: "user_id", newName: "UserId");
 
             // Rename columns in Payment table
             migrationBuilder.RenameColumn(table: "Payment", name: "id", newName: "Id");
             migrationBuilder.RenameColumn(table: "Payment", name: "paid", newName: "Paid");
             migrationBuilder.RenameColumn(table: "Payment", name: "time", newName: "CreatedAt");
+            migrationBuilder.RenameColumn(table: "Payment", name: "customer_id", newName: "CustomerId");
 
             // Rename columns in OrderItem table
             migrationBuilder.RenameColumn(table: "OrderItem", name: "id", newName: "Id");
             migrationBuilder.RenameColumn(table: "OrderItem", name: "amount", newName: "Amount");
             migrationBuilder.RenameColumn(table: "OrderItem", name: "price", newName: "Price");
+            migrationBuilder.RenameColumn(table: "OrderItem", name: "order_id", newName: "OrderId");
+            migrationBuilder.RenameColumn(table: "OrderItem", name: "product_id", newName: "ProductId");
 
             // Rename columns in ProductItem table
             migrationBuilder.RenameColumn(table: "ProductItem", name: "id", newName: "Id");
             migrationBuilder.RenameColumn(table: "ProductItem", name: "expiration", newName: "ExpirationDate");
             migrationBuilder.RenameColumn(table: "ProductItem", name: "number_of_boxes", newName: "NumberOfBoxes");
             migrationBuilder.RenameColumn(table: "ProductItem", name: "number_of_elements", newName: "NumberOfElements");
+            migrationBuilder.RenameColumn(table: "ProductItem", name: "incoming_order_id", newName: "IncomingOrderId");
+            migrationBuilder.RenameColumn(table: "ProductItem", name: "type_id", newName: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",

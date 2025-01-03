@@ -38,6 +38,7 @@ public class UserService : IUserService
         User? user = await _manager.FindByIdAsync(id.ToString());
         if (user is null) return Result.Fail<UserDTO>(AppResponses.NotFoundResponse(id, nameof(User)));
         user.Update(updateDTO);
+        if(user.SecurityStamp is null) user.SecurityStamp = Guid.NewGuid().ToString();
         await _manager.UpdateAsync(user);
         return Result.Success(user.ToUserDTO(), StatusCodes.Status201Created);
     }

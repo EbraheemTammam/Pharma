@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Pharmacy.API.Utilities;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Services;
 
@@ -16,11 +17,14 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IScarceProductService, ScarceProductService>();
         services.AddScoped<IProductProviderService, ProductProviderService>();
         services.AddScoped<IIncomingOrderService, IncomingOrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ICurrentLoggedInUser, CurrentLoggedInUser>();
         return services;
     }
 }

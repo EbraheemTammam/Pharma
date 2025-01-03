@@ -8,6 +8,7 @@ using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Specifications;
+using Pharmacy.Application.Queries;
 
 namespace Pharmacy.Application.Services;
 
@@ -22,17 +23,16 @@ public class OrderService : IOrderService
 
     public async Task<Result<IEnumerable<OrderDTO>>> GetAll() =>
         Result.Success(
-            (await _manager.Orders.GetAll())
-            .ConvertAll(OrderMapper.ToDTO)
+            await _manager.Orders.GetAll(new OrderWithUserSpecification())
         );
 
     public async Task<Result<OrderDTO>> GetById(Guid id)
     {
-        Order? order = await _manager.Orders.GetById(id);
+        OrderDTO? order = await _manager.Orders.GetOne(new OrderWithUserSpecification(id));
         return order switch
         {
             null => Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order))),
-            _ => Result.Success(order.ToDTO())
+            _ => Result.Success(order)
         };
     }
 

@@ -80,7 +80,7 @@ public static class InternalEventHandler
 
     public static async Task<Result<OrderDTO>> OrderPreUpdate(IRepositoryManager manager, Order order, OrderUpdateDTO orderDTO)
     {
-        foreach (OrderItem item in await manager.OrderItems.GetAll(new OrderItemWithProduct(order.Id)))
+        foreach (OrderItem item in await manager.OrderItems.GetAll(new OrderItemWithProductSpecification(order.Id)))
             await OrderItemPreDelete(manager, item);
 
         order.TotalPrice = 0;
@@ -89,7 +89,7 @@ public static class InternalEventHandler
 
     public static async Task<Result> OrderPreDelete(IRepositoryManager manager, Order order)
     {
-        foreach (OrderItem item in await manager.OrderItems.GetAll(new OrderItemWithProduct(order.Id)))
+        foreach (OrderItem item in await manager.OrderItems.GetAll(new OrderItemWithProductSpecification(order.Id)))
             await OrderItemPreDelete(manager, item);
 
         return Result.Success();

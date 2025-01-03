@@ -4,7 +4,7 @@ namespace Pharmacy.Application.DTOs;
 
 public record BaseAuthDTO
 {
-    [Required, EmailAddress]
+    [Required]
     public required string Email { get; init; }
 
     [Required]
