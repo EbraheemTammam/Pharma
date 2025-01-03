@@ -14,7 +14,7 @@ public static class InternalEventHandler
     private static async Task<Result> OrderItemPreSave(IRepositoryManager manager, OrderItem item, Product product)
     {
         product.OwnedElements -= item.Amount;
-        product.IsLack = product.OwnedElements <= product.OwnedElements;
+        product.IsLack = product.OwnedElements > product.Minimum;
 
         manager.Products.Update(product);
 
@@ -105,6 +105,7 @@ public static class InternalEventHandler
 
             await manager.ProductItems.Add(itemDTO.ToModel(product, incomingOrder.Id));
             product.OwnedElements += itemDTO.NumberOfBoxes * product.NumberOfElements;
+            product.IsLack = product.NumberOfElements > product.Minimum;
             manager.Products.Update(product);
         }
         return Result.Success(incomingOrder.ToDTO(), StatusCodes.Status201Created);
