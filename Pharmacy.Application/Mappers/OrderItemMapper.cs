@@ -8,7 +8,7 @@ public static class OrderItemMapper
     public static OrderItem ToModel(this OrderItemCreateDTO orderItemDTO, Guid orderId, Product product) =>
         new()
         {
-            ProductId = product.Id,
+            ProductId = orderItemDTO.ProductId,
             Amount = orderItemDTO.Amount,
             Price = orderItemDTO.Amount * product.PricePerElement,
             OrderId = orderId

@@ -42,7 +42,7 @@ public class OrderService : IOrderService
         if(order is null) return Result.Fail<IEnumerable<OrderItemDTO>>(AppResponses.NotFoundResponse(id, nameof(Order)));
 
         IEnumerable<OrderItem> items = await _manager.OrderItems.GetAll(
-            new Specification<OrderItem>(obj => obj.OrderId == id)
+            new OrderItemWithProductSpecification(order.Id)
         );
         return Result.Success(items.ConvertAll(OrderItemMapper.ToDTO));
     }
@@ -51,16 +51,19 @@ public class OrderService : IOrderService
     {
         Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
         User user = await _currentLoggedInUser.GetUser();
+
+        Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
+        if (!validItems.Succeeded) return (Result<OrderDTO>)validItems;
+
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
-
-        Result<OrderDTO> result = await InternalEventHandler.OrderPreSave(_manager, order, orderDTO);
-        if (!result.Succeeded) return result;
-
         if(customer is not null)
         {
             customer.Dept += order.TotalPrice - order.Paid;
             _manager.Customers.Update(customer);
         }
+
+        await _manager.Save();
+        await InternalEventHandler.OrderPostSave(_manager, order, orderDTO);
 
         await _manager.Save();
         return Result.Success
@@ -75,6 +78,9 @@ public class OrderService : IOrderService
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order)));
 
+        Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
+        if (!validItems.Succeeded) return (Result<OrderDTO>)validItems;
+
         Customer? customer = await _manager.Customers.GetById(order.CustomerId);
         if(customer is not null)
         {
@@ -82,8 +88,7 @@ public class OrderService : IOrderService
             _manager.Customers.Update(customer);
         }
 
-        Result<OrderDTO> result = await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
-        if(!result.Succeeded) return result;
+        await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
 
         if(customer is not null)
         {

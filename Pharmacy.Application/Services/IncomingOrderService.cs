@@ -53,10 +53,12 @@ public class IncomingOrderService : IIncomingOrderService
         ProductProvider? provider = await _manager.ProductProviders.GetById(orderDTO.ProviderId);
         if(provider is null) return Result.Fail<IncomingOrderDTO>(AppResponses.NotFoundResponse(orderDTO.ProviderId, nameof(ProductProvider)));
 
+        var validitems = await InternalEventHandler.ValidateProductItems(_manager, orderDTO.ProductItems);
+        if(!validitems.Succeeded) return (Result<IncomingOrderDTO>)validitems;
+
         IncomingOrder incomingOrder = await _manager.IncomingOrders.Add(orderDTO.ToModel());
 
-        Result<IncomingOrderDTO> response = await InternalEventHandler.IncomingOrderPreSave(_manager, orderDTO.ProductItems, incomingOrder);
-        if(!response.Succeeded) return response;
+        await InternalEventHandler.IncomingOrderPreSave(_manager, orderDTO.ProductItems, incomingOrder);
 
         await _manager.Save();
         return Result.Success(incomingOrder.ToDTO(provider.Name), StatusCodes.Status201Created);
