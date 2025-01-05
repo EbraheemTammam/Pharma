@@ -58,6 +58,8 @@ public class IncomingOrderService : IIncomingOrderService
 
         IncomingOrder incomingOrder = await _manager.IncomingOrders.Add(orderDTO.ToModel());
 
+        if(orderDTO.Paid < orderDTO.Price) provider.Indepted += orderDTO.Price - orderDTO.Paid;
+
         await InternalEventHandler.IncomingOrderPreSave(_manager, orderDTO.ProductItems, incomingOrder);
 
         await _manager.Save();
@@ -69,12 +71,16 @@ public class IncomingOrderService : IIncomingOrderService
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return Result.Fail<IncomingOrderDTO>(AppResponses.NotFoundResponse(id, nameof(IncomingOrder)));
 
+        ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
+
+        if(incomingOrder.Paid < incomingOrder.Price) provider.Indepted -= incomingOrder.Price - incomingOrder.Paid;
         incomingOrder.Update(schema);
         _manager.IncomingOrders.Update(incomingOrder);
 
+        if(schema.Paid < schema.Price) provider.Indepted += schema.Price - schema.Paid;
+
         await _manager.Save();
 
-        ProductProvider provider = (await _manager.ProductProviders.GetById(incomingOrder.ProviderId))!;
         return Result.Success(incomingOrder.ToDTO(provider.Name), StatusCodes.Status201Created);
     }
 
