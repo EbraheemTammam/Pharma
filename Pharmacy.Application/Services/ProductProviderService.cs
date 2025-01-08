@@ -20,17 +20,28 @@ public class ProductProviderService : IProductProviderService
 
     public async Task<Result<IEnumerable<ProductProviderDTO>>> GetAll()
     {
-        var productProviders = await _productProviders.GetAll();
-        foreach (var provider in productProviders)
+        // this try catch block is needed only once, because of the bug in the database
+        try
         {
-            var orders = await _incomingOrders.GetAll(new Specification<IncomingOrder>(obj => obj.ProviderId == provider.Id));
-            provider.Indepted = orders.Sum(obj => obj.Price - obj.Paid);
-            _productProviders.Update(provider);
+            return Result.Success(
+                (await _productProviders.GetAll())
+                .ConvertAll(ProductProviderMapper.ToDTO)
+            );
         }
-        await _productProviders.Save();
-        return Result.Success(
-            productProviders.ConvertAll(ProductProviderMapper.ToDTO)
-        );
+        catch
+        {
+            var productProviders = await _productProviders.GetAll();
+            foreach (var provider in productProviders)
+            {
+                var orders = await _incomingOrders.GetAll(new Specification<IncomingOrder>(obj => obj.ProviderId == provider.Id));
+                provider.Indepted = orders.Sum(obj => obj.Price - obj.Paid);
+                _productProviders.Update(provider);
+            }
+            await _productProviders.Save();
+            return Result.Success(
+                productProviders.ConvertAll(ProductProviderMapper.ToDTO)
+            );
+        }
     }
 
     public async Task<Result<ProductProviderDTO>> GetById(Guid id)
