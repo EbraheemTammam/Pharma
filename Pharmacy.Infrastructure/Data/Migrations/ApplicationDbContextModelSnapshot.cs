@@ -22,451 +22,7 @@ namespace Pharmacy.Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuser", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("DateJoined")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_joined");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(254)
-                        .HasColumnType("character varying(254)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("first_name");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_admin");
-
-                    b.Property<bool>("IsStaff")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_staff");
-
-                    b.Property<bool>("IsSuperuser")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_superuser");
-
-                    b.Property<DateTime?>("LastLogin")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_login");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("last_name");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("password");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("username");
-
-                    b.HasKey("Id")
-                        .HasName("accounts_customuser_pkey");
-
-                    b.HasIndex(new[] { "Username" }, "accounts_customuser_username_722f3555_like");
-
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "Username" }, "accounts_customuser_username_722f3555_like"), new[] { "varchar_pattern_ops" });
-
-                    b.HasIndex(new[] { "Username" }, "accounts_customuser_username_key")
-                        .IsUnique();
-
-                    b.ToTable("accounts_customuser", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuserGroup", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CustomuserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("customuser_id");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer")
-                        .HasColumnName("group_id");
-
-                    b.HasKey("Id")
-                        .HasName("accounts_customuser_groups_pkey");
-
-                    b.HasIndex(new[] { "CustomuserId" }, "accounts_customuser_groups_customuser_id_bc55088e");
-
-                    b.HasIndex(new[] { "CustomuserId", "GroupId" }, "accounts_customuser_groups_customuser_id_group_id_c074bdcb_uniq")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "GroupId" }, "accounts_customuser_groups_group_id_86ba5f9e");
-
-                    b.ToTable("accounts_customuser_groups", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuserUserPermission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CustomuserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("customuser_id");
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer")
-                        .HasColumnName("permission_id");
-
-                    b.HasKey("Id")
-                        .HasName("accounts_customuser_user_permissions_pkey");
-
-                    b.HasIndex(new[] { "CustomuserId", "PermissionId" }, "accounts_customuser_user_customuser_id_permission_9632a709_uniq")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "CustomuserId" }, "accounts_customuser_user_permissions_customuser_id_0deaefae");
-
-                    b.HasIndex(new[] { "PermissionId" }, "accounts_customuser_user_permissions_permission_id_aea3d0e5");
-
-                    b.ToTable("accounts_customuser_user_permissions", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("auth_group_pkey");
-
-                    b.HasIndex(new[] { "Name" }, "auth_group_name_a6ea08ec_like");
-
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "Name" }, "auth_group_name_a6ea08ec_like"), new[] { "varchar_pattern_ops" });
-
-                    b.HasIndex(new[] { "Name" }, "auth_group_name_key")
-                        .IsUnique();
-
-                    b.ToTable("auth_group", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthGroupPermission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer")
-                        .HasColumnName("group_id");
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer")
-                        .HasColumnName("permission_id");
-
-                    b.HasKey("Id")
-                        .HasName("auth_group_permissions_pkey");
-
-                    b.HasIndex(new[] { "GroupId" }, "auth_group_permissions_group_id_b120cbf9");
-
-                    b.HasIndex(new[] { "GroupId", "PermissionId" }, "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "PermissionId" }, "auth_group_permissions_permission_id_84c5c92e");
-
-                    b.ToTable("auth_group_permissions", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthPermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Codename")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("codename");
-
-                    b.Property<int>("ContentTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("content_type_id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("auth_permission_pkey");
-
-                    b.HasIndex(new[] { "ContentTypeId" }, "auth_permission_content_type_id_2f476e4b");
-
-                    b.HasIndex(new[] { "ContentTypeId", "Codename" }, "auth_permission_content_type_id_codename_01ab375a_uniq")
-                        .IsUnique();
-
-                    b.ToTable("auth_permission", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthtokenToken", b =>
-                {
-                    b.Property<string>("Key")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("key");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Key")
-                        .HasName("authtoken_token_pkey");
-
-                    b.HasIndex(new[] { "Key" }, "authtoken_token_key_10f0b77e_like");
-
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "Key" }, "authtoken_token_key_10f0b77e_like"), new[] { "varchar_pattern_ops" });
-
-                    b.HasIndex(new[] { "UserId" }, "authtoken_token_user_id_key")
-                        .IsUnique();
-
-                    b.ToTable("authtoken_token", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoAdminLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<short>("ActionFlag")
-                        .HasColumnType("smallint")
-                        .HasColumnName("action_flag");
-
-                    b.Property<DateTime>("ActionTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("action_time");
-
-                    b.Property<string>("ChangeMessage")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("change_message");
-
-                    b.Property<int?>("ContentTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("content_type_id");
-
-                    b.Property<string>("ObjectId")
-                        .HasColumnType("text")
-                        .HasColumnName("object_id");
-
-                    b.Property<string>("ObjectRepr")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("object_repr");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("django_admin_log_pkey");
-
-                    b.HasIndex(new[] { "ContentTypeId" }, "django_admin_log_content_type_id_c4bce8eb");
-
-                    b.HasIndex(new[] { "UserId" }, "django_admin_log_user_id_c564eba6");
-
-                    b.ToTable("django_admin_log", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoContentType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppLabel")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("app_label");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("model");
-
-                    b.HasKey("Id")
-                        .HasName("django_content_type_pkey");
-
-                    b.HasIndex(new[] { "AppLabel", "Model" }, "django_content_type_app_label_model_76bd3d3b_uniq")
-                        .IsUnique();
-
-                    b.ToTable("django_content_type", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoMigration", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("App")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("app");
-
-                    b.Property<DateTime>("Applied")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("applied");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("django_migrations_pkey");
-
-                    b.ToTable("django_migrations", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoSession", b =>
-                {
-                    b.Property<string>("SessionKey")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("session_key");
-
-                    b.Property<DateTime>("ExpireDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expire_date");
-
-                    b.Property<string>("SessionData")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("session_data");
-
-                    b.HasKey("SessionKey")
-                        .HasName("django_session_pkey");
-
-                    b.HasIndex(new[] { "ExpireDate" }, "django_session_expire_date_a5c62663");
-
-                    b.HasIndex(new[] { "SessionKey" }, "django_session_session_key_c0390e0f_like");
-
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "SessionKey" }, "django_session_session_key_c0390e0f_like"), new[] { "varchar_pattern_ops" });
-
-                    b.ToTable("django_session", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.FinanceCompany", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("finance_company_pkey");
-
-                    b.ToTable("finance_company", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.FinanceIncomingorder", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("company_id");
-
-                    b.Property<double>("Paid")
-                        .HasColumnType("double precision")
-                        .HasColumnName("paid");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("double precision")
-                        .HasColumnName("price");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("time");
-
-                    b.HasKey("Id")
-                        .HasName("finance_incomingorder_pkey");
-
-                    b.HasIndex(new[] { "CompanyId" }, "finance_incomingorder_company_id_2458ae1b");
-
-                    b.ToTable("finance_incomingorder", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersCustomer", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -478,21 +34,55 @@ namespace Pharmacy.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("orders_customer_pkey");
+                        .HasName("pk_customer");
 
-                    b.ToTable("orders_customer", (string)null);
+                    b.ToTable("Customer", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersOrder", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.IncomingOrder", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<double>("Paid")
+                        .HasColumnType("double precision")
+                        .HasColumnName("paid");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision")
+                        .HasColumnName("price");
+
+                    b.Property<Guid>("ProviderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("provider_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_incoming_order");
+
+                    b.HasIndex("ProviderId")
+                        .HasDatabaseName("ix_incoming_order_provider_id");
+
+                    b.ToTable("IncomingOrder", (string)null);
+                });
+
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("uuid")
@@ -502,36 +92,34 @@ namespace Pharmacy.Infrastructure.Data.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("paid");
 
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("time");
-
                     b.Property<double>("TotalPrice")
                         .HasColumnType("double precision")
                         .HasColumnName("total_price");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("orders_order_pkey");
+                        .HasName("pk_order");
 
-                    b.HasIndex(new[] { "CustomerId" }, "orders_order_customer_id_0b76f6a4");
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_order_customer_id");
 
-                    b.HasIndex(new[] { "UserId" }, "orders_order_user_id_e9b59eb1");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_order_user_id");
 
-                    b.ToTable("orders_order", (string)null);
+                    b.ToTable("Order", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersOrderitem", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrderItem", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("integer")
@@ -550,23 +138,29 @@ namespace Pharmacy.Infrastructure.Data.Migrations
                         .HasColumnName("product_id");
 
                     b.HasKey("Id")
-                        .HasName("orders_orderitem_pkey");
+                        .HasName("pk_order_item");
 
-                    b.HasIndex(new[] { "OrderId" }, "orders_orderitem_order_id_fe61a34d");
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_item_order_id");
 
-                    b.HasIndex(new[] { "ProductId" }, "orders_orderitem_type_id_b2ff8db9");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_order_item_product_id");
 
-                    b.ToTable("orders_orderitem", (string)null);
+                    b.ToTable("OrderItem", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersPayment", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Payment", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid")
@@ -576,93 +170,28 @@ namespace Pharmacy.Infrastructure.Data.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("paid");
 
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("time");
-
                     b.HasKey("Id")
-                        .HasName("orders_payment_pkey");
+                        .HasName("pk_payment");
 
-                    b.HasIndex(new[] { "CustomerId" }, "orders_payment_customer_id_f98f8cf4");
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_payment_customer_id");
 
-                    b.ToTable("orders_payment", (string)null);
+                    b.ToTable("Payment", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductsProduct", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateOnly>("Expiration")
-                        .HasColumnType("date")
-                        .HasColumnName("expiration");
-
-                    b.Property<Guid>("IncomingOrderId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("incoming_order_id");
-
-                    b.Property<int>("NumberOfBoxes")
-                        .HasColumnType("integer")
-                        .HasColumnName("number_of_boxes");
-
-                    b.Property<int>("NumberOfElements")
-                        .HasColumnType("integer")
-                        .HasColumnName("number_of_elements");
-
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("type_id");
-
-                    b.HasKey("Id")
-                        .HasName("products_product_pkey");
-
-                    b.HasIndex(new[] { "IncomingOrderId" }, "products_product_incoming_order_id_d9f6327a");
-
-                    b.HasIndex(new[] { "TypeId" }, "products_product_type_id_027d8fc4");
-
-                    b.ToTable("products_product", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductsScarce", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer")
-                        .HasColumnName("amount");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("products_scarce_pkey");
-
-                    b.ToTable("products_scarce", (string)null);
-                });
-
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductsType", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<string>("Barcode")
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)")
+                        .HasColumnType("text")
                         .HasColumnName("barcode");
 
-                    b.Property<bool>("Lack")
+                    b.Property<bool>("IsLack")
                         .HasColumnType("boolean")
-                        .HasColumnName("lack");
+                        .HasColumnName("is_lack");
 
                     b.Property<int>("Minimum")
                         .HasColumnType("integer")
@@ -670,8 +199,7 @@ namespace Pharmacy.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<int>("NumberOfElements")
@@ -687,247 +215,537 @@ namespace Pharmacy.Infrastructure.Data.Migrations
                         .HasColumnName("price_per_element");
 
                     b.HasKey("Id")
-                        .HasName("products_type_pkey");
+                        .HasName("pk_product");
 
-                    b.ToTable("products_type", (string)null);
+                    b.ToTable("Product", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuserGroup", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductItem", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.AccountsCustomuser", "Customuser")
-                        .WithMany("AccountsCustomuserGroups")
-                        .HasForeignKey("CustomuserId")
-                        .IsRequired()
-                        .HasConstraintName("accounts_customuser__customuser_id_bc55088e_fk_accounts_");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.AuthGroup", "Group")
-                        .WithMany("AccountsCustomuserGroups")
-                        .HasForeignKey("GroupId")
-                        .IsRequired()
-                        .HasConstraintName("accounts_customuser_groups_group_id_86ba5f9e_fk_auth_group_id");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Navigation("Customuser");
+                    b.Property<DateOnly>("ExpirationDate")
+                        .HasColumnType("date")
+                        .HasColumnName("expiration_date");
 
-                    b.Navigation("Group");
+                    b.Property<Guid>("IncomingOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("incoming_order_id");
+
+                    b.Property<int>("NumberOfBoxes")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_boxes");
+
+                    b.Property<int>("NumberOfElements")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_elements");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_item");
+
+                    b.HasIndex("IncomingOrderId")
+                        .HasDatabaseName("ix_product_item_incoming_order_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_product_item_product_id");
+
+                    b.ToTable("ProductItem", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuserUserPermission", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductProvider", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.AccountsCustomuser", "Customuser")
-                        .WithMany("AccountsCustomuserUserPermissions")
-                        .HasForeignKey("CustomuserId")
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<double>("Indepted")
+                        .HasColumnType("double precision")
+                        .HasColumnName("indepted");
+
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasConstraintName("accounts_customuser__customuser_id_0deaefae_fk_accounts_");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.AuthPermission", "Permission")
-                        .WithMany("AccountsCustomuserUserPermissions")
-                        .HasForeignKey("PermissionId")
-                        .IsRequired()
-                        .HasConstraintName("accounts_customuser__permission_id_aea3d0e5_fk_auth_perm");
+                    b.HasKey("Id")
+                        .HasName("pk_product_provider");
 
-                    b.Navigation("Customuser");
-
-                    b.Navigation("Permission");
+                    b.ToTable("ProductProvider", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthGroupPermission", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Role", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.AuthGroup", "Group")
-                        .WithMany("AuthGroupPermissions")
-                        .HasForeignKey("GroupId")
-                        .IsRequired()
-                        .HasConstraintName("auth_group_permissions_group_id_b120cbf9_fk_auth_group_id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.AuthPermission", "Permission")
-                        .WithMany("AuthGroupPermissions")
-                        .HasForeignKey("PermissionId")
-                        .IsRequired()
-                        .HasConstraintName("auth_group_permissio_permission_id_84c5c92e_fk_auth_perm");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Navigation("Group");
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("text")
+                        .HasColumnName("concurrency_stamp");
 
-                    b.Navigation("Permission");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_normalized_name");
+
+                    b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthPermission", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.RoleClaim", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.DjangoContentType", "ContentType")
-                        .WithMany("AuthPermissions")
-                        .HasForeignKey("ContentTypeId")
-                        .IsRequired()
-                        .HasConstraintName("auth_permission_content_type_id_2f476e4b_fk_django_co");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.Navigation("ContentType");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text")
+                        .HasColumnName("claim_type");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text")
+                        .HasColumnName("claim_value");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_role_claims");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_role_claims_role_id");
+
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthtokenToken", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ScarceProduct", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.AccountsCustomuser", "User")
-                        .WithOne("AuthtokenToken")
-                        .HasForeignKey("Pharmacy.Infrastructure.Models.AuthtokenToken", "UserId")
-                        .IsRequired()
-                        .HasConstraintName("authtoken_token_user_id_35299eff_fk_accounts_customuser_id");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
-                    b.Navigation("User");
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_scarce_product");
+
+                    b.ToTable("ScarceProduct", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoAdminLog", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.User", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.DjangoContentType", "ContentType")
-                        .WithMany("DjangoAdminLogs")
-                        .HasForeignKey("ContentTypeId")
-                        .HasConstraintName("django_admin_log_content_type_id_c4bce8eb_fk_django_co");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.AccountsCustomuser", "User")
-                        .WithMany("DjangoAdminLogs")
-                        .HasForeignKey("UserId")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("access_failed_count");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("text")
+                        .HasColumnName("concurrency_stamp");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_confirmed");
+
+                    b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasConstraintName("django_admin_log_user_id_c564eba6_fk_accounts_customuser_id");
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
 
-                    b.Navigation("ContentType");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
 
-                    b.Navigation("User");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_admin");
+
+                    b.Property<bool>("IsStaff")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_staff");
+
+                    b.Property<bool>("IsSuperuser")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_superuser");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("lockout_enabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lockout_end");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_email");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_user_name");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("phone_number");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("phone_number_confirmed");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_token_expiry_time");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text")
+                        .HasColumnName("security_stamp");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("two_factor_enabled");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("user_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("ix_users_normalized_email");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_normalized_user_name");
+
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.FinanceIncomingorder", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserClaim", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.FinanceCompany", "Company")
-                        .WithMany("FinanceIncomingorders")
-                        .HasForeignKey("CompanyId")
-                        .IsRequired()
-                        .HasConstraintName("finance_incomingorder_company_id_2458ae1b_fk_finance_company_id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    b.Navigation("Company");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text")
+                        .HasColumnName("claim_type");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text")
+                        .HasColumnName("claim_value");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_claims");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_claims_user_id");
+
+                    b.ToTable("UserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersOrder", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserRole", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.OrdersCustomer", "Customer")
-                        .WithMany("OrdersOrders")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("UserId", "RoleId")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_user_roles_role_id");
+
+                    b.ToTable("UserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserToken", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text")
+                        .HasColumnName("login_provider");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text")
+                        .HasColumnName("value");
+
+                    b.HasKey("UserId", "LoginProvider", "Name")
+                        .HasName("pk_user_tokens");
+
+                    b.ToTable("UserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.IncomingOrder", b =>
+                {
+                    b.HasOne("Pharmacy.Infrastructure.Models.ProductProvider", "Provider")
+                        .WithMany("IncomingOrders")
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_incoming_order_product_provider_provider_id");
+
+                    b.Navigation("Provider");
+                });
+
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Order", b =>
+                {
+                    b.HasOne("Pharmacy.Infrastructure.Models.Customer", "Customer")
+                        .WithMany("Orders")
                         .HasForeignKey("CustomerId")
-                        .HasConstraintName("orders_order_customer_id_0b76f6a4_fk_orders_customer_id");
+                        .HasConstraintName("fk_order_customer_customer_id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.AccountsCustomuser", "User")
-                        .WithMany("OrdersOrders")
+                    b.HasOne("Pharmacy.Infrastructure.Models.User", "User")
+                        .WithMany("Orders")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("orders_order_user_id_e9b59eb1_fk_accounts_customuser_id");
+                        .HasConstraintName("fk_order_users_user_id");
 
                     b.Navigation("Customer");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersOrderitem", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrderItem", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.OrdersOrder", "Order")
-                        .WithMany("OrdersOrderitems")
+                    b.HasOne("Pharmacy.Infrastructure.Models.Order", "Order")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("orders_orderitem_order_id_fe61a34d_fk_orders_order_id");
+                        .HasConstraintName("fk_order_item_order_order_id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.ProductsType", "Product")
-                        .WithMany("OrdersOrderitems")
+                    b.HasOne("Pharmacy.Infrastructure.Models.Product", "Product")
+                        .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("orders_orderitem_product_id_afe4254a_fk_products_type_id");
+                        .HasConstraintName("fk_order_item_product_product_id");
 
                     b.Navigation("Order");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersPayment", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Payment", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.OrdersCustomer", "Customer")
-                        .WithMany("OrdersPayments")
+                    b.HasOne("Pharmacy.Infrastructure.Models.Customer", "Customer")
+                        .WithMany("Payments")
                         .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("orders_payment_customer_id_f98f8cf4_fk_orders_customer_id");
+                        .HasConstraintName("fk_payment_customer_customer_id");
 
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductsProduct", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductItem", b =>
                 {
-                    b.HasOne("Pharmacy.Infrastructure.Models.FinanceIncomingorder", "IncomingOrder")
-                        .WithMany("ProductsProducts")
+                    b.HasOne("Pharmacy.Infrastructure.Models.IncomingOrder", "IncomingOrder")
+                        .WithMany("ProductItems")
                         .HasForeignKey("IncomingOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("products_product_incoming_order_id_d9f6327a_fk_finance_i");
+                        .HasConstraintName("fk_product_item_incoming_order_incoming_order_id");
 
-                    b.HasOne("Pharmacy.Infrastructure.Models.ProductsType", "Type")
-                        .WithMany("ProductsProducts")
-                        .HasForeignKey("TypeId")
+                    b.HasOne("Pharmacy.Infrastructure.Models.Product", "Product")
+                        .WithMany("ProductItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("products_product_type_id_027d8fc4_fk_products_type_id");
+                        .HasConstraintName("fk_product_item_product_product_id");
 
                     b.Navigation("IncomingOrder");
 
-                    b.Navigation("Type");
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AccountsCustomuser", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.RoleClaim", b =>
                 {
-                    b.Navigation("AccountsCustomuserGroups");
+                    b.HasOne("Pharmacy.Infrastructure.Models.Role", "Role")
+                        .WithMany("RoleClaims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_claims_roles_role_id");
 
-                    b.Navigation("AccountsCustomuserUserPermissions");
-
-                    b.Navigation("AuthtokenToken");
-
-                    b.Navigation("DjangoAdminLogs");
-
-                    b.Navigation("OrdersOrders");
+                    b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthGroup", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserClaim", b =>
                 {
-                    b.Navigation("AccountsCustomuserGroups");
+                    b.HasOne("Pharmacy.Infrastructure.Models.User", "User")
+                        .WithMany("UserClaims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_claims_users_user_id");
 
-                    b.Navigation("AuthGroupPermissions");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.AuthPermission", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserRole", b =>
                 {
-                    b.Navigation("AccountsCustomuserUserPermissions");
+                    b.HasOne("Pharmacy.Infrastructure.Models.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_role_id");
 
-                    b.Navigation("AuthGroupPermissions");
+                    b.HasOne("Pharmacy.Infrastructure.Models.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_user_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.DjangoContentType", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.UserToken", b =>
                 {
-                    b.Navigation("AuthPermissions");
+                    b.HasOne("Pharmacy.Infrastructure.Models.User", "User")
+                        .WithMany("UserTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_tokens_users_user_id");
 
-                    b.Navigation("DjangoAdminLogs");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.FinanceCompany", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Customer", b =>
                 {
-                    b.Navigation("FinanceIncomingorders");
+                    b.Navigation("Orders");
+
+                    b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.FinanceIncomingorder", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.IncomingOrder", b =>
                 {
-                    b.Navigation("ProductsProducts");
+                    b.Navigation("ProductItems");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersCustomer", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Order", b =>
                 {
-                    b.Navigation("OrdersOrders");
-
-                    b.Navigation("OrdersPayments");
+                    b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.OrdersOrder", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Product", b =>
                 {
-                    b.Navigation("OrdersOrderitems");
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("ProductItems");
                 });
 
-            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductsType", b =>
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.ProductProvider", b =>
                 {
-                    b.Navigation("OrdersOrderitems");
+                    b.Navigation("IncomingOrders");
+                });
 
-                    b.Navigation("ProductsProducts");
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.Role", b =>
+                {
+                    b.Navigation("RoleClaims");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Pharmacy.Infrastructure.Models.User", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("UserClaims");
+
+                    b.Navigation("UserRoles");
+
+                    b.Navigation("UserTokens");
                 });
 #pragma warning restore 612, 618
         }

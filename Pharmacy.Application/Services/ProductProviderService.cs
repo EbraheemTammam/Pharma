@@ -6,20 +6,32 @@ using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Responses;
 using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Utilities;
+using Pharmacy.Domain.Specifications;
 
 namespace Pharmacy.Application.Services;
 
 public class ProductProviderService : IProductProviderService
 {
     private readonly IRepository<ProductProvider> _productProviders;
+    private readonly IRepository<IncomingOrder> _incomingOrders;
 
-    public ProductProviderService(IRepository<ProductProvider> repo) => _productProviders = repo;
+    public ProductProviderService(IRepository<ProductProvider> repo, IRepository<IncomingOrder> repo2) =>
+        (_productProviders, _incomingOrders) = (repo, repo2);
 
-    public async Task<Result<IEnumerable<ProductProviderDTO>>> GetAll() =>
-        Result.Success(
-            (await _productProviders.GetAll())
-            .ConvertAll(ProductProviderMapper.ToDTO)
+    public async Task<Result<IEnumerable<ProductProviderDTO>>> GetAll()
+    {
+        var productProviders = await _productProviders.GetAll();
+        foreach (var provider in productProviders)
+        {
+            var orders = await _incomingOrders.GetAll(new Specification<IncomingOrder>(obj => obj.ProviderId == provider.Id));
+            provider.Indepted = orders.Sum(obj => obj.Price - obj.Paid);
+            _productProviders.Update(provider);
+        }
+        await _productProviders.Save();
+        return Result.Success(
+            productProviders.ConvertAll(ProductProviderMapper.ToDTO)
         );
+    }
 
     public async Task<Result<ProductProviderDTO>> GetById(Guid id)
     {

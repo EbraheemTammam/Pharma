@@ -21,8 +21,7 @@ public class IncomingOrderService : IIncomingOrderService
     public async Task<Result<IEnumerable<IncomingOrderDTO>>> GetAll() =>
         Result.Success
         (
-            (await _manager.IncomingOrders.GetAll())
-            .ConvertAll(obj => obj.ToDTO())
+            await _manager.IncomingOrders.GetAll(new IncomingOrderWithProviderSpecification())
         );
 
     public async Task<Result<IncomingOrderDTO>> GetById(Guid id)
@@ -54,7 +53,7 @@ public class IncomingOrderService : IIncomingOrderService
         if(provider is null) return Result.Fail<IncomingOrderDTO>(AppResponses.NotFoundResponse(orderDTO.ProviderId, nameof(ProductProvider)));
 
         var validitems = await InternalEventHandler.ValidateProductItems(_manager, orderDTO.ProductItems);
-        if(!validitems.Succeeded) return (Result<IncomingOrderDTO>)validitems;
+        if(!validitems.Succeeded) return Result.Fail<IncomingOrderDTO>(validitems.Response);
 
         IncomingOrder incomingOrder = await _manager.IncomingOrders.Add(orderDTO.ToModel());
 
