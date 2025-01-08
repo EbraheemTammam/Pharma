@@ -41,10 +41,10 @@ public class IncomingOrderService : IIncomingOrderService
         IncomingOrder? incomingOrder = await _manager.IncomingOrders.GetById(id);
         if(incomingOrder is null) return Result.Fail<IEnumerable<ProductItemDTO>>(AppResponses.NotFoundResponse(id, nameof(IncomingOrder)));
 
-        IEnumerable<ProductItem> items = await _manager.ProductItems.GetAll(
-            new Specification<ProductItem>(obj => obj.IncomingOrderId == id)
+        IEnumerable<ProductItemDTO> items = await _manager.ProductItems.GetAll(
+            new ProductItemWithProductNameSpecification(id)
         );
-        return Result.Success(items.ConvertAll(obj => obj.ToDTO()));
+        return Result.Success(items);
     }
 
     public async Task<Result<IncomingOrderDTO>> Create(IncomingOrderCreateDTO orderDTO)
