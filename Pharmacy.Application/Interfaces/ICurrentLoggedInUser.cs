@@ -4,6 +4,6 @@ namespace Pharmacy.Application.Interfaces;
 
 public interface ICurrentLoggedInUser
 {
-    string Email { get; }
+    string UserName { get; }
     Task<User> GetUser();
 }

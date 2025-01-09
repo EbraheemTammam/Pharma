@@ -7,7 +7,6 @@ using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Utilities;
-using Pharmacy.Domain.Specifications;
 using Pharmacy.Application.Queries;
 
 namespace Pharmacy.Application.Services;
