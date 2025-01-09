@@ -10,7 +10,7 @@ public static class UserMapper
         {
             FirstName = schema.FirstName,
             LastName = schema.LastName,
-            UserName = schema.Email
+            UserName = schema.Username
         };
 
     public static UserDTO ToUserDTO(this User model) =>
@@ -26,7 +26,7 @@ public static class UserMapper
     {
         user.FirstName = schema.FirstName;
         user.LastName = schema.LastName;
-        user.Email = schema.Email;
-        user.UserName = schema.Email;
+        user.Email = schema.Username + "@pharmacy.com";
+        user.UserName = schema.Username;
     }
 }

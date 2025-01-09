@@ -45,7 +45,7 @@ public class AuthService : IAuthService
 
     public async Task<Result<TokenDTO>> LoginAsync(LoginDTO loginDTO)
     {
-        _user = await _userManger.FindByEmailAsync(loginDTO.Email);
+        _user = await _userManger.FindByNameAsync(loginDTO.Username);
         return _user switch
         {
             null => Result.Fail<TokenDTO>(AppResponses.UnAuthorizedResponse),
