@@ -25,8 +25,8 @@ public class OrderService : IOrderService
         User user = await _currentLoggedInUser.GetUser();
         return await _userManager.IsInRoleAsync(user, Roles.Employee) switch
         {
-            true => Result.Success(await _manager.Orders.GetAll(new OrderWithUserSpecification())),
-            false => Result.Success(await _manager.Orders.GetAll(new UserOrdersSpecification(user.Id)))
+            true => Result.Success(await _manager.Orders.GetAll(new UserOrdersSpecification(user.Id))),
+            false => Result.Success(await _manager.Orders.GetAll(new OrderWithUserSpecification()))
         };
     }
 
