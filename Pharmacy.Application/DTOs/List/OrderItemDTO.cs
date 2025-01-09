@@ -9,4 +9,5 @@ public record OrderItemDTO : OrderItemBaseDTO
     public string? ProductBarcode {get; set;}
     public int RemainedItems {get; set;}
     public decimal TotalPrice {get; set;}
+    public bool ProductIsLack {get; set;}
 }
