@@ -18,19 +18,20 @@ public static class InternalEventHandler
 
         manager.Products.Update(product);
 
+        int amount = item.Amount;
         foreach (ProductItem pItem in await manager.ProductItems.GetAll(
             new Specification<ProductItem>(obj => obj.ProductId == item.ProductId)
         ))
         {
-            (pItem.NumberOfElements, item.Amount) =
+            (pItem.NumberOfElements, amount) =
             (
-                pItem.NumberOfElements > item.Amount ?
-                (pItem.NumberOfElements - item.Amount, 0) :
-                (0, item.Amount - pItem.NumberOfElements)
+                pItem.NumberOfElements > amount ?
+                (pItem.NumberOfElements - amount, 0) :
+                (0, amount - pItem.NumberOfElements)
             );
 
             manager.ProductItems.Update(pItem);
-            if(item.Amount == 0) break;
+            if(amount == 0) break;
         }
 
         return Result.Success();
