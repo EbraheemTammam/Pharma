@@ -14,7 +14,7 @@ public static class InternalEventHandler
     private static async Task<Result> OrderItemPreSave(IRepositoryManager manager, OrderItem item, Product product)
     {
         product.OwnedElements -= item.Amount;
-        product.IsLack = product.OwnedElements > product.Minimum;
+        product.IsLack = product.OwnedElements <= product.Minimum;
 
         manager.Products.Update(product);
 
@@ -40,7 +40,7 @@ public static class InternalEventHandler
     public static async Task<Result> OrderItemPreDelete(IRepositoryManager manager, OrderItem item)
     {
         item.Product!.OwnedElements += item.Amount;
-        item.Product.IsLack = item.Product.OwnedElements > item.Product.Minimum;
+        item.Product.IsLack = item.Product.OwnedElements <= item.Product.Minimum;
         manager.Products.Update(item.Product);
 
         ProductItem pItem =
