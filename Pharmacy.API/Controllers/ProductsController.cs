@@ -23,7 +23,7 @@ public class ProductsController : ApiBaseController
     public async Task<ActionResult<ProductDTO>> Create(ProductCreateDTO product) =>
         HandleResult(await _service.Create(product));
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     public async Task<ActionResult<ProductDTO>> Update(Guid id, ProductCreateDTO product) =>
         HandleResult(await _service.Update(id, product));
 

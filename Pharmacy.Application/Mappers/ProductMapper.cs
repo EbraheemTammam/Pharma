@@ -32,12 +32,13 @@ public static class ProductMapper
             )
         };
 
-    public static void Update(this Product product, ProductCreateDTO schema)
+    public static void Update(this Product product, ProductUpdateDTO schema)
     {
-        product.Barcode = schema.Barcode;
-        product.Name = schema.Name;
+        product.Barcode = schema.Barcode ?? product.Barcode;
+        product.Name = schema.Name ?? product.Name;
         product.NumberOfElements = schema.NumberOfElements ?? product.NumberOfElements;
-        product.PricePerElement = schema.PricePerElement;
-        product.Minimum = schema.Minimum;
+        product.PricePerElement = schema.PricePerElement ?? product.PricePerElement;
+        product.Minimum = schema.Minimum ?? product.Minimum;
+        product.IsLack = schema.IsLack ?? product.IsLack;
     }
 }
