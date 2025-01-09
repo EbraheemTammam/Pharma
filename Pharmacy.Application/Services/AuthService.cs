@@ -37,7 +37,9 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
             return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Register Try Again.."));
         _user = user;
-        await _userManger.AddToRoleAsync(_user, Roles.User);
+        if(registerDTO.IsManager)
+            await _userManger.AddToRoleAsync(_user, Roles.Manager);
+        else await _userManger.AddToRoleAsync(_user, Roles.Employee);
         return Result.Success(await CreateTokenAsync(withExpiryTime: true), StatusCodes.Status201Created);
     }
 

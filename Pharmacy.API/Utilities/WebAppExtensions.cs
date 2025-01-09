@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Models;
 
 namespace Pharmacy.Presentation.Utilities;
@@ -21,11 +22,11 @@ public static class WebAppExtensions
         {
             /* ------- Load Default Roles ------- */
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-            await roleManager.CreateRolesIfNotExist(["Employee", "Manager", "Admin"]);
+            await roleManager.CreateRolesIfNotExist([Roles.Employee, Roles.Manager, Roles.Admin]);
             /* ------- Load Default User ------- */
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             User user = scope.ServiceProvider.GetRequiredService<IOptions<User>>().Value;
-            await userManager.CreateUserIfNotExist(user, "Admin");
+            await userManager.CreateUserIfNotExist(user, Roles.Admin);
         }
     }
 

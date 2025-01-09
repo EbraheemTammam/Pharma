@@ -53,7 +53,7 @@ public class OrderService : IOrderService
         User user = await _currentLoggedInUser.GetUser();
 
         Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
-        if (!validItems.Succeeded) return (Result<OrderDTO>)validItems;
+        if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
 
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
         if(customer is not null)

@@ -13,4 +13,7 @@ public record RegisterDTO : BaseAuthDTO
     [MaxLength(50, ErrorMessage = "Last name cannot exceed 50 characters.")]
     [MinLength(3, ErrorMessage = "Last name must be at least 3 characters.")]
     public required string LastName { get; init; }
+
+    [Required]
+    public bool IsManager { get; init; }
 }
