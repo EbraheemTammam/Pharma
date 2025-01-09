@@ -20,7 +20,9 @@ public static class OrderItemMapper
             Id = orderItem.Id,
             Amount = orderItem.Amount,
             Price = (decimal)orderItem.Price,
+            ProductId = orderItem.Product!.Id,
             ProductName = orderItem.Product!.Name,
+            ProductBarcode = orderItem.Product!.Barcode,
             RemainedItems = orderItem.Product!.OwnedElements,
             TotalPrice = (decimal) orderItem.Price * orderItem.Amount
         };
