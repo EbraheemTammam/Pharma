@@ -5,7 +5,7 @@ namespace Pharmacy.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<Result<TokenDTO>> RegisterAsync(RegisterDTO registerDTO);
+    Task<Result<UserDTO>> RegisterAsync(RegisterDTO registerDTO);
     Task<Result<TokenDTO>> LoginAsync(LoginDTO loginDTO);
     Task<Result<TokenDTO>> RefreshToken(TokenDTO tokenDTO);
 }

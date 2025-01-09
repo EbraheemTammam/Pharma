@@ -19,37 +19,32 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManger;
     private readonly JwtSetting _jwtSetting;
-    private User? _user;
 
-    public AuthService(
-        UserManager<User> userManger,
-        IOptions<JwtSetting> options
-    )
+    public AuthService(UserManager<User> userManger, IOptions<JwtSetting> options)
     {
         _userManger = userManger;
         _jwtSetting = options.Value;
     }
 
-    public async Task<Result<TokenDTO>> RegisterAsync(RegisterDTO registerDTO)
+    public async Task<Result<UserDTO>> RegisterAsync(RegisterDTO registerDTO)
     {
         var user = registerDTO.ToUserModel();
         var result = await _userManger.CreateAsync(user, registerDTO.Password);
         if (!result.Succeeded)
-            return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Register Try Again.."));
-        _user = user;
+            return Result.Fail<UserDTO>(AppResponses.BadRequestResponse(result.Errors.First().Description));
         if(registerDTO.IsManager)
-            await _userManger.AddToRoleAsync(_user, Roles.Manager);
-        else await _userManger.AddToRoleAsync(_user, Roles.Employee);
-        return Result.Success(await CreateTokenAsync(withExpiryTime: true), StatusCodes.Status201Created);
+            await _userManger.AddToRoleAsync(user, Roles.Manager);
+        else await _userManger.AddToRoleAsync(user, Roles.Employee);
+        return Result.Success(user.ToUserDTO(), StatusCodes.Status201Created);
     }
 
     public async Task<Result<TokenDTO>> LoginAsync(LoginDTO loginDTO)
     {
-        _user = await _userManger.FindByNameAsync(loginDTO.Username);
-        return _user switch
+        User? user = await _userManger.FindByNameAsync(loginDTO.Username);
+        return user switch
         {
             null => Result.Fail<TokenDTO>(AppResponses.UnAuthorizedResponse),
-            _ => Result.Success(await CreateTokenAsync(withExpiryTime: false))
+            _ => Result.Success(await CreateTokenAsync(user, withExpiryTime: false))
         };
     }
 
@@ -57,10 +52,10 @@ public class AuthService : IAuthService
     {
         var userId = GetUserIdFromExpiredToken(tokenDTO.AccessToken);
         if (userId is null) return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Token"));
-        _user = await _userManger.FindByIdAsync(userId);
-        if (_user is null || _user.RefreshToken != tokenDTO.RefreshToken || _user.RefreshTokenExpiryTime <= DateTime.Now)
+        User? user = await _userManger.FindByIdAsync(userId);
+        if (user is null || user.RefreshToken != tokenDTO.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Token"));
-        return Result.Success(await CreateTokenAsync(withExpiryTime: false));
+        return Result.Success(await CreateTokenAsync(user, withExpiryTime: false));
     }
 
     private string? GetUserIdFromExpiredToken(string token)
@@ -82,10 +77,10 @@ public class AuthService : IAuthService
         return prinicpal.FindFirstValue(JwtRegisteredClaimNames.UniqueName);
     }
 
-    private async Task<TokenDTO> CreateTokenAsync(bool withExpiryTime)
+    private async Task<TokenDTO> CreateTokenAsync(User user, bool withExpiryTime)
     {
         var sigingCredentials = GetSigningCredentials();
-        var claims = await GetClaimsAsync();
+        var claims = await GetClaimsAsync(user);
         var tokenOption = new JwtSecurityToken(
             issuer: _jwtSetting.ValidIssuer,
             audience: _jwtSetting.ValidAudience,
@@ -93,12 +88,12 @@ public class AuthService : IAuthService
             expires: DateTime.Now.AddMinutes(_jwtSetting.ExpireOn),
             signingCredentials: sigingCredentials
         );
-        _user!.RefreshToken = GenerateRefreshToken();
+        user!.RefreshToken = GenerateRefreshToken();
         if (withExpiryTime)
-            _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(_jwtSetting.RefreshTokenExpireDays);
-        await _userManger.UpdateAsync(_user);
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(_jwtSetting.RefreshTokenExpireDays);
+        await _userManger.UpdateAsync(user);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOption);
-        return new TokenDTO(accessToken, RefreshToken: _user!.RefreshToken);
+        return new TokenDTO(accessToken, RefreshToken: user!.RefreshToken);
     }
 
     private SigningCredentials GetSigningCredentials()
@@ -107,15 +102,15 @@ public class AuthService : IAuthService
         return new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
     }
 
-    private async Task<IEnumerable<Claim>> GetClaimsAsync()
+    private async Task<IEnumerable<Claim>> GetClaimsAsync(User user)
     {
-        ArgumentNullException.ThrowIfNull(_user);
+        ArgumentNullException.ThrowIfNull(user);
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, _user.Email!),
-            new Claim(JwtRegisteredClaimNames.UniqueName, _user.Id.ToString())
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString())
         };
-        var roles = await _userManger.GetRolesAsync(_user);
+        var roles = await _userManger.GetRolesAsync(user);
         //claims.Add(new Claim("Roles", JsonSerializer.Serialize(roles)));
         claims.AddRange(roles?.Select(role => new Claim(ClaimTypes.Role, role)) ?? []);
         return claims;

@@ -12,6 +12,6 @@ public abstract record UserBaseDTO
     [Required, MinLength(3), MaxLength(150)]
     public required string LastName {get; set;}
 
-    [Required, MaxLength(150), EmailAddress]
-    public required string Email {get; set;}
+    [Required, MaxLength(150)]
+    public required string UserName {get; set;}
 }

@@ -19,7 +19,7 @@ public static class UserMapper
             Id = model.Id,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            Email = model.UserName!
+            UserName = model.UserName!
         };
 
     public static void Update(this User user, RegisterDTO schema)

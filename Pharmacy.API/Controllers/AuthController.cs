@@ -11,23 +11,14 @@ public class AuthController : ApiBaseController
         => _authService = authService;
 
     [HttpPost("register")]
-    public async Task<ActionResult<TokenDTO>> Register([FromBody] RegisterDTO registerDTO)
-    {
-        var result = await _authService.RegisterAsync(registerDTO);
-        return HandleResult(result);
-    }
+    public async Task<ActionResult<UserDTO>> Register([FromBody] RegisterDTO registerDTO) =>
+        HandleResult(await _authService.RegisterAsync(registerDTO));
 
     [HttpPost("login")]
-    public async Task<ActionResult<TokenDTO>> Login([FromBody] LoginDTO loginDTO)
-    {
-        var result = await _authService.LoginAsync(loginDTO);
-        return HandleResult(result);
-    }
+    public async Task<ActionResult<TokenDTO>> Login([FromBody] LoginDTO loginDTO) =>
+        HandleResult(await _authService.LoginAsync(loginDTO));
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<TokenDTO>> Refresh([FromBody] TokenDTO tokenDTO)
-    {
-        var result = await _authService.RefreshToken(tokenDTO);
-        return HandleResult(result);
-    }
+    public async Task<ActionResult<TokenDTO>> Refresh([FromBody] TokenDTO tokenDTO) =>
+        HandleResult(await _authService.RefreshToken(tokenDTO));
 }
