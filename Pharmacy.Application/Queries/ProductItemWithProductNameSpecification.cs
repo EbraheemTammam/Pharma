@@ -24,7 +24,7 @@ public class ProductItemWithProductNameSpecification : Specification<ProductItem
             Id = item.Id,
             NumberOfBoxes = item.NumberOfBoxes,
             ProductName = item.Product!.Name,
-            Price = (decimal)(item.NumberOfBoxes * item.NumberOfElements * item.Product.PricePerElement)
+            Price = (decimal)(item.NumberOfBoxes * item.Product.NumberOfElements * item.Product.PricePerElement)
         };
     }
 }
