@@ -27,11 +27,11 @@ public class IncomingOrdersController : ApiBaseController
     public async Task<ActionResult<IncomingOrderDTO>> Create(IncomingOrderCreateDTO incomingOrder) =>
         HandleResult(await _service.Create(incomingOrder));
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize(Roles = "Admin, Manager")]
     public async Task<ActionResult<IncomingOrderDTO>> Update(Guid id, IncomingOrderUpdateDTO incomingOrder) =>
         HandleResult(await _service.Update(id, incomingOrder));
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize(Roles = "Admin, Manager")]
     public async Task<ActionResult> Delete(Guid id) =>
         HandleResult(await _service.Delete(id));
 }

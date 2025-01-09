@@ -27,9 +27,9 @@ public class ProductsController : ApiBaseController
     public async Task<ActionResult<ProductDTO>> Update(Guid id, ProductCreateDTO product) =>
         HandleResult(await _service.Update(id, product));
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id) =>
-        HandleResult(await _service.Delete(id));
+    // [HttpDelete("{id}")]
+    // public async Task<ActionResult> Delete(Guid id) =>
+    //     HandleResult(await _service.Delete(id));
 
     [HttpGet("AboutToExpire")]
     public async Task<ActionResult<IEnumerable<ProductItemDTO>>> GetAboutToExpire() =>

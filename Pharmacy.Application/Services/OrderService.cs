@@ -21,10 +21,15 @@ public class OrderService : IOrderService
     public OrderService(IRepositoryManager repoManager, UserManager<User> userManager, ICurrentLoggedInUser currentLoggedInUser) =>
         (_manager, _userManager, _currentLoggedInUser) = (repoManager, userManager, currentLoggedInUser);
 
-    public async Task<Result<IEnumerable<OrderDTO>>> GetAll() =>
-        Result.Success(
-            await _manager.Orders.GetAll(new OrderWithUserSpecification())
-        );
+    public async Task<Result<IEnumerable<OrderDTO>>> GetAll()
+    {
+        User user = await _currentLoggedInUser.GetUser();
+        return await _userManager.IsInRoleAsync(user, Roles.Employee) switch
+        {
+            true => Result.Success(await _manager.Orders.GetAll(new OrderWithUserSpecification())),
+            false => Result.Success(await _manager.Orders.GetAll(new UserOrdersSpecification(user.Id)))
+        };
+    }
 
     public async Task<Result<OrderDTO>> GetById(Guid id)
     {
