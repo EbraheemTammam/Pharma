@@ -62,7 +62,7 @@ public class ProductService : IProductService
         return Result.Success(product.ToDTO(), StatusCodes.Status201Created);
     }
 
-    public async Task<Result<ProductDTO>> Update(Guid id, ProductCreateDTO schema)
+    public async Task<Result<ProductDTO>> Update(Guid id, ProductUpdateDTO schema)
     {
         Product? product = await _products.GetById(id);
         if(product is null) return Result.Fail<ProductDTO>(AppResponses.NotFoundResponse(id, nameof(Product)));
