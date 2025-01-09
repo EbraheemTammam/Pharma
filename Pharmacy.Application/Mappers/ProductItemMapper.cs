@@ -21,6 +21,7 @@ public static class ProductItemMapper
             Id = model.Id,
             NumberOfBoxes = model.NumberOfBoxes,
             ProductName = model.Product!.Name,
+            ProductBarcode = model.Product!.Barcode,
             Price = (decimal)(model.NumberOfBoxes * model.Product.NumberOfElements * model.Product.PricePerElement)
         };
 }
