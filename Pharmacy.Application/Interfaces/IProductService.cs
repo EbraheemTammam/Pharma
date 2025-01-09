@@ -11,6 +11,6 @@ public interface IProductService
     Task<Result<IEnumerable<ProductItemDTO>>> GetAboutToExpire();
     Task<Result<ProductDTO>> GetById(Guid id);
     Task<Result<ProductDTO>> Create(ProductCreateDTO schema);
-    Task<Result<ProductDTO>> Update(Guid id, ProductCreateDTO schema);
+    Task<Result<ProductDTO>> Update(Guid id, ProductUpdateDTO schema);
     Task<Result> Delete(Guid id);
 }
