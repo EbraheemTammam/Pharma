@@ -11,10 +11,10 @@ public class CurrentLoggedInUser : ICurrentLoggedInUser
     private readonly UserManager<User> _userManager;
     public CurrentLoggedInUser(IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
     {
-        UserName = httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
+        UserId = httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.Sid) ?? string.Empty;
         _userManager = userManager;
     }
-    public string UserName { get; }
+    public string UserId { get; }
     public async Task<User> GetUser() =>
-        (await _userManager.FindByNameAsync(UserName))!;
+        (await _userManager.FindByIdAsync(UserId))!;
 }
