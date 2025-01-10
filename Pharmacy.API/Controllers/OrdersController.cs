@@ -28,7 +28,7 @@ public class OrdersController : ApiBaseController
         HandleResult(await _service.Create(orderDTO));
 
     [HttpPut, Authorize(Roles = "Admin, Manager")]
-    public async Task<ActionResult<OrderDTO>> Update(Guid id, OrderCreateDTO orderDTO) =>
+    public async Task<ActionResult<OrderDTO>> Update(Guid id, OrderUpdateDTO orderDTO) =>
         HandleResult(await _service.Update(id, orderDTO));
 
     [HttpDelete("{id}"), Authorize(Roles = "Admin, Manager")]
