@@ -82,9 +82,6 @@ public class OrderService : IOrderService
         Order? order = await _manager.Orders.GetById(id);
         if(order is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order)));
 
-        Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
-        if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
-
         Customer? customer = await _manager.Customers.GetById(order.CustomerId);
         if(customer is not null)
         {
@@ -93,6 +90,9 @@ public class OrderService : IOrderService
         }
 
         await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
+
+        Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
+        if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
 
         if(customer is not null)
         {
