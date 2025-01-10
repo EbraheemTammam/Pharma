@@ -113,7 +113,7 @@ public class AuthService : IAuthService
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString())
+            new Claim(ClaimTypes.Sid, user.Id.ToString())
         };
         var roles = await _userManger.GetRolesAsync(user);
         //claims.Add(new Claim("Roles", JsonSerializer.Serialize(roles)));
