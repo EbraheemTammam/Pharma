@@ -14,6 +14,7 @@ public class ProductItemWithProductNameSpecification : Specification<ProductItem
             Id = item.Id,
             NumberOfBoxes = item.NumberOfBoxes,
             ProductName = item.Product!.Name,
+            ProductBarcode = item.Product!.Barcode,
             Price = (decimal)(item.NumberOfBoxes * item.NumberOfElements * item.Product.PricePerElement)
         };
     }
@@ -25,6 +26,7 @@ public class ProductItemWithProductNameSpecification : Specification<ProductItem
             Id = item.Id,
             NumberOfBoxes = item.NumberOfBoxes,
             ProductName = item.Product!.Name,
+            ProductBarcode = item.Product!.Barcode,
             Price = (decimal)(item.NumberOfBoxes * item.Product.NumberOfElements * item.Product.PricePerElement)
         };
     }
