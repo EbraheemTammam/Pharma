@@ -61,20 +61,25 @@ public class AuthService : IAuthService
     private string? GetUserIdFromExpiredToken(string token)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(token);
+
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            // ValidAudience = _jwtSetting.ValidAudience,
             ValidIssuer = _jwtSetting.ValidIssuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.SecretKey)),
+            ValidateLifetime = false // Disable lifetime validation to allow expired tokens
         };
-        var prinicpal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-        var jwtSecurityToken = securityToken as JwtSecurityToken;
-        if (jwtSecurityToken is null || jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+
+        var principal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        {
             return null;
-        return prinicpal.FindFirstValue(JwtRegisteredClaimNames.UniqueName);
+        }
+        return principal.FindFirstValue(JwtRegisteredClaimNames.UniqueName);
     }
 
     private async Task<TokenDTO> CreateTokenAsync(User user, bool withExpiryTime)

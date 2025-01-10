@@ -36,7 +36,9 @@ public class ProductService : IProductService
         return Result.Success(
             (await _productItems.GetAll(
                     new Specification<ProductItem>(
-                        obj => ((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6
+                        obj =>
+                        (((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6)
+                        && (obj.NumberOfElements > 0)
                     )
                 )
             ).ConvertAll(ProductItemMapper.ToDTO)
