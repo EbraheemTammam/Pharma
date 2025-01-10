@@ -7,6 +7,7 @@ using Pharmacy.Application.DTOs;
 using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Specifications;
 using Microsoft.AspNetCore.Http;
+using Pharmacy.Application.Queries;
 
 namespace Pharmacy.Application.Services;
 
@@ -34,14 +35,13 @@ public class ProductService : IProductService
     {
         DateOnly currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
         return Result.Success(
-            (await _productItems.GetAll(
-                    new Specification<ProductItem>(
-                        obj =>
-                        (((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6)
-                        && (obj.NumberOfElements > 0)
-                    )
+            await _productItems.GetAll(
+                new ProductItemWithProductNameSpecification(
+                    obj =>
+                    (((obj.ExpirationDate.Year - currentDate.Year) * 12) + (obj.ExpirationDate.Month - currentDate.Month) <= 6)
+                    && (obj.NumberOfElements > 0)
                 )
-            ).ConvertAll(ProductItemMapper.ToDTO)
+            )
         );
     }
 

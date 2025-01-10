@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Pharmacy.Application.DTOs;
 using Pharmacy.Domain.Models;
 using Pharmacy.Domain.Specifications;
@@ -6,7 +7,7 @@ namespace Pharmacy.Application.Queries;
 
 public class ProductItemWithProductNameSpecification : Specification<ProductItem, ProductItemDTO>
 {
-    public ProductItemWithProductNameSpecification()
+    public ProductItemWithProductNameSpecification(Expression<Func<ProductItem, bool>> criteria) : base(criteria)
     {
         Selector = item => new ProductItemDTO
         {
