@@ -95,7 +95,7 @@ public class AuthService : IAuthService
         );
         user!.RefreshToken = GenerateRefreshToken();
         if (withExpiryTime)
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(_jwtSetting.RefreshTokenExpireDays);
+            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(_jwtSetting.RefreshTokenExpireDays);
         await _userManger.UpdateAsync(user);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOption);
         return new TokenDTO(accessToken, RefreshToken: user!.RefreshToken);
