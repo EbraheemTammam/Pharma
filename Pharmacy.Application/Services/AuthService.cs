@@ -79,7 +79,7 @@ public class AuthService : IAuthService
         {
             return null;
         }
-        return principal.FindFirstValue(JwtRegisteredClaimNames.UniqueName);
+        return principal.FindFirstValue(ClaimTypes.Sid);
     }
 
     private async Task<TokenDTO> CreateTokenAsync(User user, bool withExpiryTime)
