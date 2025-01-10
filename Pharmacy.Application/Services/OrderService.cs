@@ -83,7 +83,7 @@ public class OrderService : IOrderService
         if(order is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order)));
 
         Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
-        if (!validItems.Succeeded) return (Result<OrderDTO>)validItems;
+        if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
 
         Customer? customer = await _manager.Customers.GetById(order.CustomerId);
         if(customer is not null)
