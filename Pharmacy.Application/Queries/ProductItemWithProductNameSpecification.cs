@@ -15,6 +15,7 @@ public class ProductItemWithProductNameSpecification : Specification<ProductItem
             NumberOfBoxes = item.NumberOfBoxes,
             ProductName = item.Product!.Name,
             ProductBarcode = item.Product!.Barcode,
+            ExpirationDate = item.ExpirationDate,
             Price = (decimal)(item.NumberOfBoxes * item.NumberOfElements * item.Product.PricePerElement)
         };
     }
@@ -27,6 +28,7 @@ public class ProductItemWithProductNameSpecification : Specification<ProductItem
             NumberOfBoxes = item.NumberOfBoxes,
             ProductName = item.Product!.Name,
             ProductBarcode = item.Product!.Barcode,
+            ExpirationDate = item.ExpirationDate,
             Price = (decimal)(item.NumberOfBoxes * item.Product.NumberOfElements * item.Product.PricePerElement)
         };
     }
