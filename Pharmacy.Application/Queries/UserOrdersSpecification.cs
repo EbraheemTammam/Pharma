@@ -6,7 +6,12 @@ namespace Pharmacy.Application.Queries;
 
 public class UserOrdersSpecification : Specification<Order, OrderDTO>
 {
-    public UserOrdersSpecification(int userId) : base(obj => obj.UserId == userId && obj.CreatedAt.Date == DateTime.UtcNow.Date)
+    public UserOrdersSpecification(int userId, DateOnly? from, DateOnly? to)
+    : base(
+        obj => obj.UserId == userId &&
+        DateOnly.FromDateTime(obj.CreatedAt.Date) >= from &&
+        DateOnly.FromDateTime(obj.CreatedAt.Date) <= to
+    )
     {
         Selector = order => new OrderDTO
         {

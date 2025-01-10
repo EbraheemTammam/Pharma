@@ -20,13 +20,20 @@ public class OrderService : IOrderService
     public OrderService(IRepositoryManager repoManager, UserManager<User> userManager, ICurrentLoggedInUser currentLoggedInUser) =>
         (_manager, _userManager, _currentLoggedInUser) = (repoManager, userManager, currentLoggedInUser);
 
-    public async Task<Result<IEnumerable<OrderDTO>>> GetAll()
+    public async Task<Result<IEnumerable<OrderDTO>>> GetAll(DateOnly? from, DateOnly? to)
     {
         User user = await _currentLoggedInUser.GetUser();
+        DateOnly todaysDate = DateOnly.FromDateTime(DateTime.Today.Date);
         return await _userManager.IsInRoleAsync(user, Roles.Employee) switch
         {
-            true => Result.Success(await _manager.Orders.GetAll(new UserOrdersSpecification(user.Id))),
-            false => Result.Success(await _manager.Orders.GetAll(new OrderWithUserSpecification()))
+            true => Result.Success(
+                await _manager.Orders.GetAll(new UserOrdersSpecification(user.Id, from ?? todaysDate, to ?? todaysDate))
+            ),
+            false => Result.Success(
+                await _manager.Orders.GetAll(
+                    new OrderWithUserSpecification(from ?? new DateOnly(todaysDate.Year, todaysDate.Month, 1), to ?? todaysDate)
+                )
+            )
         };
     }
 

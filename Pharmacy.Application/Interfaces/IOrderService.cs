@@ -6,7 +6,7 @@ namespace Pharmacy.Application.Interfaces;
 
 public interface IOrderService
 {
-    Task<Result<IEnumerable<OrderDTO>>> GetAll();
+    Task<Result<IEnumerable<OrderDTO>>> GetAll(DateOnly? from, DateOnly? to);
     Task<Result<IEnumerable<OrderItemDTO>>> GetItems(Guid id);
     Task<Result<OrderDTO>> GetById(Guid id);
     Task<Result<OrderDTO>> Create(OrderCreateDTO schema);
