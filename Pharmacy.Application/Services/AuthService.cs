@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         if (userId is null) return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Token"));
         User? user = await _userManger.FindByIdAsync(userId);
         if (user is null || user.RefreshToken != tokenDTO.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Token"));
+            return Result.Fail<TokenDTO>(AppResponses.UnAuthorizedResponse);
         return Result.Success(await CreateTokenAsync(user, withExpiryTime: false));
     }
 
