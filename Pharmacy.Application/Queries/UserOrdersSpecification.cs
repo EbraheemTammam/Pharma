@@ -17,5 +17,6 @@ public class UserOrdersSpecification : Specification<Order, OrderDTO>
             CustomerName = order.Customer!.Name,
             CreatedBy = order.CreatedBy!.GetFullName()
         };
+        OrderByDescending = order => order.CreatedAt;
     }
 }

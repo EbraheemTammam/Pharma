@@ -16,5 +16,6 @@ public class IncomingOrderWithProviderSpecification : Specification<IncomingOrde
             Price = order.Price,
             Paid = order.Paid,
         };
+        OrderByDescending = order => order.CreatedAt;
     }
 }

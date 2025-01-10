@@ -8,6 +8,7 @@ public class Specification<TModel> where TModel : BaseModel
     public Expression<Func<TModel, bool>>? Criteria { get; }
     public List<Expression<Func<TModel, object>>> Includes { get; } = new();
     public Expression<Func<TModel, object>>? OrderBy { get; set; }
+    public Expression<Func<TModel, object>>? OrderByDescending { get; set; }
 
     public Specification() { }
     public Specification(Expression<Func<TModel, bool>> criteria) => Criteria = criteria;

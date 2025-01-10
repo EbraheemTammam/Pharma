@@ -17,6 +17,7 @@ public class OrderWithUserSpecification : Specification<Order, OrderDTO>
             CustomerName = order.Customer!.Name,
             CreatedBy = order.CreatedBy!.GetFullName()
         };
+        OrderByDescending = order => order.CreatedAt;
     }
 
     public OrderWithUserSpecification(Guid orderId) : base(obj => obj.Id == orderId)
@@ -30,5 +31,6 @@ public class OrderWithUserSpecification : Specification<Order, OrderDTO>
             CustomerName = order.Customer!.Name,
             CreatedBy = order.CreatedBy!.GetFullName()
         };
+        OrderByDescending = order => order.CreatedAt;
     }
 }

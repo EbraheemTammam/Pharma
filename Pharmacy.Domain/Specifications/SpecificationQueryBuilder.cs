@@ -19,6 +19,9 @@ public static class SpecificationQueryBuilder
         if(specification.OrderBy is not null)
             queryable = queryable.OrderBy(specification.OrderBy);
 
+        if(specification.OrderByDescending is not null)
+            queryable = queryable.OrderByDescending(specification.OrderByDescending);
+
         return queryable;
     }
 
