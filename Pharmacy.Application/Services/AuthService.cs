@@ -35,7 +35,7 @@ public class AuthService : IAuthService
         if(registerDTO.IsManager)
             await _userManger.AddToRoleAsync(user, Roles.Manager);
         else await _userManger.AddToRoleAsync(user, Roles.Employee);
-        return Result.Success(user.ToUserDTO(), StatusCodes.Status201Created);
+        return Result.Success(user.ToUserDTO(registerDTO.IsManager ? "Manager" : "Employee"), StatusCodes.Status201Created);
     }
 
     public async Task<Result<TokenDTO>> LoginAsync(LoginDTO loginDTO)

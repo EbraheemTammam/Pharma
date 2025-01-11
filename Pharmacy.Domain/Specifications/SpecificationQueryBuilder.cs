@@ -7,7 +7,7 @@ namespace Pharmacy.Domain.Specifications;
 public static class SpecificationQueryBuilder
 {
     public static IQueryable<TModel> Build<TModel>(IQueryable<TModel> queryable, Specification<TModel> specification)
-    where TModel : BaseModel
+    where TModel : class, BaseModel
     {
         if(specification.Criteria is not null)
             queryable = queryable.Where(specification.Criteria);
@@ -26,6 +26,6 @@ public static class SpecificationQueryBuilder
     }
 
     public static IQueryable<TResult> Build<TModel, TResult>(IQueryable<TModel> queryable, Specification<TModel, TResult> specification)
-    where TModel : BaseModel =>
+    where TModel : class, BaseModel =>
         Build<TModel>(queryable, specification).Select(specification.Selector!);
 }

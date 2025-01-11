@@ -6,7 +6,7 @@ using Pharmacy.Domain.Specifications;
 
 namespace Pharmacy.Infrastructure.Repositories;
 
-public class GenericRepository<TModel> : IRepository<TModel> where TModel : BaseModel
+public class GenericRepository<TModel> : IRepository<TModel> where TModel : class, BaseModel
 {
     protected readonly ApplicationDbContext _context;
     protected readonly DbSet<TModel> _dbSet;
