@@ -1,7 +1,7 @@
 namespace Pharmacy.Domain.Generics;
 
 
-public abstract class BaseModel
+public interface BaseModel
 {
 
 }

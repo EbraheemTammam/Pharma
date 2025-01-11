@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Pharmacy.Domain.Generics;
 
 namespace Pharmacy.Domain.Models;
 
 
-public sealed class User : IdentityUser<int>
+public sealed class User : IdentityUser<int>, BaseModel
 {
     public required string FirstName {get; set;}
     public required string LastName {get; set;}

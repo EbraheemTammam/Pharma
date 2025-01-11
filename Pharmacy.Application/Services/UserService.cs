@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Responses;
 using Pharmacy.Domain.Models;
 using Pharmacy.Application.DTOs;
+using Pharmacy.Application.Utilities;
 
 namespace Pharmacy.Application.Services;
 
@@ -18,9 +18,12 @@ public class UserService : IUserService
 
     public async Task<Result<IEnumerable<UserDTO>>> GetAllAsync() =>
         Result.Success(
-            (IEnumerable<UserDTO>)
-            (await _manager.Users.ToListAsync())
-            .ConvertAll(user => user.ToUserDTO())
+            (await _manager.GetUsersInRoleAsync(Roles.Manager))
+            .ConvertAll(user => user.ToUserDTO("Manager"))
+            .Concat(
+                (await _manager.GetUsersInRoleAsync(Roles.Employee))
+                .ConvertAll(user => user.ToUserDTO("Employee"))
+            )
         );
 
     public async Task<Result<UserDTO>> GetByIdAsync(int id)
@@ -29,7 +32,7 @@ public class UserService : IUserService
         return user switch
         {
             null => Result.Fail<UserDTO>(AppResponses.NotFoundResponse(id, nameof(User))),
-            _ => Result.Success(user.ToUserDTO())
+            _ => Result.Success(user.ToUserDTO((await _manager.GetRolesAsync(user)).First()))
         };
     }
 
@@ -40,7 +43,7 @@ public class UserService : IUserService
         user.Update(updateDTO);
         if(user.SecurityStamp is null) user.SecurityStamp = Guid.NewGuid().ToString();
         await _manager.UpdateAsync(user);
-        return Result.Success(user.ToUserDTO(), StatusCodes.Status201Created);
+        return Result.Success(user.ToUserDTO((await _manager.GetRolesAsync(user)).First()), StatusCodes.Status201Created);
     }
 
     public async Task<Result> DeleteAsync(int id)

@@ -13,13 +13,14 @@ public static class UserMapper
             UserName = schema.Username
         };
 
-    public static UserDTO ToUserDTO(this User model) =>
+    public static UserDTO ToUserDTO(this User model, string role) =>
         new()
         {
             Id = model.Id,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            UserName = model.UserName!
+            UserName = model.UserName!,
+            Role = role
         };
 
     public static void Update(this User user, RegisterDTO schema)
