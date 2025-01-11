@@ -8,6 +8,8 @@ using Pharmacy.Application.Interfaces;
 using Pharmacy.Application.Mappers;
 using Pharmacy.Application.Utilities;
 using Pharmacy.Application.Queries;
+using Microsoft.Extensions.Configuration;
+using Pharmacy.Domain.Specifications;
 
 namespace Pharmacy.Application.Services;
 
@@ -15,10 +17,17 @@ public class OrderService : IOrderService
 {
     private readonly IRepositoryManager _manager;
     private readonly UserManager<User> _userManager;
+    private readonly string _defaultCustomerName;
     private readonly ICurrentLoggedInUser _currentLoggedInUser;
 
-    public OrderService(IRepositoryManager repoManager, UserManager<User> userManager, ICurrentLoggedInUser currentLoggedInUser) =>
-        (_manager, _userManager, _currentLoggedInUser) = (repoManager, userManager, currentLoggedInUser);
+    public OrderService(IRepositoryManager repoManager, UserManager<User> userManager, ICurrentLoggedInUser currentLoggedInUser, IConfiguration configuration)
+    {
+        _manager = repoManager;
+        _userManager = userManager;
+        _currentLoggedInUser = currentLoggedInUser;
+        _defaultCustomerName = configuration.GetSection("DefaultCustomerName").Value ?? string.Empty;
+
+    }
 
     public async Task<Result<IEnumerable<OrderDTO>>> GetAll(DateOnly? from, DateOnly? to)
     {
@@ -60,18 +69,22 @@ public class OrderService : IOrderService
 
     public async Task<Result<OrderDTO>> Create(OrderCreateDTO orderDTO)
     {
-        Customer? customer = await _manager.Customers.GetById(orderDTO.CustomerId);
+        Customer? customer;
+        if(orderDTO.CustomerId is not null)
+        {
+            customer = await _manager.Customers.GetById(orderDTO.CustomerId);
+            if(customer is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(orderDTO.CustomerId, nameof(Customer)));
+        }
+        else customer = await _manager.Customers.GetOne(new Specification<Customer>(c => c.Name == _defaultCustomerName));
         User user = await _currentLoggedInUser.GetUser();
 
         Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
         if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
 
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
-        if(customer is not null)
-        {
-            customer.Dept += order.TotalPrice - order.Paid;
-            _manager.Customers.Update(customer);
-        }
+
+        customer!.Dept += order.TotalPrice - order.Paid;
+        _manager.Customers.Update(customer);
 
         await _manager.Save();
         await InternalEventHandler.OrderPostSave(_manager, order, orderDTO);
@@ -90,11 +103,10 @@ public class OrderService : IOrderService
         if(order is null) return Result.Fail<OrderDTO>(AppResponses.NotFoundResponse(id, nameof(Order)));
 
         Customer? customer = await _manager.Customers.GetById(order.CustomerId);
-        if(customer is not null)
-        {
-            customer.Dept -= order.TotalPrice - order.Paid;
-            _manager.Customers.Update(customer);
-        }
+        if(customer is null) customer = await _manager.Customers.GetOne(new Specification<Customer>(c => c.Name == _defaultCustomerName));
+
+        customer!.Dept -= order.TotalPrice - order.Paid;
+        _manager.Customers.Update(customer);
 
         await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
 

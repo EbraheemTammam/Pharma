@@ -313,6 +313,11 @@ namespace Pharmacy.Infrastructure.Data.Migrations
             migrationBuilder.RenameColumn(table: "ProductItem", name: "incoming_order_id", newName: "IncomingOrderId");
             migrationBuilder.RenameColumn(table: "ProductItem", name: "type_id", newName: "ProductId");
 
+            // Rename columns in ScarceProduct table
+            migrationBuilder.RenameColumn(table: "ScarceProduct", name: "id", newName: "Id");
+            migrationBuilder.RenameColumn(table: "ScarceProduct", name: "name", newName: "Name");
+            migrationBuilder.RenameColumn(table: "ScarceProduct", name: "amount", newName: "Amount");
+
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
