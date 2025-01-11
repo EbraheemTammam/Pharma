@@ -42,6 +42,16 @@ public class UserService : IUserService
         if (user is null) return Result.Fail<UserDTO>(AppResponses.NotFoundResponse(id, nameof(User)));
         user.Update(updateDTO);
         if(user.SecurityStamp is null) user.SecurityStamp = Guid.NewGuid().ToString();
+        if(updateDTO.IsManager)
+        {
+            await _manager.RemoveFromRoleAsync(user, Roles.Employee);
+            await _manager.AddToRoleAsync(user, Roles.Manager);
+        }
+        else
+        {
+            await _manager.RemoveFromRoleAsync(user, Roles.Manager);
+            await _manager.AddToRoleAsync(user, Roles.Employee);
+        }
         await _manager.UpdateAsync(user);
         return Result.Success(user.ToUserDTO((await _manager.GetRolesAsync(user)).First()), StatusCodes.Status201Created);
     }
