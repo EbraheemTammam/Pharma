@@ -57,6 +57,8 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDTO>> Create(ProductCreateDTO schema)
     {
+        if (await _products.GetOne(new Specification<Product>(obj => obj.Barcode == schema.Barcode)) != null)
+            return Result.Fail<ProductDTO>(AppResponses.BadRequestResponse("Product with this barcode already exists"));
         Product product = schema.ToModel();
         product.OwnedElements = 0;
         await _products.Add(product);
@@ -66,6 +68,8 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDTO>> Update(Guid id, ProductUpdateDTO schema)
     {
+        if (await _products.GetOne(new Specification<Product>(obj => obj.Barcode == schema.Barcode)) != null)
+            return Result.Fail<ProductDTO>(AppResponses.BadRequestResponse("Product with this barcode already exists"));
         Product? product = await _products.GetById(id);
         if(product is null) return Result.Fail<ProductDTO>(AppResponses.NotFoundResponse(id, nameof(Product)));
         product.Update(schema);
