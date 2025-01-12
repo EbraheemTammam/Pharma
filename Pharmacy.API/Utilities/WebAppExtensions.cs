@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Pharmacy.Application.Utilities;
 using Pharmacy.Domain.Models;
+using Pharmacy.Infrastructure.Data;
 
 namespace Pharmacy.Presentation.Utilities;
 
@@ -9,6 +11,13 @@ public static class WebAppExtensions
 {
     public static void Configure(this WebApplication app)
     {
+        // Apply migrations at startup
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate();
+        }
+
         app.UseHttpsRedirection();
         app.UseCors("CorsPolicy");
         app.UseAuthentication();

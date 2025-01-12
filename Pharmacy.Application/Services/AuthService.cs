@@ -53,7 +53,7 @@ public class AuthService : IAuthService
         var userId = GetUserIdFromExpiredToken(tokenDTO.AccessToken);
         if (userId is null) return Result.Fail<TokenDTO>(AppResponses.BadRequestResponse("Invalid Token"));
         User? user = await _userManger.FindByIdAsync(userId);
-        if (user is null || user.RefreshToken != tokenDTO.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        if (user is null || user.RefreshToken != tokenDTO.RefreshToken || user.RefreshTokenExpiryTime >= DateTime.Now)
             return Result.Fail<TokenDTO>(AppResponses.UnAuthorizedResponse);
         return Result.Success(await CreateTokenAsync(user, withExpiryTime: false));
     }
