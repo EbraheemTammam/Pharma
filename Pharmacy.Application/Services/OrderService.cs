@@ -83,16 +83,15 @@ public class OrderService : IOrderService
 
         Order order = await _manager.Orders.Add(orderDTO.ToModel(user.Id));
 
+        await InternalEventHandler.OrderPreSave(_manager, order, orderDTO);
+
         customer!.Dept += order.TotalPrice - order.Paid;
         _manager.Customers.Update(customer);
+        await _manager.Customers.Save();
 
-        await _manager.Save();
-        await InternalEventHandler.OrderPostSave(_manager, order, orderDTO);
-
-        await _manager.Save();
         return Result.Success
         (
-            order.ToDTO(customer?.Name, user.GetFullName()),
+            order.ToDTO(orderDTO.CustomerId is null ? null : customer.Name , user.GetFullName()),
             StatusCodes.Status201Created
         );
     }
@@ -108,18 +107,15 @@ public class OrderService : IOrderService
         customer!.Dept -= order.TotalPrice - order.Paid;
         _manager.Customers.Update(customer);
 
-        await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
-
         Result validItems = await InternalEventHandler.ValidateOrderItems(_manager, orderDTO.Items);
         if (!validItems.Succeeded) return Result.Fail<OrderDTO>(validItems.Response);
 
-        if(customer is not null)
-        {
-            customer.Dept += order.TotalPrice - order.Paid;
-            _manager.Customers.Update(customer);
-        }
+        await InternalEventHandler.OrderPreUpdate(_manager, order, orderDTO);
 
-        await _manager.Save();
+        customer.Dept += order.TotalPrice - order.Paid;
+        _manager.Customers.Update(customer);
+        await _manager.Customers.Save();
+
         User user = await _currentLoggedInUser.GetUser();
         return Result.Success
         (

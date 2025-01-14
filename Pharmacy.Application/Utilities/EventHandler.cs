@@ -17,6 +17,7 @@ public static class InternalEventHandler
         product.IsLack = product.OwnedElements <= product.Minimum;
 
         manager.Products.Update(product);
+        await manager.Products.Save();
 
         int amount = item.Amount;
         foreach (ProductItem pItem in await manager.ProductItems.GetAll(
@@ -33,6 +34,7 @@ public static class InternalEventHandler
             manager.ProductItems.Update(pItem);
             if(amount == 0) break;
         }
+        await manager.ProductItems.Save();
 
         return Result.Success();
     }
@@ -42,6 +44,7 @@ public static class InternalEventHandler
         item.Product!.OwnedElements += item.Amount;
         item.Product.IsLack = item.Product.OwnedElements <= item.Product.Minimum;
         manager.Products.Update(item.Product);
+        await manager.Products.Save();
 
         ProductItem pItem =
         (
@@ -53,7 +56,11 @@ public static class InternalEventHandler
         pItem.NumberOfElements += item.Amount;
 
         manager.ProductItems.Update(pItem);
+        await manager.ProductItems.Save();
+
         manager.OrderItems.Delete(item);
+        await manager.OrderItems.Save();
+
         return Result.Success();
     }
 
@@ -77,7 +84,7 @@ public static class InternalEventHandler
         return Result.Success();
     }
 
-    public static async Task<Result> OrderPostSave(IRepositoryManager manager, Order order, OrderUpdateDTO orderDTO)
+    public static async Task<Result> OrderPreSave(IRepositoryManager manager, Order order, OrderUpdateDTO orderDTO)
     {
         IEnumerable<Guid> productIds = orderDTO.Items.Select(item => item.ProductId);
 
@@ -97,6 +104,7 @@ public static class InternalEventHandler
 
         order.Paid = (double?) orderDTO.Paid ?? order.TotalPrice;
         manager.Orders.Update(order);
+        await manager.Orders.Save();
 
         return Result.Success();
     }
@@ -107,7 +115,7 @@ public static class InternalEventHandler
             await OrderItemPreDelete(manager, item);
 
         order.TotalPrice = 0;
-        return await OrderPostSave(manager, order, orderDTO);
+        return await OrderPreSave(manager, order, orderDTO);
     }
 
     public static async Task<Result> OrderPreDelete(IRepositoryManager manager, Order order)
