@@ -8,5 +8,6 @@ public record OrderDTO : OrderBaseDTO
     public DateTime CreatedAt {get; set;}
     public decimal TotalPrice {get; set;}
     public string? CustomerName {get; set;}
+    public Guid CustomerId {get; set;}
     public required string CreatedBy {get; set;}
 }

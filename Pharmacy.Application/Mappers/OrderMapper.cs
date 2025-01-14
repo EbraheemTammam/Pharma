@@ -13,17 +13,18 @@ public static class OrderMapper
             CustomerId = orderDTO.CustomerId
         };
 
-    public static OrderDTO ToDTO(this Order order) =>
-        order.ToDTO(null, order.CreatedBy!.GetFullName());
+    public static OrderDTO ToDTO(this Order order, Guid customerId) =>
+        order.ToDTO(null, customerId, order.CreatedBy!.GetFullName());
 
-    public static OrderDTO ToDTO(this Order order, string? CustomerName, string userFullName) =>
+    public static OrderDTO ToDTO(this Order order, string? customerName, Guid customerId, string userFullName) =>
         new()
         {
             Id = order.Id,
             Paid = (decimal)order.Paid,
             CreatedAt = order.CreatedAt,
             TotalPrice = (decimal)order.TotalPrice,
-            CustomerName = CustomerName,
+            CustomerName = customerName,
+            CustomerId = customerId,
             CreatedBy = userFullName
         };
 }

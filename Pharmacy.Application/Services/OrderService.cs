@@ -91,7 +91,7 @@ public class OrderService : IOrderService
 
         return Result.Success
         (
-            order.ToDTO(orderDTO.CustomerId is null ? null : customer.Name , user.GetFullName()),
+            order.ToDTO(orderDTO.CustomerId is null ? null : customer.Name, customer.Id , user.GetFullName()),
             StatusCodes.Status201Created
         );
     }
@@ -119,7 +119,7 @@ public class OrderService : IOrderService
         User user = await _currentLoggedInUser.GetUser();
         return Result.Success
         (
-            order.ToDTO(customer?.Name, user.GetFullName()),
+            order.ToDTO(customer?.Name, customer!.Id, user.GetFullName()),
             StatusCodes.Status201Created
         );
     }
