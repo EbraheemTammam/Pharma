@@ -17,11 +17,14 @@ public class IncomingOrderService : IIncomingOrderService
     public IncomingOrderService(IRepositoryManager repoManager) =>
         _manager = repoManager;
 
-    public async Task<Result<IEnumerable<IncomingOrderDTO>>> GetAll() =>
-        Result.Success
+    public async Task<Result<IEnumerable<IncomingOrderDTO>>> GetAll(DateOnly? from, DateOnly? to)
+    {
+        DateOnly todaysDate = DateOnly.FromDateTime(DateTime.Today.Date);
+        return Result.Success
         (
-            await _manager.IncomingOrders.GetAll(new IncomingOrderWithProviderSpecification())
+            await _manager.IncomingOrders.GetAll(new IncomingOrderWithProviderSpecification(from ?? new DateOnly(todaysDate.Year, todaysDate.Month, 1), to ?? todaysDate))
         );
+    }
 
     public async Task<Result<IncomingOrderDTO>> GetById(Guid id)
     {

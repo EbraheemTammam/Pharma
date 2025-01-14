@@ -18,4 +18,21 @@ public class IncomingOrderWithProviderSpecification : Specification<IncomingOrde
         };
         OrderByDescending = order => order.CreatedAt;
     }
+
+    public IncomingOrderWithProviderSpecification(DateOnly? from, DateOnly? to) : base(
+        obj =>
+        DateOnly.FromDateTime(obj.CreatedAt.Date) >= from &&
+        DateOnly.FromDateTime(obj.CreatedAt.Date) <= to
+    )
+    {
+        Selector = order => new IncomingOrderDTO
+        {
+            Id = order.Id,
+            CreatedAt = order.CreatedAt,
+            ProviderName = order.Provider!.Name,
+            Price = order.Price,
+            Paid = order.Paid,
+        };
+        OrderByDescending = order => order.CreatedAt;
+    }
 }

@@ -12,8 +12,8 @@ public class IncomingOrdersController : ApiBaseController
     public IncomingOrdersController(IIncomingOrderService incomingOrderService) => _service = incomingOrderService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<IncomingOrderDTO>>> GetAll() =>
-        HandleResult(await _service.GetAll());
+    public async Task<ActionResult<IEnumerable<IncomingOrderDTO>>> GetAll([FromQuery] DateOnly? from, [FromQuery] DateOnly? to) =>
+        HandleResult(await _service.GetAll(from, to));
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IncomingOrderDTO>> GetById(Guid id) =>
