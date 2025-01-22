@@ -154,7 +154,7 @@ public static class InternalEventHandler
         {
             await manager.ProductItems.Add(itemDTO.ToModel(productDictionary[itemDTO.ProductId], incomingOrder.Id));
             productDictionary[itemDTO.ProductId].OwnedElements += itemDTO.NumberOfBoxes * productDictionary[itemDTO.ProductId].NumberOfElements;
-            productDictionary[itemDTO.ProductId].IsLack = productDictionary[itemDTO.ProductId].NumberOfElements > productDictionary[itemDTO.ProductId].Minimum;
+            productDictionary[itemDTO.ProductId].IsLack = productDictionary[itemDTO.ProductId].OwnedElements <= productDictionary[itemDTO.ProductId].Minimum;
             manager.Products.Update(productDictionary[itemDTO.ProductId]);
         }
         return Result.Success(incomingOrder.ToDTO(), StatusCodes.Status201Created);
